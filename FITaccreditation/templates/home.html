@@ -1,0 +1,14 @@
+{% extends 'base.html' %} <!-- IMPORTANT -->
+
+{% block base_body %} <!-- Will replace base_body block in base.html -->
+	<div>
+		<h1>Temp Home Page</h1>
+		<p>{{ test_string }}</p>
+		{% if boolean %}
+
+		{% endif %}
+		{% for list_item in list %}
+
+		{% endfor %}
+	</div>
+{% endblock base_body %}
