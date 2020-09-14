@@ -16,3 +16,18 @@ def home(request):
 		'test_string': test_string, # 'front_end_name': back_end_name,
 
 		})
+
+def eac_criteria(request):
+	return render(request, "eac-criteria.html")
+
+def cac_criteria(request):
+	return render(request, "cac-criteria.html")
+
+def login(request):
+	return render(request, "login.html")
+
+def register(request):
+	return render(request, "register.html")
+
+def submission(request):
+	return render(request, "submission.html")

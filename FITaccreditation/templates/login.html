@@ -1,0 +1,65 @@
+{% extends 'base.html' %} <!-- IMPORTANT -->
+{% load staticfiles %}
+{% block base_body %} <!-- Will replace base_body block in base.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- Viewport for mobile devices -->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <!-- Tab header -->
+    <title>FIT Accreditation Portal</title>
+</head>
+<body>
+
+
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Left image -->
+            <div class="col-lg-6 cold-md-6 d-none d-md-block image-container"></div>
+            <!-- Right form -->
+            <div class="col-lg-6 col-md-6 form-container">
+                <div class="col-lg-8 col-md-12 col-sm-9 col-xs-12 form-box text-center">
+                    <div class="logo mb-3">
+                        <img src="{% static 'img/logo-white.png' %}" width="150px">
+                    </div>
+                    <div class="heading mb-4">
+                        <h4>Enter your Email and Password.</h4>
+                    </div>
+                    <form>
+                        <!-- Email box -->
+                        <div class="form-input">
+                            <span><i class="fa fa-envelope"></i></span>
+                            <input type="email" placeholder="you@example.com" required>
+                        </div>
+                        <!-- Password box -->
+                        <div class="form-input">
+                            <span><i class="fa fa-lock"></i></span>
+                            <input type="password" placeholder="Password" required> 
+                        </div>
+                        <div class="row mb-3">
+                            <!-- Remember -->
+                            <div class="col-6 d-flex">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="check">
+                                    <label class="custom-control-label text-white" for="check">Remember me</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-center mb-3">
+                            <button type="submit" class="btn btn-primary btn-lg my-4">Login</button>
+                        </div>
+                        <div style="color: #777"><a href="/register" class="register-link">Request faculty status</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</body>
+</html>
+{% endblock base_body %}
