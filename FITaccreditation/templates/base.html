@@ -7,43 +7,45 @@ This is where global styling will be called
 
 
 {% block css %}
-<!-- General Styling -->
-		<!-- Tab icon -->
-		<link rel="shortcut icon" href="{% static 'img/favicon.png' %}">
-		<!-- Bootstrap Styling -->
-		<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-        <link rel="stylesheet" href="{% static 'css/style.css' %}">
+	<!-- General Styling -->
+	<!-- Tab icon -->
+	<link rel="shortcut icon" href="{% static 'img/favicon.png' %}">
+	<!-- Bootstrap Styling -->
+	<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 {% endblock css %}
 
 
 
 {% block header %}
-<!-- Navigation Bar -->
-<nav class="navbar navbar-expand-md navbar-dark bg-white">
-    <div class="container">
-        <!-- Logo leading back to home page -->
-        <a href ="home" class="navbar-brand"><img src="{% static 'img/logo.jpg' %}"></a>
-        <!-- Navbar contents + mobile view dropdown -->
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarItems">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <!-- Navbar links -->
-        <div class="collapse navbar-collapse" id="navbarItems">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item"><a href="home" class="nav-link">Home</a></li>
-                <li class="nav-item"><a href="/cac_criteria" class="nav-link">CAC Criteria</a></li>
-                <li class="nav-item"><a href="/eac_criteria" class="nav-link">EAC Criteria</a></li>
-                <li class="nav-item"><a href="/login" class="nav-link">Login</a></li>
-                <li class="nav-item"><a href="#contactus" class="nav-link">Contact</a></li>
-            </ul>
-        </div>
-    </div>
-</nav>
+	<!-- Navigation Bar -->
+	<header style="position: fixed; z-index: 10000; width: 100%;">
+		<nav class="navbar navbar-expand-md navbar-dark bg-white">
+		    <div class="container">
+		        <!-- Logo leading back to home page -->
+		        <a href ="home" class="navbar-brand"><img src="{% static 'img/logo.jpg' %}"></a>
+		        <!-- Navbar contents + mobile view dropdown -->
+		        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarItems">
+		            <span class="navbar-toggler-icon"></span>
+		        </button>
+		        <!-- Navbar links -->
+		        <div class="collapse navbar-collapse" id="navbarItems">
+		            <ul class="navbar-nav ml-auto">
+		                <li class="nav-item"><a href="/" class="nav-link">Home</a></li>
+		                <li class="nav-item"><a href="/cac_criteria" class="nav-link">CAC Criteria</a></li>
+		                <li class="nav-item"><a href="/eac_criteria" class="nav-link">EAC Criteria</a></li>
+		                <li class="nav-item"><a href="/login" class="nav-link">Login</a></li>
+		                <li class="nav-item"><a href="#contactus" class="nav-link">Contact</a></li>
+		            </ul>
+		        </div>
+		    </div>
+		</nav>
+	</header>
 {% endblock header %}
 
-
-
+<div style="padding-top: 74px">
 {% block base_body %}{% endblock base_body %}
+</div>
 
 
 

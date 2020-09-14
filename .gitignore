@@ -1,1 +1,4 @@
 local.bat
+*.pyc
+debug.log
+latest.dump
