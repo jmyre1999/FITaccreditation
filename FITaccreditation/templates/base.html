@@ -34,10 +34,24 @@ This is where global styling will be called
 		                <li class="nav-item"><a href="/" class="nav-link">Home</a></li>
 		                <li class="nav-item"><a href="/cac_criteria/" class="nav-link">CAC Criteria</a></li>
 		                <li class="nav-item"><a href="/eac_criteria/" class="nav-link">EAC Criteria</a></li>
-		                <li class="nav-item"><a href="/login/" class="nav-link">Login</a></li>
 		                <li class="nav-item"><a href="#contactus" class="nav-link">Contact</a></li>
+		                {% if not request.user.is_authenticated %}
+		                	<li class="nav-item"><a href="/login/" class="nav-link">Login</a></li>
+		                	<li class="nav-item"><a href="/register/" class="nav-link">Register</a></li>
+		                {% else %}
+		                	<li class="nav-item"><a href="/logout/" class="nav-link">Logout</a></li>
+		                {% endif %}
 		            </ul>
 		        </div>
+		        {% if request.user.is_authenticated %}
+			        <div class="avatar avatar-xl">
+	                    {% if request.user.image %}
+	                        <img src="{{ request.user.image.url }}" class="rounded-circle" />
+	                    {% else %}
+	                        <i class="fa fa-user"></i>
+	                    {% endif %}
+	                </div>
+	             {% endif %}
 		    </div>
 		</nav>
 	</header>
