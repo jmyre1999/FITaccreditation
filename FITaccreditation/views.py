@@ -71,3 +71,18 @@ def register_form(request):
 
 def submission(request):
 	return render(request, "submission.html")
+
+def account_settings(request):
+	if not request.user.is_authenticated:
+		return HttpResponseRedirect('/')
+	if request.POST:
+		first_name = request.POST.get('first_name', '')
+		last_name = request.POST.get('last_name', '')
+		user = request.user
+		if first_name != '':
+			user.first_name = first_name.capitalize()
+		if last_name != '':
+			user.last_name = last_name.capitalize()
+		user.save()
+	return render(request, "account_settings.html")
+

@@ -1,15 +1,6 @@
 {% extends 'base.html' %} <!-- IMPORTANT -->
 {% load staticfiles %}
 {% block base_body %} <!-- Will replace base_body block in base.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <!-- Viewport for mobile devices -->
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <!-- Tab header -->
-    <title>FIT Accreditation Portal</title>
-</head>
 <body>
 
 
@@ -45,18 +36,18 @@
                                 <input name="password" type="password" placeholder="Password" required/> 
                             </div>
                             <div class="row mb-3">
-                                <!-- Remember -->
-                                <div class="col-6 d-flex">
+                                <!-- Remember (Not sure if we will do this) -->
+                                <!-- <div class="col-6 d-flex">
                                     <div class="custom-control custom-checkbox">
                                         <input type="checkbox" class="custom-control-input" id="check">
                                         <label class="custom-control-label text-white" for="check">Remember me</label>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
                             <div class="text-center mb-3">
                                 <button type="submit" class="btn btn-primary btn-lg my-4">Login</button>
                             </div>
-                            <div style="color: #777"><a href="/register" class="register-link">Request faculty status</a>
+                            <div style="color: #777"><a href="/register/" class="register-link">Request faculty status</a>
                             </div>
                         </form>
                     {% else %}

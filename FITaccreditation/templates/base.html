@@ -4,6 +4,16 @@ This is where global styling will be called
  -->
 {% load staticfiles %}
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- Viewport for mobile devices -->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <!-- Tab header -->
+    <title>FIT Accreditation Portal</title>
+</head>
+
 
 
 {% block css %}
@@ -40,10 +50,25 @@ This is where global styling will be called
 		                	<li class="nav-item"><a href="/register/" class="nav-link">Register</a></li>
 		                {% else %}
 		                	<li class="nav-item"><a href="/logout/" class="nav-link">Logout</a></li>
+		                	<li class="nav-item">
+		                		{% if "Mobile" not in request.META.HTTP_USER_AGENT %}
+			                		<div class="avatar avatar-xl pl-1 pt-1">
+			                			<a class="nav-link" href="/account_settings/">
+						                    {% if request.user.image %}
+						                        <img src="{{ request.user.image.url }}" class="rounded-circle" />
+						                    {% else %}
+						                        <i class="fa fa-user"></i>
+						                    {% endif %}
+						                </a>
+					                </div>
+					            {% else %}
+					            	<a class="nav-link" href="/account_settings/">Account Settings</a>
+					            {% endif %}
+				            </li>
 		                {% endif %}
 		            </ul>
 		        </div>
-		        {% if request.user.is_authenticated %}
+		        <!-- {% if request.user.is_authenticated %}
 			        <div class="avatar avatar-xl">
 	                    {% if request.user.image %}
 	                        <img src="{{ request.user.image.url }}" class="rounded-circle" />
@@ -51,7 +76,7 @@ This is where global styling will be called
 	                        <i class="fa fa-user"></i>
 	                    {% endif %}
 	                </div>
-	             {% endif %}
+	             {% endif %} -->
 		    </div>
 		</nav>
 	</header>
@@ -159,3 +184,5 @@ This is where global styling will be called
 	<!-- Font Awesome -->
 	<script src="{% static 'js/all.min.js' %}"></script>
 {% endblock scripts %}
+
+</html>
