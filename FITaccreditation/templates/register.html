@@ -15,7 +15,10 @@
                     {% if not request.user.is_authenticated %}
                         {% if error %}
                             <!-- Make it look nice lmao -->
-                            {{ error_message }}
+                            <!-- Hope this looks nice lmao -->
+                            <div class="alert alert-danger">
+                                <strong>{{ error_message }}!</strong>
+                            </div>
                         {% endif %}
                         <div class="logo mb-3">
                             <img src="{% static 'img/logo-white.png' %}" width="150px">

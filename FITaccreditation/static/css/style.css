@@ -214,6 +214,9 @@ footer .svg-inline--fa:hover {
 .login-link:hover {
   color: black!important;
 }
+.control-label {
+  font-weight: bold;
+}
 
 
 
