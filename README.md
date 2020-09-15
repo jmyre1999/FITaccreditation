@@ -1,7 +1,6 @@
 # FIT Accreditation Website
 
-## Created by:
-## Jason Myre, Joseph Ackerman, Jonathan Uss, Justyn Diaz
+> Authors: Jason Myre, Joseph Ackerman, Jonathan Uss, Justyn Diaz
 
 ###### INITIAL SET UP
 
