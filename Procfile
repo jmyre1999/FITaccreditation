@@ -1,1 +1,1 @@
-worker: python manage.py runserver
+web: newrelic-admin run-program daphne -b 0.0.0.0 -p $PORT FITaccreditation.wsgi:application
