@@ -1,1 +1,1 @@
-web: newrelic-admin run-program daphne -b 0.0.0.0 -p $PORT FITaccreditation.wsgi:application
+web: gunicorn FITaccreditation.wsgi
