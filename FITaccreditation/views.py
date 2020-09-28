@@ -8,6 +8,12 @@ import os
 from FITaccreditation.utils import *
 from FITaccreditation.models import *
 
+def hello(request):
+	return render(request, "hello.html", {
+		'test_string': 'Hello, World!', # 'front_end_name': back_end_name,
+
+		})
+
 def home(request):
 	print("This is is the home view")
 	test_string = "This is a test"
