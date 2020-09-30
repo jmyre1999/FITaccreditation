@@ -9,6 +9,7 @@ from FITaccreditation.utils import *
 from FITaccreditation.models import *
 
 def hello(request):
+	print('Hello, World!')
 	return render(request, "hello.html", {
 		'test_string': 'Hello, World!', # 'front_end_name': back_end_name,
 
