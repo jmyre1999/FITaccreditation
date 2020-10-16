@@ -57,9 +57,13 @@ def register_form(request):
 	if request.POST:
 		email = request.POST.get('email', '').lower()
 		password = request.POST.get('password', '')
+		confirm_password = request.POST.get('confirm_password', '')
 		if UserProfile.objects.filter(email__iexact=email):
 			error = True
 			error_message = "A user with that email address already exists"
+		elif password != confirm_password:
+			error = True
+			error_message = "Password does not match"
 		else:
 			user = get_user_model().objects.create_user(email, password)
 			user.save()

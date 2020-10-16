@@ -17,6 +17,16 @@
 			            </div>
 						<form method="POST">
 							{% csrf_token %}
+							{% if request.user.image %}
+						        <img src="{{ request.user.image.url }}" style="height:150px; border: 5px solid #ffffff;"/>
+						    {% else %}
+								<img src="{% static 'img/holderpfp.png' %}" style="height:150px; border: 5px solid #ffffff;"/>
+						    {% endif %}
+							<div class="form-group">
+                        		<span class="btn btn-default btn-file my-4 text-white">
+									<input id="input-1" name="input1[]" type="file" accept="image/*" class="file" data-show-caption="true">
+                        		</span>
+                    		</div>
 					        <div class="form-input">
 					            <label for="first_name" class="control-label text-white">First Name</label>
 					            <input name="first_name" id="first_name" type="text" placeholder="First Name" value="{{ request.user.first_name }}">

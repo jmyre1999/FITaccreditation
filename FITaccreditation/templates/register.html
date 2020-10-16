@@ -36,7 +36,12 @@
                             <!-- Password box -->
                             <div class="form-input">
                                 <span><i class="fa fa-lock"></i></span>
-                                <input name="password" type="password" placeholder="Password" required> 
+                                <input name="password" id="password" type="password" placeholder="Password" required> 
+                            </div>
+                            <!-- Confirm password -->
+                            <div class="form-input">
+                                <span><i class="fa fa-lock"></i></span>
+                                <input name="confirm_password" id="confirm_password" type="password" placeholder="Confirm Password" required> 
                             </div>
                             <div class="row mb-3">
                             </div>
@@ -53,6 +58,7 @@
                         <div class="heading mb-4">
                             <h4>Welcome {% if request.user.first_name != '' %}{{ request.user.first_name }}{% else %}{{ request.user }}{% endif %}</h4>
                             <h4 class="fs-1">You're all set!</h4>
+                            <meta http-equiv="refresh" content="3;/">
                         </div>
                     {% endif %}
                 </div>
