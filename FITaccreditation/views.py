@@ -7,6 +7,7 @@ from django.http import HttpResponseRedirect
 import os
 from FITaccreditation.utils import *
 from FITaccreditation.models import *
+from .models import Contact
 
 def home(request):
 	print("This is is the home view")
@@ -15,6 +16,16 @@ def home(request):
 	print("3 + 5 = ", sum(3,5))
 	print("request test:")
 	print(request)
+	if request.method == "POST":
+		contact = Contact()
+		name = request.POST.get('name')
+		email = request.POST.get('email')
+		subject = request.POST.get('subject')
+		contact.name = name
+		contact.email = email
+		contact.subject = subject
+		contact.save()
+		return HttpResponseRedirect('/')
 	return render(request, "home.html", {
 		'test_string': test_string, # 'front_end_name': back_end_name,
 

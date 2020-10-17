@@ -48,3 +48,10 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
 
 	def get_full_name(self):
 		return self.first_name + ' ' + self.last_name
+
+class Contact(models.Model):
+	name = models.CharField(max_length = 200)
+	email = models.EmailField()
+	subject = models.TextField()
+	def __str__(self):
+		return self.name
