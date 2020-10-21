@@ -99,5 +99,10 @@ def account_settings(request):
 		if last_name != '':
 			user.last_name = last_name.capitalize()
 		user.save()
+	if request.FILES:
+		image = request.FILES.get('image')
+		user.image = image
+		user = request.user
+		user.save()
 	return render(request, "account_settings.html")
 

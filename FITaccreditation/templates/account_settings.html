@@ -15,7 +15,7 @@
 			            <div class="heading mb-4">
 			                <h4>Account Settings</h4>
 			            </div>
-						<form method="POST">
+						<form method="POST" enctype="multipart/form-data">
 							{% csrf_token %}
 							{% if request.user.image %}
 						        <img src="{{ request.user.image.url }}" style="height:150px; border: 5px solid #ffffff;"/>
@@ -24,7 +24,7 @@
 						    {% endif %}
 							<div class="form-group">
                         		<span class="btn btn-default btn-file my-4 text-white">
-									<input id="input-1" name="input1[]" type="file" accept="image/*" class="file" data-show-caption="true">
+									<input name="image" id="image" type="file" accept="image/*" class="file" data-show-caption="true">
                         		</span>
                     		</div>
 					        <div class="form-input">

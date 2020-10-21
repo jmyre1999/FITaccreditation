@@ -55,7 +55,7 @@ This is where global styling will be called
 			                		<div class="avatar avatar-xl pl-1 pt-1">
 			                			<a class="nav-link" href="/account_settings/">
 						                    {% if request.user.image %}
-						                        <img src="{{ request.user.image.url }}" class="rounded-circle" />
+						                        <img src="{{ request.user.image.url }}" class="rounded-circle" style="height:25px; border:1px solid"/>
 						                    {% else %}
 						                        <i class="fa fa-user"></i>
 						                    {% endif %}
