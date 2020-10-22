@@ -1,7 +1,12 @@
 # FIT Accreditation Website
 
-## Created by:
-## Jason Myre, Joseph Ackerman, Jonathan Uss, Justyn Diaz
+> Authors: Jason Myre, Joseph Ackerman, Jonathan Uss, Justyn Diaz
+
+## Project Description
+
+Website created using Django Web Framework to assist Florida Institute of Technology with their ABET accreditation reporting. This project is being developed by Jason Myre, Joseph Ackerman, Jonathon Uss, and Justyn Diaz as their computer science senior undergraduate project for Florida Institute of Technology.
+
+## Contributor Instructions
 
 ###### INITIAL SET UP Test
 

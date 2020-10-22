@@ -48,3 +48,25 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
 
 	def get_full_name(self):
 		return self.first_name + ' ' + self.last_name
+
+PROGRAM_CHOICES = (
+	('CS', 'Computer Science'),
+	('SE', 'Software Engineering'),
+)
+
+class Outcome(models.Model):
+	key = models.CharField(max_length=1)
+	description = models.CharField(max_length=200)
+	program = models.CharField(max_length=2, choices=PROGRAM_CHOICES)
+
+	def __str__(self):
+		return self.program + ' Outcome ' + self.key
+
+class Course(models.Model):
+	title = models.CharField(max_length=50)
+	program = models.CharField(max_length=2, choices=PROGRAM_CHOICES)
+	code = models.CharField(max_length=4)
+	outcomes = models.ManyToManyField('Outcome', blank=True)
+
+	def __str__(self):
+		return self.title

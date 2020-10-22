@@ -1,0 +1,54 @@
+{% extends 'base.html' %} <!-- IMPORTANT -->
+{% load staticfiles %}
+
+{% block base_body %} <!-- Will replace base_body block in base.html -->
+<body>
+    <body style="background-color:#880000;">
+    <div class="container">
+        <div class="row">
+            <!-- WIP -->
+            <div class="col-lg-12 col-md-12 form-container">
+                <div class="col-lg-3 col-md-12 col-sm-9 col-xs-12 form-box text-center">
+                    <div class="logo mb-3 my-4">
+                        <img src="{% static 'img/logo-white.png' %}" width="150px">
+                    </div>
+                    <div class="heading mb-4">
+                        <h4>Submission Server</h4>
+                    </div>
+                    <!-- Class dropdown -->
+                    <select name="Course" class="custom-select-lg my-4">
+                        <option selected>Select Course</option>
+                        <option value="Class 1">Class 1</option>
+                        <option value="Class 2">Class 2</option>
+                        <option value="Class 3">Class 3</option>
+                    </select>
+                    <!-- Outcome dropdown -->
+                    <select name="Course" class="custom-select-lg my-4">
+                        <option selected>Select Outcome</option>
+                        <option value="Outcome 1">Outcome 1</option>
+                        <option value="Outcome 2">Outcome 2</option>
+                        <option value="Outcome 3">Outcome 3</option>
+                    </select>
+                    <!-- Upload File -->
+                    <div class="form-group">
+                        <span class="btn btn-default btn-file my-4 text-white">
+                            <input id="input-2" name="input2[]" type="file" class="file" multiple data-show-upload="true" data-show-caption="true">
+                        </span>
+                    </div>
+                    <!-- Comment area -->
+                    <div class="form-group">
+                        <label for="comment" class="control-label text-white">Comment:</label>
+                        <textarea class="form-control" id="comment"></textarea>
+                    </div> 
+
+          
+
+                    <div class="text-center mb-3">
+                            <button type="submit" class="btn btn-primary btn-lg my-4">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+{% endblock base_body %}

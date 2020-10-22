@@ -1,0 +1,67 @@
+{% extends 'base.html' %} <!-- IMPORTANT -->
+{% load staticfiles %}
+{% block base_body %} <!-- Will replace base_body block in base.html -->
+<body>
+
+
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Left image -->
+            <div class="col-lg-6 cold-md-6 d-none d-md-block image-container"></div>
+            <!-- Right form -->
+            <div class="col-lg-6 col-md-6 form-container">
+                <div class="col-lg-8 col-md-12 col-sm-9 col-xs-12 form-box text-center">
+                    {% if not request.user.is_authenticated %}
+                        {% if error %}
+                            <!-- Make it look nice lmao -->
+                            <!-- Hope this looks nice lmao -->
+                            <div class="alert alert-danger">
+                                <strong>{{ error_message }}!</strong>
+                            </div>
+                        {% endif %}
+                        <div class="logo mb-3">
+                            <img src="{% static 'img/logo-white.png' %}" width="150px">
+                        </div>
+                        <div class="heading mb-4">
+                            <h4>Create an account</h4>
+                        </div>
+                        <form method="POST">
+                            {% csrf_token %}
+                            <!-- Email box -->
+                            <div class="form-input">
+                                <span><i class="fa fa-envelope"></i></span>
+                                <input name="email" type="email" placeholder="you@example.com" required>
+                            </div>
+                            <!-- Password box -->
+                            <div class="form-input">
+                                <span><i class="fa fa-lock"></i></span>
+                                <input name="password" type="password" placeholder="Password" required> 
+                            </div>
+                            <div class="row mb-3">
+                            </div>
+                            <div class="text-center mb-3">
+                                <button type="submit" class="btn btn-primary btn-lg my-4">Register</button>
+                            </div>
+                            <div style="color: #777"><a href="/login" class="login-link">Already have an account?</a>
+                            </div>
+                        </form>
+                    {% else %}
+                        <div class="logo mb-3">
+                            <img src="{% static 'img/logo-white.png' %}" width="150px">
+                        </div>
+                        <div class="heading mb-4">
+                            <h4>Welcome {% if request.user.first_name != '' %}{{ request.user.first_name }}{% else %}{{ request.user }}{% endif %}</h4>
+                            <h4 class="fs-1">You're all set!</h4>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</body>
+</html>
+{% endblock base_body %}

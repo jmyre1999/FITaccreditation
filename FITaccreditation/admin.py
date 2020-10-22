@@ -8,6 +8,8 @@ admin.site.unregister(Group)
 
 # Register UserProfile model to our admin site
 admin.site.register(UserProfile)
+admin.site.register(Course)
+admin.site.register(Outcome)
 
 # Tell admin site which fields to show and base searches on
 class UserProfileAdmin(ForeignKeyAutocompleteAdmin):
@@ -16,3 +18,8 @@ class UserProfileAdmin(ForeignKeyAutocompleteAdmin):
     list_display = ('email', 'first_name', 'last_name')
 
     search_fields = ('email', 'first_name', 'last_name')
+
+class CourseAdmin(ForeignKeyAutocompleteAdmin):
+    list_display = ('title', 'code', 'program')
+
+    search_fields = ('title', 'code', 'program')
