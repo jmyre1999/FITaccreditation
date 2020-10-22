@@ -3,7 +3,7 @@
 ## Created by:
 ## Jason Myre, Joseph Ackerman, Jonathan Uss, Justyn Diaz
 
-###### INITIAL SET UP
+###### INITIAL SET UP Test
 
 1. Install Python 3.8
 
