@@ -82,6 +82,9 @@ def register_form(request):
 		elif password != confirm_password:
 			error = True
 			error_message = "Password does not match"
+		elif not check_password_validity(password):
+			error = True
+			error_message = "Invalid password: Must be 8 or more characters, including one capital letter and a number"
 		else:
 			user = get_user_model().objects.create_user(email, password)
 			user.save()
