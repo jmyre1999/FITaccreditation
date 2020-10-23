@@ -5,7 +5,6 @@ from django_extensions.admin import ForeignKeyAutocompleteAdmin
 # Removes a default model we don't care about
 from django.contrib.auth.models import Group
 admin.site.unregister(Group)
-admin.site.register(Outcome)
 admin.site.register(Contact)
 
 # Tell admin site which fields to show and base searches on
@@ -22,3 +21,9 @@ class CourseAdmin(ForeignKeyAutocompleteAdmin):
 
     search_fields = ('title', 'code', 'program')
 admin.site.register(Course, CourseAdmin)
+
+class OutcomeAdmin(ForeignKeyAutocompleteAdmin):
+	list_display = ('key', 'program', 'description')
+
+	search_fields = ('key', 'program', 'description')
+admin.site.register(Outcome, OutcomeAdmin)
