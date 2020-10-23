@@ -50,23 +50,24 @@ This is where global styling will be called
 		                	<li class="nav-item"><a href="/register/" class="nav-link">Register</a></li>
 		                {% else %}
 		                	<li class="nav-item"><a href="/logout/" class="nav-link">Logout</a></li>
-		                	<li class="nav-item">
-		                		{% if "Mobile" not in request.META.HTTP_USER_AGENT %}
-			                		<div class="avatar avatar-xl pl-1 pt-1">
-			                			<a class="nav-link" href="/account_settings/">
-						                    {% if request.user.image %}
-						                        <img src="{{ request.user.image.url }}" class="rounded-circle" style="height:25px; border:1px solid"/>
-						                    {% else %}
-						                        <i class="fa fa-user"></i>
-						                    {% endif %}
-						                </a>
-					                </div>
-					            {% else %}
-					            	<a class="nav-link" href="/account_settings/">Account Settings</a>
-					            {% endif %}
-				            </li>
+		                	<!-- Make account setttings a list item on mobile -->
+		                	{% if "Mobile" in request.META.HTTP_USER_AGENT %}
+		                		<a class="nav-link" href="/account_settings/">Account Settings</a>
+		                	{% endif %}
 		                {% endif %}
 		            </ul>
+		            <!-- Access account settings through user pfp on desktop -->
+            		{% if "Mobile" not in request.META.HTTP_USER_AGENT and request.user.is_authenticated %}
+                		<div class="avatar avatar-xl pl-1">
+                			<a class="nav-link" href="/account_settings/">
+			                    {% if request.user.image %}
+			                        <img src="{{ request.user.image.url }}" class="rounded-circle" style="height:35px; border:1px solid"/>
+			                    {% else %}
+			                        <i class="fa fa-user"></i>
+			                    {% endif %}
+			                </a>
+		                </div>
+		            {% endif %}
 		        </div>
 		        <!-- {% if request.user.is_authenticated %}
 			        <div class="avatar avatar-xl">

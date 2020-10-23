@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.contrib.auth.base_user import BaseUserManager
 from django.db import models
+from datetime import datetime
 
 class UserProfileManager(BaseUserManager):
 	use_in_migrations = True
@@ -49,6 +50,12 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
 	def get_full_name(self):
 		return self.first_name + ' ' + self.last_name
 
+	def get_unsatisfied_assignments(self):
+		return Assignment.objects.filter(assignee__pk=self.pk, complete=False)
+
+	def get_late_assignments(self):
+		return Assignment.objects.filter(assignee__pk=self.pk, complete=False, due_date__gte=datetime.now)
+
 PROGRAM_CHOICES = (
 	('CS', 'Computer Science'),
 	('SE', 'Software Engineering'),
@@ -71,9 +78,25 @@ class Course(models.Model):
 	def __str__(self):
 		return self.title
 
+class Assignment(models.Model):
+	title = models.CharField(max_length=50)
+	advisor = models.ForeignKey('UserProfile', related_name='assignment_advisor', on_delete=models.CASCADE)
+	assignee = models.ForeignKey('UserProfile', related_name='assignment_assignee', on_delete=models.CASCADE)
+	course = models.ForeignKey('Course', on_delete=models.CASCADE)
+	outcome = models.ForeignKey('Outcome', on_delete=models.CASCADE)
+	description = models.CharField(max_length=500)
+	date_created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+	due_date = models.DateTimeField()
+	complete = models.BooleanField(default=False)
+	date_completed = models.DateTimeField(blank=True)
+
+	def __str__(self):
+		return self.title
+
 class Contact(models.Model):
 	name = models.CharField(max_length = 200)
 	email = models.EmailField()
 	subject = models.TextField()
+
 	def __str__(self):
 		return self.name
