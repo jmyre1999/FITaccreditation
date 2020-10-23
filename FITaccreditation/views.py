@@ -7,6 +7,7 @@ from django.http import HttpResponseRedirect
 import os
 from FITaccreditation.utils import *
 from FITaccreditation.models import *
+from .models import Contact
 
 def hello(request):
 	print('Hello, World!')
@@ -22,6 +23,16 @@ def home(request):
 	print("3 + 5 = ", sum(3,5))
 	print("request test:")
 	print(request)
+	if request.method == "POST":
+		contact = Contact()
+		name = request.POST.get('name')
+		email = request.POST.get('email')
+		subject = request.POST.get('subject')
+		contact.name = name
+		contact.email = email
+		contact.subject = subject
+		contact.save()
+		return HttpResponseRedirect('/')
 	return render(request, "home.html", {
 		'test_string': test_string, # 'front_end_name': back_end_name,
 
@@ -64,9 +75,13 @@ def register_form(request):
 	if request.POST:
 		email = request.POST.get('email', '').lower()
 		password = request.POST.get('password', '')
+		confirm_password = request.POST.get('confirm_password', '')
 		if UserProfile.objects.filter(email__iexact=email):
 			error = True
 			error_message = "A user with that email address already exists"
+		elif password != confirm_password:
+			error = True
+			error_message = "Password does not match"
 		else:
 			user = get_user_model().objects.create_user(email, password)
 			user.save()
@@ -90,6 +105,11 @@ def account_settings(request):
 			user.first_name = first_name.capitalize()
 		if last_name != '':
 			user.last_name = last_name.capitalize()
+		user.save()
+	if request.FILES:
+		image = request.FILES.get('image')
+		user.image = image
+		user = request.user
 		user.save()
 	return render(request, "account_settings.html")
 
