@@ -31,6 +31,12 @@ class UserProfileManager(BaseUserManager):
 
 		return self._create_user(email, password, **extra_fields)
 
+CLASS_CHOICES = (
+    ('FA', 'Faculty'),
+    ('AD', 'Advisor'),
+    ('RE', 'Reviewer'),
+)
+
 class UserProfile(AbstractBaseUser, PermissionsMixin):
 	email = models.EmailField(max_length=75, db_index=True, unique=True)
 	first_name = models.CharField(max_length=25, blank=True)
@@ -38,7 +44,7 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
 	image = models.ImageField(upload_to='userprofile', null=True, blank=True, max_length=500)
 	is_staff = models.BooleanField(default=False)
 	is_faculty = models.BooleanField(default=False)
-    role = models.CharField(max_length=25, blank=True, choices=CLASS_CHOICES)
+	role = models.CharField(max_length=25, blank=True, choices=CLASS_CHOICES)
 
 	objects = UserProfileManager()
 
@@ -60,12 +66,6 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
 PROGRAM_CHOICES = (
 	('CS', 'Computer Science'),
 	('SE', 'Software Engineering'),
-)
-
-CLASS_CHOICES = (
-    ('FA', 'Faculty'),
-    ('AD', 'Advisor'),
-    ('RE', 'Reviewer'),
 )
 
 class Outcome(models.Model):
