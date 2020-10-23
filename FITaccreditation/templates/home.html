@@ -65,7 +65,11 @@
 			<div class="col-12 text-center">
 				<h1>Submission server</h1>
 				<h3> </h3>
-				<a href="/login" class="btn btn-primary btn-lg my-4">LOGIN</a>
+				{% if not request.user.is_authenticated %}
+					<a href="/login" class="btn btn-primary btn-lg my-4">LOGIN</a>
+				{% else %}
+					<a href="/submission" class="btn btn-primary btn-lg my-4">ENTER</a>
+				{% endif %}
 			</div>
 		</div>
 		<div class="fixed-wrap">

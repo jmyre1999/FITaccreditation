@@ -7,9 +7,10 @@ from django.contrib.auth.models import Group
 admin.site.unregister(Group)
 
 # Register UserProfile model to our admin site
-admin.site.register(UserProfile)
-admin.site.register(Course)
+admin.site.register(UserProfile, UserProfileAdmin)
+admin.site.register(Course, CourseAdmin)
 admin.site.register(Outcome)
+admin.site.register(Contact)
 
 # Tell admin site which fields to show and base searches on
 class UserProfileAdmin(ForeignKeyAutocompleteAdmin):

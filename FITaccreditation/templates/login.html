@@ -60,6 +60,7 @@
                         <div class="heading mb-4">
                             <h4>Welcome {% if request.user.first_name != '' %}{{ request.user.first_name }}{% else %}{{ request.user }}{% endif %}</h4>
                             <h4 class="fs-1">You're all set!</h4>
+                            <meta http-equiv="refresh" content="3;/">
                         </div>
                     {% endif %}
                 </div>
