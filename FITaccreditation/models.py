@@ -43,7 +43,6 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
 	last_name = models.CharField(max_length=25, blank=True)
 	image = models.ImageField(upload_to='userprofile', null=True, blank=True, max_length=500)
 	is_staff = models.BooleanField(default=False)
-	is_faculty = models.BooleanField(default=False)
 	role = models.CharField(max_length=25, blank=True, choices=CLASS_CHOICES)
 
 	objects = UserProfileManager()
