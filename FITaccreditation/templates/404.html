@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block base_body %}
+
+	<body>
+        <style>
+            [id*="outter-col"] {
+                padding: 2rem;
+                background-color: #ffffff;
+                border-radius: 25px;
+                color: #000;
+                text-align: center;
+                font-weight: bold;
+            }
+        </style>
+
+        <div class = "container-md px-0">
+            <!-- Definitions. -->
+            <div class = "row">
+                <div class = "col-sm" id="outter-col">
+                    <br><br>
+                    <h3 class="text-dark" style="font-size: 10em;"> 404 </h3>
+                    <h3 class="text" style="font-size: 3em; color:#808080;"> Page not found </h3>
+                    <br><br>
+                    <h3 class="text" style="font-size: 1em;"> We could not find the page you were looking for. </h3>
+                    <h3 class="text" style="font-size: 1em;"> Please use the navigation bar or back button and try again. </h3>
+                    <h3 class="text" style="font-size: 1em;"> Thank you! </h3>
+                    <br><br>
+                </div>
+            </div>
+        </div>
+    </body>
+{% endblock base_body %}

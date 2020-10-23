@@ -106,3 +106,5 @@ def account_settings(request):
 		user.save()
 	return render(request, "account_settings.html")
 
+def notfound_handler(request):
+	return render(request, "404.html")

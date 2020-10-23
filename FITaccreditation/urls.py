@@ -4,6 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.conf.urls import include, url
 from FITaccreditation import views
+import django
 
 urlpatterns = [
 	url(r'^admin/', admin.site.urls),
@@ -15,6 +16,7 @@ urlpatterns = [
     url(r'^register/$', views.register_form, name='register'),
     url(r'^submission/$', views.submission, name='submission'),
     url(r'^account_settings/$', views.account_settings, name='account_settings'),
+    url(r'^404/$', views.notfound_handler, name='404'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
