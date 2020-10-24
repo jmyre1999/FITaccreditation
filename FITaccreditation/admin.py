@@ -27,3 +27,17 @@ class OutcomeAdmin(ForeignKeyAutocompleteAdmin):
 
 	search_fields = ('key', 'program', 'description')
 admin.site.register(Outcome, OutcomeAdmin)
+
+class SatisfiedOutcomeAdmin(ForeignKeyAutocompleteAdmin):
+	list_display = ('course', 'outcome', 'date_created', 'archived')
+
+	search_fields = ('outcome__key', 'outcome__program', 'course__title')
+
+	def archive_satisfied_outcomes(self, request, queryset):
+		for satisfied_outcome in queryset:
+			satisfied_outcome.archived = True
+			satisfied_outcome.save()
+	archive_satisfied_outcomes.short_description = 'Bulk archive satisfied outcomes'
+
+	actions = [archive_satisfied_outcomes,]
+admin.site.register(SatisfiedOutcome, SatisfiedOutcomeAdmin)

@@ -57,11 +57,18 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
 	def get_full_name(self):
 		return self.first_name + ' ' + self.last_name
 
-	def get_unsatisfied_assignments(self):
-		return Assignment.objects.filter(assignee__pk=self.pk, complete=False)
-
-	def get_late_assignments(self):
-		return Assignment.objects.filter(assignee__pk=self.pk, complete=False, due_date__gte=datetime.now)
+	def get_unsatisfied_outcomes(self):
+		user_courses = self.course_set.all()
+		outcomes_list = []
+		for course in user_courses:
+			for outcome in course.outcomes.all():
+				if not SatisfiedOutcome.objects.filter(course=course, outcome=outcome, archived=False).exists():
+					outcomes_list.append({
+										'course': course.title, 
+										'outcome': str(outcome), 
+										'description': outcome.description,
+										})
+		return outcomes_list
 
 PROGRAM_CHOICES = (
 	('CS', 'Computer Science'),
@@ -78,6 +85,7 @@ class Outcome(models.Model):
 
 class Course(models.Model):
 	title = models.CharField(max_length=50)
+	instructors = models.ManyToManyField('UserProfile', blank=True)
 	program = models.CharField(max_length=2, choices=PROGRAM_CHOICES)
 	code = models.CharField(max_length=4)
 	outcomes = models.ManyToManyField('Outcome', blank=True)
@@ -85,20 +93,27 @@ class Course(models.Model):
 	def __str__(self):
 		return self.title
 
-class Assignment(models.Model):
-	title = models.CharField(max_length=50)
-	advisor = models.ForeignKey('UserProfile', related_name='assignment_advisor', on_delete=models.CASCADE)
-	assignee = models.ForeignKey('UserProfile', related_name='assignment_assignee', on_delete=models.CASCADE)
+	def get_unsatisfied_outcomes(self):
+		outcomes_list = []
+		for outcome in self.outcomes.all():
+			if not SatisfiedOutcome.objects.filter(course=self, outcome=outcome, archived=False).exists():
+				outcomes_list.append({
+									'outcome': str(outcome), 
+									'description': outcome.description,
+									})
+		return outcomes_list
+
+
+class SatisfiedOutcome(models.Model):
 	course = models.ForeignKey('Course', on_delete=models.CASCADE)
 	outcome = models.ForeignKey('Outcome', on_delete=models.CASCADE)
-	description = models.CharField(max_length=500)
+	# Artifacts
 	date_created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
-	due_date = models.DateTimeField()
-	complete = models.BooleanField(default=False)
-	date_completed = models.DateTimeField(blank=True)
+	last_updated = models.DateTimeField(auto_now=True, blank=True, null=True)
+	archived = models.BooleanField(default=False)
 
 	def __str__(self):
-		return self.title
+		return self.course.title + ' ' + str(self.outcome)
 
 class Contact(models.Model):
 	name = models.CharField(max_length = 200)
