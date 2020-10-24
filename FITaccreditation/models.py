@@ -107,7 +107,7 @@ class Course(models.Model):
 class SatisfiedOutcome(models.Model):
 	course = models.ForeignKey('Course', on_delete=models.CASCADE)
 	outcome = models.ForeignKey('Outcome', on_delete=models.CASCADE)
-	# Artifacts
+	artifacts = models.ManyToManyField('Artifact', blank=True)
 	date_created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 	last_updated = models.DateTimeField(auto_now=True, blank=True, null=True)
 	archived = models.BooleanField(default=False)
@@ -122,18 +122,13 @@ class Contact(models.Model):
 
 	def __str__(self):
 		return self.name
+
 class Artifact(models.Model):
-	title = models.CharField(max_length=50)
-	program = models.CharField(max_length=2, choices=PROGRAM_CHOICES)
-	course = models.OneToOneField('Course', on_delete=models.CASCADE,blank =True,null = True)
-    advisor = models.ForeignKey('UserProfile', related_name='assignment_advisor', on_delete=models.CASCADE)
-	assignee = models.ForeignKey('UserProfile', related_name='assignment_assignee', on_delete=models.CASCADE)
+	upload_file = models.FileField(upload_to='artifacts', max_length=500)
+	course = models.ForeignKey('Course', on_delete=models.CASCADE)
 	outcome = models.ForeignKey('Outcome', on_delete=models.CASCADE)
-    description = models.CharField(max_length=500)
 	date_created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
-	due_date = models.DateTimeField()
-	complete = models.BooleanField(default=False)
-	date_completed = models.DateTimeField(blank=True)
-	
-    def __str__(self):
-		return self.title
+	uploader = models.ForeignKey('UserProfile', on_delete=models.CASCADE)
+
+	def __str__(self):
+		return str(self.upload_file)
