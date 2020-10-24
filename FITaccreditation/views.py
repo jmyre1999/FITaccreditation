@@ -9,28 +9,15 @@ from FITaccreditation.utils import *
 from FITaccreditation.models import *
 from .models import Contact
 
-def hello(request):
-	print('Hello, World!')
-	return render(request, "hello.html", {
-		'test_string': 'Hello, World!', # 'front_end_name': back_end_name,
-
-		})
-
 def home(request):
-	print("This is is the home view")
 	test_string = "This is a test"
-	print("utils test:")
-	print("3 + 5 = ", sum(3,5))
-	print("request test:")
-	print(request)
 	if request.method == "POST":
-		contact = Contact()
 		name = request.POST.get('name')
 		email = request.POST.get('email')
 		subject = request.POST.get('subject')
-		contact.name = name
-		contact.email = email
-		contact.subject = subject
+		contact = Contact.objects.create(name=name, email=email, subject=subject)
+		if request.user.is_authenticated:
+			contact.user = request.user
 		contact.save()
 		return HttpResponseRedirect('/')
 	return render(request, "home.html", {
@@ -116,3 +103,5 @@ def account_settings(request):
 		user.save()
 	return render(request, "account_settings.html")
 
+def notfound_handler(request):
+	return render(request, "404.html")

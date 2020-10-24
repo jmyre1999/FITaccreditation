@@ -2,8 +2,240 @@
 {% load staticfiles %}
 {% block base_body %} <!-- Will replace base_body block in base.html -->
 <body>
+    <body style="background-color:#880000;"></body>
 
+    <!-- Styling -->
+    <!-- Will be part of style.css after testing. -->
+    <style>
+        [id*="outter-col"] {
+            padding: 2rem;
+            background-color: #ffffff;
+            border: 5px solid #880000;
+            border-top: 10px solid #880000;
+            border-bottom: 10px solid #880000;
+            border-radius: 25px;
+            color: #000;
+            text-align: center;
+            font-weight: bold;
+        }
+        [id*="inner-col"] {
+            padding-top: 1rem;
+            text-align: left;
+            font-weight: normal;
+        }
+    </style>
 
+    <div class = "container-md px-0">
+        <!-- Definitions. -->
+        <div class = "row">
+            <div class = "col-sm" id="outter-col">
+                <h3 class="text-dark pt-3"> Definitions </h3>
+                <div class="border-top border-primary w-100 mx-auto my-3"></div>
+                <div class = "col-sm" id="inner-col">
+                    <b>Program Educational Objectives:</b><br>
+                    Program educational objectives are broad statements that describe what graduates are expected
+                    to attain within a few years after graduation. Program educational objectives are based on the needs of the program’s 
+                    constituencies.
+                    <br><br>
+
+                    <b>Student Outcomes:</b><br>
+                    Student outcomes describe what students are expected to know and be able to do by the time of graduation. 
+                    These relate to the knowledge, skills, and behaviors that students acquire as they progress through the program.
+                    <br><br>
+
+                    <b>Assessment:</b><br>
+                    Assessment is one or more processes that identify, collect, and prepare data to evaluate the attainment of student
+                    outcomes. Effective assessment uses relevant direct, indirect, quantitative and qualitative measures as appropriate to the 
+                    outcome being measured. Appropriate sampling methods may be used as part of an assessment process.
+                    <br><br>
+
+                    <b>Evaluation:</b><br>
+                    Evaluation is one or more processes for interpreting the data and evidence accumulated through assessment 
+                    processes. Evaluation determines the extent to which student outcomes are being attained. Evaluation results in decisions and 
+                    actions regarding program improvement.
+                    <br><br>
+
+                    <b>College-Level Mathematics:</b><br>
+                    College-level mathematics consists of mathematics that requires a degree of mathematical 
+                    sophistication at least equivalent to that of introductory calculus. For illustrative purposes, some examples of college-level
+                    mathematics include calculus, differential equations, probability, statistics, linear algebra, and discrete mathematics.
+                    <br><br>
+
+                    <b>Complex Engineering Problems:</b><br>
+                    Complex engineering problems include one or more of the following characteristics: involving 
+                    wide-ranging or conflicting technical issues, having no obvious solution, addressing problems not encompassed by current 
+                    standards and codes, involving diverse groups of stakeholders, including many component parts or sub-problems, involving 
+                    multiple disciplines, or having significant consequences in a range of contexts.
+                    <br><br>
+
+                    <b>Engineering Design:</b><br>
+                    Engineering design is a process of devising a system, component, or process to meet desired needs and 
+                    specifications within constraints. It is an iterative, creative, decision-making process in which the basic sciences, 
+                    mathematics, and engineering sciences are applied to convert resources into solutions. Engineering design involves identifying
+                    opportunities, developing requirements, performing analysis and synthesis, generating multiple solutions, evaluating solutions
+                    against requirements, considering risks, and making trade- offs, for the purpose of obtaining a high-quality solution under 
+                    the given circumstances. For illustrative purposes only, examples of possible constraints include accessibility, aesthetics,
+                    codes, constructability, cost, ergonomics, extensibility, functionality, interoperability, legal considerations, 
+                    maintainability, manufacturability, marketability, policy, regulations, schedule, standards, sustainability, or usability.
+                    <br><br>
+
+                    <b>Engineering Science:</b><br>
+                    Engineering sciences are based on mathematics and basic sciences but carry knowledge further toward 
+                    creative application needed to solve engineering problems. These studies provide a bridge between mathematics and basic 
+                    sciences on the one hand and engineering practice on the other.
+                    <br><br>
+
+                    <b>Team:</b><br>
+                    A team consists of more than one person working toward a common goal and should include individuals of diverse 
+                    backgrounds, skills, or perspectives.
+                    <br><br>
+                </div>
+            </div>
+        </div>
+
+        <div class = "row gy-3">
+            <!-- Column for general criteria.-->
+            <div class = "col-sm" id="outter-col">
+                <h3 class="text-dark pt-3"> General Criteria </h3>
+                <div class="border-top border-primary w-100 mx-auto my-3"></div>
+                <div class = "col-sm" id="inner-col">
+                    <b>Criterion 1. Students</b><br>
+                    Student performance must be evaluated. Student progress must be monitored to foster success in attaining student outcomes, 
+                    thereby enabling graduates to attain program educational objectives. Students must be advised regarding curriculum and career
+                    matters.
+                    <br><br>
+                    The program must have and enforce policies for accepting both new and transfer students, awarding appropriate academic 
+                    credit for courses taken at other institutions, and awarding appropriate academic credit for work in lieu of courses taken 
+                    at the institution. The program must have and enforce procedures to ensure and document that students who graduate meet all
+                    graduation requirements.
+                    <br><br>
+
+                    <b>Criterion 2. Program Educational Objectives</b><br>
+                    The program must have published program educational objectives that are consistent with the mission of the institution, 
+                    the needs of the program’s various constituencies, and these criteria. There must be a documented, systematically utilized,
+                    and effective process, involving program constituencies, for the periodic review of these program educational objectives
+                    that ensures they remain consistent with the institutional mission, the program’s constituents’ needs, and these criteria.
+                    <br><br>
+
+                    <b>Criterion 3. Student Outcomes</b><br>
+                    The program must have documented student outcomes that support the program educational objectives. Attainment of these 
+                    outcomes prepares graduates to enter the professional practice of engineering. Student outcomes are outcomes (1) through 
+                    (7), plus any additional outcomes that may be articulated by the program.
+                    <br><br>
+
+                    <ol>
+                    <li>An ability to identify, formulate, and solve complex engineering problems by applying principles of engineering, 
+                    science, and mathematics.
+                    </li><br>
+                    <li>An ability to apply engineering design to produce solutions that meet specified needs with consideration of public 
+                    health, safety, and welfare, as well as global, cultural, social, environmental, and economic factors.
+                    </li><br>
+                    <li>An ability to communicate effectively with a range of audiences.
+                    </li><br>
+                    <li>An ability to recognize ethical and professional responsibilities in engineering situations and make informed judgments,
+                    which must consider the impact of engineering solutions in global, economic, environmental, and societal contexts.
+                    </li><br>
+                    <li>An ability to function effectively on a team whose members together provide leadership, create a collaborative and 
+                    inclusive environment, establish goals, plan tasks, and meet objectives.
+                    </li><br>
+                    <li>An ability to develop and conduct appropriate experimentation, analyze and interpret data, and use engineering 
+                    judgment to draw conclusions.
+                    </li><br>
+                    <li>An ability to acquire and apply new knowledge as needed, using appropriate learning strategies.
+                    </li><br>
+                    </ol>
+
+                    <b>Criterion 4. Continuous Improvement</b><br>
+                    The program must regularly use appropriate, documented processes for assessing and evaluating the extent to which the 
+                    student outcomes are being attained. The results of these evaluations must be systematically utilized as input for the 
+                    program’s continuous improvement actions.. Other available information may also be used to assist in the continuous 
+                    improvement of the program.
+                    <br><br>
+
+                    <b>Criterion 5. Curriculum</b><br>
+                    The curriculum requirements specify subject areas appropriate to engineering but do not prescribe specific courses. 
+                    The program curriculum must provide adequate content for each area, consistent with the student outcomes and program 
+                    educational objectives, to ensure that students are prepared to enter the practice of engineering. The curriculum must 
+                    include:
+                    <br><br>
+
+                    <ol type="a">
+                        (a) A minimum of 30 semester credit hours (or equivalent) of a combination of college-level mathematics and basic 
+                        sciences with experimental experience appropriate to the program.
+                        <br><br>
+                        (b) A minimum of 45 semester credit hours (or equivalent) of engineering topics appropriate to the program, consisting 
+                        of engineering and computer sciences and engineering design, and utilizing modern engineering tools.
+                        <br><br>
+                        (c) A broad education component that complements the technical content of the curriculum and is consistent with the 
+                        program educational objectives.
+                        <br><br>
+                        (d) A culminating major engineering design experience that 1) incorporates appropriate engineering standards and 
+                        multiple constraints, and 2) is based on the knowledge and skills acquired in earlier course work.
+                        <br><br>
+                    </ol>
+                    
+                    <b>Criterion 6. Faculty</b><br>
+                    The program must demonstrate that the faculty members are of sufficient number and they have the competencies to cover all of 
+                    the curricular areas of the program. There must be sufficient faculty to accommodate adequate levels of student-faculty 
+                    interaction, student advising and counseling, university service activities, professional development, and interactions with
+                    industrial and professional practitioners, as well as employers of students.
+                    <br><br>
+                    The program faculty must have appropriate qualifications and must have and demonstrate sufficient authority to ensure the 
+                    proper guidance of the program and to develop and implement processes for the evaluation, assessment, and continuing 
+                    improvement of the program. The overall competence of the faculty may be judged by such factors as education, diversity of 
+                    backgrounds, engineering experience, teaching effectiveness and experience, ability to communicate, enthusiasm for developing
+                    more effective programs, level of scholarship, participation in professional societies, and licensure as Professional 
+                    Engineers.
+                    <br><br>
+
+                    <b>Criterion 7. Facilities</b><br>
+                    Classrooms, offices, laboratories, and associated equipment must be adequate to support attainment of the student outcomes 
+                    and to provide an atmosphere conducive to learning. Modern tools, equipment, computing resources, and laboratories 
+                    appropriate to the program must be available, accessible, and systematically maintained and upgraded to enable students
+                    to attain the student outcomes and to support program needs. Students must be provided appropriate guidance regarding the
+                    use of the tools, equipment, computing resources, and laboratories available to the program.
+                    <br><br>
+                    The library services and the computing and information infrastructure must be adequate to support the scholarly and 
+                    professional activities of the students and faculty.
+                    <br><br>
+
+                    <b>Criterion 8. Institutional Support</b><br>
+                    Institutional support and leadership must be adequate to ensure the quality and continuity of the program.
+                    <br><br>
+                    Resources including institutional services, financial support, and staff (both administrative and technical) provided to the 
+                    program must be adequate to meet program needs. The resources available to the program must be sufficient to attract, retain,
+                    and provide for the continued professional development of a qualified faculty. The resources available to the program must 
+                    be sufficient to acquire, maintain, and operate infrastructures, facilities, and equipment appropriate for the program, and
+                    to provide an environment in which student outcomes can be attained.
+                    <br><br>
+                </div>
+            </div>
+        </div>
+
+        <!-- Program Criteria. -->
+        <div class = "row">
+            <div class = "col-sm" id="outter-col">
+                <h3 class="text-dark pt-3"> Program Criteria for Software Engineering </h3>
+                <div class="border-top border-primary w-100 mx-auto my-3"></div>
+                <div class = "col-sm" id="inner-col">
+                    <b>Criterion 1. Curriculum</b><br>
+                    The curriculum must provide both breadth and depth across the range of engineering and computer science topics implied by 
+                    the title and objectives of the program.
+                    <br><br>
+                    The curriculum must include computing fundamentals, software design and construction, requirements analysis, security, 
+                    verification, and validation; software engineering processes and tools appropriate for the development of complex software 
+                    systems; and discrete mathematics, probability, and statistics, with applications appropriate to software engineering.
+                    <br><br>
+
+                    <b>Criterion 2. Faculty</b><br>
+                    The program must demonstrate that faculty members teaching core software engineering topics have an understanding of 
+                    professional practice in software engineering and maintain currency in their areas of professional or scholarly 
+                    specialization.
+                    <br><br>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 

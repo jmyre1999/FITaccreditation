@@ -15,7 +15,7 @@ urlpatterns = [
     url(r'^register/$', views.register_form, name='register'),
     url(r'^submission/$', views.submission, name='submission'),
     url(r'^account_settings/$', views.account_settings, name='account_settings'),
-    url(r'^hello/$', views.hello, name='hello'),
+    url(r'^404/$', views.notfound_handler, name='404'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
