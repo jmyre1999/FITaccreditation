@@ -136,7 +136,7 @@ def get_outcomes_for_submission(request):
 
 def account_settings(request):
 	if not request.user.is_authenticated:
-		return HttpResponseRedirect('/')
+		return HttpResponseRedirect('/login/')
 	if request.POST:
 		first_name = request.POST.get('first_name', '')
 		last_name = request.POST.get('last_name', '')
@@ -157,4 +157,24 @@ def notfound_handler(request):
 	return render(request, "404.html")
 
 def dashboard(request):
-	return render(request, "dashboard.html")
+	if not request.user.is_authenticated:
+		return HttpResponseRedirect('/login/')
+	user = request.user
+	user_name = user.get_full_name()
+	if user_name == ' ':
+		user_name = user.email
+	total_unsatisfied = user.get_unsatisfied_outcomes()
+	total_outcomes = user.get_all_outcomes()
+	total_percent = int( (1 - (len(total_unsatisfied)/len(total_outcomes))) * 100)
+	courses = user.course_set.all()
+	course_list = []
+	for course in courses:
+		course_unsatisfied = course.get_unsatisfied_outcomes()
+		course_percent = int( (1 - len(course_unsatisfied)/course.outcomes.count()) * 100)
+		course_list.append({'title': course.title, 'pk': course.pk,'unsatisfied_outcomes': course_unsatisfied, 'percent_complete': course_percent})
+	return render(request, "dashboard.html", {
+		'user_name': user_name,
+		'total_unsatisfied': total_unsatisfied,
+		'total_percent': total_percent,
+		'course_list': course_list,
+		})

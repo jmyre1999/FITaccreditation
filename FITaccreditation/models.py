@@ -70,6 +70,18 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
 										})
 		return outcomes_list
 
+	def get_all_outcomes(self):
+		user_courses = self.course_set.all()
+		outcomes_list = []
+		for course in user_courses:
+			for outcome in course.outcomes.all():
+				outcomes_list.append({
+									'course': course.title, 
+									'outcome': str(outcome), 
+									'description': outcome.description,
+									})
+		return outcomes_list
+
 PROGRAM_CHOICES = (
 	('CS', 'Computer Science'),
 	('SE', 'Software Engineering'),
