@@ -61,6 +61,7 @@ This is where global styling will be called
 		                	<li class="nav-item"><a href="/login/" class="nav-link">Login</a></li>
 		                	<li class="nav-item"><a href="/register/" class="nav-link">Register</a></li>
 		                {% else %}
+		                	<li class="nav-item"><a href="/dashboard/" class="nav-link">Progress</a></li>
 		                	<li class="nav-item"><a href="/logout/" class="nav-link">Logout</a></li>
 		                	<!-- Make account setttings a list item on mobile -->
 		                	{% if "Mobile" in request.META.HTTP_USER_AGENT %}

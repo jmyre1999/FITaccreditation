@@ -8,8 +8,8 @@
         <!-- Will be part of style.css after testing. -->
         <style>
             [id*="outter-col"] {
-                padding-top: 10rem;
-                padding-bottom: 10rem;
+                padding-top: 6rem;
+                padding-bottom: 6rem;
                 color: white;
                 text-align: center;
                 font-weight: bold;
@@ -33,21 +33,22 @@
         <div class = "container-md px-0">
             <div class = "row">
                 <div class = "col-sm" id="outter-col">
-                    <h3 class="text pt-3"> Progress Dashboard </h3>
-                    <h3 class="text pt-3"> {{user_name}} </h3>
+                    <h3 class="text pt-2"> Progress Dashboard </h3>
+                    <h3 class="text pt-2"> {{user_name}} </h3>
                     <div class = "col-sm" id="inner-col">
                         Total progress:
                         <br><br>
-                        <!-- Total progress bar. -->
-                        <div class="progress">
-                            <!-- Width determines visual percentage. -->
-                            <!-- Aria values are for accessibility. (Screen readers.) -->
-                            <!-- Aria-valuenow will have the same value as width.-->
-                            <div class="progress-bar" role="progressbar" aria-valuenow="{{ total_percent }}"
-                            aria-valuemin="0" aria-valuemax="100" style="width:{{ total_percent }}%">
-                                {{ total_percent }}%
+                        <div class="col text-center">
+                            <!-- Total progress bar. -->
+                            <div class="progress">
+                                <!-- Width determines visual percentage. -->
+                                <!-- Aria values are for accessibility. (Screen readers.) -->
+                                <!-- Aria-valuenow will have the same value as width.-->
+                                <div class="progress-bar" role="progressbar" aria-valuenow="{{ total_percent }}"
+                                aria-valuemin="0" aria-valuemax="100" style="width:{{ total_percent }}%"></div> 
                             </div>
-                        </div> 
+                            {{ total_percent }}%
+                        </div>
                     </div>
                 </div>
             </div>
@@ -74,10 +75,9 @@
                                     <!-- Course one progress bar. -->
                                     <div class="progress">
                                         <div class="progress-bar" role="progressbar" aria-valuenow="{{ course.percent_complete }}"
-                                        aria-valuemin="0" aria-valuemax="100" style="width:{{ course.percent_complete }}%">
-                                            {{ course.percent_complete }}%
-                                        </div>
+                                        aria-valuemin="0" aria-valuemax="100" style="width:{{ course.percent_complete }}%"></div>
                                     </div> 
+                                    {{ course.percent_complete }}%
                                 </div>
                                 <span class="goto">
                                     <!-- Go to upload page. -->
