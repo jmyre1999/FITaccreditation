@@ -10,7 +10,6 @@ from FITaccreditation.models import *
 from .models import Contact
 
 def home(request):
-	test_string = "This is a test"
 	if request.method == "POST":
 		name = request.POST.get('name')
 		email = request.POST.get('email')
@@ -20,10 +19,7 @@ def home(request):
 			contact.user = request.user
 		contact.save()
 		return HttpResponseRedirect('/')
-	return render(request, "home.html", {
-		'test_string': test_string, # 'front_end_name': back_end_name,
-
-		})
+	return render(request, "home.html")
 
 def eac_criteria(request):
 	return render(request, "eac-criteria.html")
