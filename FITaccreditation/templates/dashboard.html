@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block base_body %}
+	<body>
+        <body style="background-color:#880000;">
+        <!-- Styling -->
+        <!-- Will be part of style.css after testing. -->
+        <style>
+            [id*="outter-col"] {
+                padding-top: 10rem;
+                padding-bottom: 10rem;
+                color: white;
+                text-align: center;
+                font-weight: bold;
+            }
+            [id*="inner-col"] {
+                padding-top: 5rem;
+                text-align: center;
+                font-weight: normal;
+            }
+            [id*="courses"] {
+                text-align: center;
+            }
+            [id*="course_progress"] {
+                width: 75%;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        </style>
+
+        <!-- Welcome area. -->
+        <div class = "container-md px-0">
+            <div class = "row">
+                <div class = "col-sm" id="outter-col">
+                    <h3 class="text pt-3"> Welcome! </h3>
+                    <div class = "col-sm" id="inner-col">
+                        Total progress:
+                        <br><br>
+                        <!-- Total progress bar. -->
+                        <div class="progress">
+                            <!-- Width determines visual percentage. -->
+                            <!-- Aria values are for accessibility. (Screen readers.) -->
+                            <!-- Aria-valuenow will have the same value as width.-->
+                            <div class="progress-bar" role="progressbar" aria-valuenow="50"
+                            aria-valuemin="0" aria-valuemax="100" style="width:50%">
+                                50%
+                            </div>
+                        </div> 
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Accordion for collapsable courses. -->
+        <div class="accordion" id="courses">
+            <!-- Course one. -->
+            <div class="card">
+                <div class="card-header" id="course_one">
+                    <h3>
+                        Course 1
+                        <button class="btn btn-link" type="button" data-toggle="collapse" 
+                        data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                            <i class="fas fa-angle-down"></i>
+                        </button>
+                    </h3>
+                </div>
+                <div id="collapseOne" class="collapse" aria-labelledby="course_one" data-parent="#courses">
+                    <div class="card-body" id="course_progress">
+                        <div class="d-flex align-items-center">
+                            <div class="col text-center">
+                                <!-- Course one progress bar. -->
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar" aria-valuenow="70"
+                                    aria-valuemin="0" aria-valuemax="100" style="width:70%">
+                                        70%
+                                    </div>
+                                </div> 
+                            </div>
+                            <span class="goto">
+                                <!-- Go to upload page. -->
+                                <a href="/submission/" target="_blank">
+                                    <i class="fas fa-arrow-circle-up fa-2x" style="color:#880000;"></i>
+                                </a>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Course two. -->
+            <div class="card">
+                <div class="card-header" id="course_two">
+                    <h3>
+                        Course 2
+                        <button class="btn btn-link" type="button" data-toggle="collapse"
+                         data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            <i class="fas fa-angle-down"></i>
+                        </button>
+                    </h3>
+                </div>
+                <div id="collapseTwo" class="collapse" aria-labelledby="course_two" data-parent="#courses">
+                    <div class="card-body" id="course_progress">
+                        <div class="d-flex align-items-center">
+                            <div class="col text-center">
+                                <!-- Course two progress bar. -->
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar" aria-valuenow="50"
+                                    aria-valuemin="0" aria-valuemax="100" style="width:50%">
+                                        50%
+                                    </div>
+                                </div> 
+                            </div>
+                            <span class="goto">
+                                <!-- Go to upload page. -->
+                                <a href="/submission/" target="_blank">
+                                    <i class="fas fa-arrow-circle-up fa-2x" style="color:#880000;"></i>
+                                </a>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Course three. -->
+            <div class="card">
+                <div class="card-header" id="course_three">
+                    <h3>
+                        Course 3
+                        <button class="btn btn-link" type="button" data-toggle="collapse"
+                         data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                            <i class="fas fa-angle-down"></i>
+                        </button>
+                    </h3>
+                </div>
+                <div id="collapseThree" class="collapse" aria-labelledby="course_three" data-parent="#courses">
+                    <div class="card-body" id="course_progress">
+                        <div class="d-flex align-items-center">
+                            <div class="col text-center">
+                                <!-- Course three progress bar. -->
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar" aria-valuenow="30"
+                                    aria-valuemin="0" aria-valuemax="100" style="width:30%">
+                                        30%
+                                    </div>
+                                </div> 
+                            </div>
+                            <span class="goto">
+                                <!-- Go to upload page. -->
+                                <a href="/submission/" target="_blank">
+                                    <i class="fas fa-arrow-circle-up fa-2x" style="color:#880000;"></i>
+                                </a>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+{% endblock base_body %}

@@ -105,3 +105,6 @@ def account_settings(request):
 
 def notfound_handler(request):
 	return render(request, "404.html")
+
+def dashboard(request):
+	return render(request, "dashboard.html")

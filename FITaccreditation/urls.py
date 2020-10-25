@@ -16,6 +16,7 @@ urlpatterns = [
     url(r'^submission/$', views.submission, name='submission'),
     url(r'^account_settings/$', views.account_settings, name='account_settings'),
     url(r'^404/$', views.notfound_handler, name='404'),
+    url(r'^dashboard/$', views.dashboard, name='dashboard'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
