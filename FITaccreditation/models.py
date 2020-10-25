@@ -135,6 +135,7 @@ class Artifact(models.Model):
 	def __str__(self):
 		return str(self.upload_file)
 
+
 	def delete(self, *args, **kwargs):
 		satisfied_outcomes = self.satisfiedoutcome_set.all()
 		for satisfied_outcome in satisfied_outcomes:
