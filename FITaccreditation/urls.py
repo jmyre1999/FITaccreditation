@@ -14,6 +14,7 @@ urlpatterns = [
     url(r'^logout/$', views.logout_user, name='logout'),
     url(r'^register/$', views.register_form, name='register'),
     url(r'^submission/$', views.submission, name='submission'),
+    url(r'^submission/get_outcomes_ajax/$', views.get_outcomes_for_submission, name='submission_outcomes_ajax'),
     url(r'^account_settings/$', views.account_settings, name='account_settings'),
     url(r'^404/$', views.notfound_handler, name='404'),
 ]

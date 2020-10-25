@@ -17,7 +17,7 @@ class UserProfileAdmin(ForeignKeyAutocompleteAdmin):
 admin.site.register(UserProfile, UserProfileAdmin)
 
 class CourseAdmin(ForeignKeyAutocompleteAdmin):
-    list_display = ('title', 'code', 'program')
+    list_display = ('title', 'program', 'code')
 
     search_fields = ('title', 'code', 'program')
 admin.site.register(Course, CourseAdmin)
@@ -45,5 +45,13 @@ admin.site.register(SatisfiedOutcome, SatisfiedOutcomeAdmin)
 class ArtifactAdmin(ForeignKeyAutocompleteAdmin):
 	list_display = ('course', 'outcome', 'uploader', 'upload_file')
 
-	search_fields = ('outcome__key', 'outcome__program', 'course__title', 'uploader__first_name', 'uploader__last_name', 'uploader__email', 'upload_file__name')
+	search_fields = ('outcome__key', 'outcome__program', 'course__title', 'uploader__first_name', 'uploader__last_name', 'uploader__email', 'upload_file__name', 'comment')
+
+	# Override original delete selected so satisfied outcomes are handled
+	def delete_selected(self, request, queryset):
+		for artifact in queryset:
+			artifact.delete()
+	delete_selected.short_description = "Delete selected artifacts"
+
+	actions = [delete_selected,]
 admin.site.register(Artifact, ArtifactAdmin)

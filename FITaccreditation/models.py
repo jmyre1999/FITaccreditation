@@ -128,8 +128,17 @@ class Artifact(models.Model):
 	upload_file = models.FileField(upload_to='artifacts', max_length=500)
 	course = models.ForeignKey('Course', on_delete=models.CASCADE)
 	outcome = models.ForeignKey('Outcome', on_delete=models.CASCADE)
+	comment = models.TextField(default='')
 	date_created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 	uploader = models.ForeignKey('UserProfile', on_delete=models.CASCADE)
 
 	def __str__(self):
 		return str(self.upload_file)
+
+	def delete(self, *args, **kwargs):
+		satisfied_outcomes = self.satisfiedoutcome_set.all()
+		for satisfied_outcome in satisfied_outcomes:
+			satisfied_outcome.artifacts.remove(self)
+			if not satisfied_outcome.artifacts.all().exists():
+				satisfied_outcome.delete()
+		super(Artifact, self).delete(*args, **kwargs)

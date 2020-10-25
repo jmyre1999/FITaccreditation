@@ -7,7 +7,7 @@ from django.http import HttpResponseRedirect
 import os
 from FITaccreditation.utils import *
 from FITaccreditation.models import *
-from .models import Contact
+from django_ajax.decorators import ajax
 
 def home(request):
 	if request.method == "POST":
@@ -78,7 +78,61 @@ def register_form(request):
 		})
 
 def submission(request):
-	return render(request, "submission.html")
+	if not request.user.is_authenticated:
+		return HttpResponseRedirect('/login/')
+	error = False
+	error_message = ''
+	courses = request.user.course_set.all()
+	linked_course_pk = int(request.GET.get('linked_course', -1))
+	if request.POST:
+		course_pk = request.POST.get('course', '')
+		if course_pk != '':
+			course = Course.objects.get(pk=int(course_pk))
+			outcome_pk = request.POST.get('outcome', '')
+			if outcome_pk != '':
+				outcome = Outcome.objects.get(pk=int(outcome_pk))
+				comment = request.POST.get('comment', '')
+				if request.FILES:
+					upload_file = request.FILES.get('upload')
+					artifact = Artifact.objects.create(upload_file=upload_file, course=course, outcome=outcome, comment=comment, uploader=request.user)
+					artifact.save()
+					if SatisfiedOutcome.objects.filter(course=course, outcome=outcome, archived=False).exists():
+						satisfied_outcome = SatisfiedOutcome.objects.filter(course=course, outcome=outcome, archived=False).last()
+					else:
+						satisfied_outcome = SatisfiedOutcome.objects.create(course=course, outcome=outcome, archived=False)
+					satisfied_outcome.artifacts.add(artifact)
+					satisfied_outcome.save()
+				else:
+					print(request.FILES)
+					print('-------------')
+					print(request.POST)
+					error = True
+					error_message = 'No file uploaded'
+			else:
+				error = True
+				error_message = 'No outcome selected'
+		else:
+			error = True
+			error_message = 'No course selected'
+		
+	return render(request, "submission.html", {
+		'courses': courses,
+		'linked_course_pk': linked_course_pk,
+		'error': error,
+		'error_message': error_message,
+		})
+
+@ajax
+def get_outcomes_for_submission(request):
+	selected_course_pk = request.POST.get('selected_course_pk')
+	if selected_course_pk != '':
+		selected_course = Course.objects.get(pk=int(selected_course_pk))
+		outcomes = selected_course.outcomes.all()
+		outcomes_list = []
+		for outcome in outcomes:
+			outcomes_list.append({'pk': str(outcome.pk), 'name': str(outcome)})
+		return outcomes_list
+	return None
 
 def account_settings(request):
 	if not request.user.is_authenticated:

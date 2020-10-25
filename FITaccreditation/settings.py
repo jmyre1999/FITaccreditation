@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'FITaccreditation.apps.FITaccreditationConfig',
     'django_extensions',
     'debug_toolbar',
+    'django_ajax',
 ]
 
 MIDDLEWARE = [
