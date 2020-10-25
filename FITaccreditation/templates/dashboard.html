@@ -44,8 +44,8 @@
                                 <!-- Width determines visual percentage. -->
                                 <!-- Aria values are for accessibility. (Screen readers.) -->
                                 <!-- Aria-valuenow will have the same value as width.-->
-                                <div class="progress-bar" role="progressbar" aria-valuenow="{{ total_percent }}"
-                                aria-valuemin="0" aria-valuemax="100" style="width:{{ total_percent }}%"></div> 
+                                <div class="progress-bar" id="total_progress" role="progressbar" aria-valuenow="{{ total_percent }}"
+                                aria-valuemin="0" aria-valuemax="100" style="width:0%"></div> 
                             </div>
                             {{ total_percent }}%
                         </div>
@@ -62,9 +62,9 @@
                     <div class="card-header" id="course_{{ course.pk }}">
                         <h3>
                             {{ course.title }}
-                            <button class="btn btn-link collapse-button" type="button" data-toggle="collapse" 
+                            <button class="btn btn-link" id="collapse_btn_{{ course.pk }}" type="button" data-toggle="collapse" 
                             data-target="#collapse{{ course.pk }}" aria-expanded="false" aria-controls="collapse{{ course.pk }}">
-                                <i class="fas fa-angle-down"></i>
+                                <i class="fas fa-angle-right"></i>
                             </button>
                         </h3>
                     </div>
@@ -94,15 +94,23 @@
     </body>
 
     <script>
-        $('.collapse-button').on('aria-expanded', function() {
-            console.log('test')
-            $(this).empty();
-            if($(this).attr('aria-expanded') == 'false') {
-                $(this).append('<i class="fas fa-angle-down"></i>');
-            }
-            else {
-                $(this).append('<i class="fas fa-angle-right"></i>');
-            }
+        // Total progress bar animation
+        for(var i=0;i<={{ total_percent }};i++){
+            $('#total_progress').css('width', i.toString() + '%');
+        }
+
+        $('.collapse').on('show.bs.collapse', function() {
+            var pk = $(this).attr('id').replace('collapse', '');
+            var btn_id = '#collapse_btn_' + pk;
+            $(btn_id).empty(); 
+            $(btn_id).append('<i class="fas fa-angle-down"></i>');
+        });
+
+        $('.collapse').on('hide.bs.collapse', function() {
+            var pk = $(this).attr('id').replace('collapse', '');
+            var btn_id = '#collapse_btn_' + pk;
+            $(btn_id).empty();
+            $(btn_id).append('<i class="fas fa-angle-right"></i>');
         });
     </script>
 {% endblock base_body %}
