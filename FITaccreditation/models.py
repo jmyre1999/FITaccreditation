@@ -85,6 +85,7 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
 PROGRAM_CHOICES = (
 	('CS', 'Computer Science'),
 	('SE', 'Software Engineering'),
+	('CE', 'Computer Science and Software Engineering')
 )
 
 class Outcome(models.Model):
