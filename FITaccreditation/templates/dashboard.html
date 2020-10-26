@@ -39,15 +39,19 @@
                         Total progress:
                         <br><br>
                         <div class="col text-center">
-                            <!-- Total progress bar. -->
-                            <div class="progress">
-                                <!-- Width determines visual percentage. -->
-                                <!-- Aria values are for accessibility. (Screen readers.) -->
-                                <!-- Aria-valuenow will have the same value as width.-->
-                                <div class="progress-bar" id="total_progress" role="progressbar" aria-valuenow="{{ total_percent }}"
-                                aria-valuemin="0" aria-valuemax="100" style="width:0%"></div> 
-                            </div>
-                            {{ total_percent }}%
+                            {% if course_list|length == 0 %}
+                                <h6>You are not assigned to any courses</h6>
+                            {% else %}
+                                <!-- Total progress bar. -->
+                                <div class="progress">
+                                    <!-- Width determines visual percentage. -->
+                                    <!-- Aria values are for accessibility. (Screen readers.) -->
+                                    <!-- Aria-valuenow will have the same value as width.-->
+                                    <div class="progress-bar" id="total_progress" role="progressbar" aria-valuenow="{{ total_percent }}"
+                                    aria-valuemin="0" aria-valuemax="100" style="width:0%"></div> 
+                                </div>
+                                {{ total_percent }}%
+                            {% endif %}
                         </div>
                     </div>
                 </div>
