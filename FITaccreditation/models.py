@@ -89,7 +89,7 @@ PROGRAM_CHOICES = (
 
 class Outcome(models.Model):
 	key = models.CharField(max_length=1)
-	description = models.CharField(max_length=200)
+	description = models.CharField(max_length=300)
 	program = models.CharField(max_length=2, choices=PROGRAM_CHOICES)
 
 	def __str__(self):
