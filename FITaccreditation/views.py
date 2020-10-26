@@ -165,12 +165,18 @@ def dashboard(request):
 		user_name = user.email
 	total_unsatisfied = user.get_unsatisfied_outcomes()
 	total_outcomes = user.get_all_outcomes()
-	total_percent = int( (1 - (len(total_unsatisfied)/len(total_outcomes))) * 100)
+	if len(total_outcomes) != 0:
+		total_percent = int( (1 - (len(total_unsatisfied)/len(total_outcomes))) * 100)
+	else:
+		total_percent = 100
 	courses = user.course_set.all()
 	course_list = []
 	for course in courses:
 		course_unsatisfied = course.get_unsatisfied_outcomes()
-		course_percent = int( (1 - len(course_unsatisfied)/course.outcomes.count()) * 100)
+		if course.outcomes.count() != 0:
+			course_percent = int( (1 - len(course_unsatisfied)/course.outcomes.count()) * 100)
+		else: 
+			course_percent = 100
 		course_list.append({'title': course.title, 'pk': course.pk,'unsatisfied_outcomes': course_unsatisfied, 'percent_complete': course_percent})
 	return render(request, "dashboard.html", {
 		'user_name': user_name,
