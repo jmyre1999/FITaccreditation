@@ -80,6 +80,8 @@ def register_form(request):
 def submission(request):
 	if not request.user.is_authenticated:
 		return HttpResponseRedirect('/login/')
+	if request.user.role in ['','RE']:
+		return HttpResponseRedirect('/')
 	error = False
 	error_message = ''
 	courses = request.user.course_set.all()
@@ -103,9 +105,6 @@ def submission(request):
 					satisfied_outcome.artifacts.add(artifact)
 					satisfied_outcome.save()
 				else:
-					print(request.FILES)
-					print('-------------')
-					print(request.POST)
 					error = True
 					error_message = 'No file uploaded'
 			else:
@@ -159,6 +158,8 @@ def notfound_handler(request):
 def dashboard(request):
 	if not request.user.is_authenticated:
 		return HttpResponseRedirect('/login/')
+	if request.user.role in ['','RE']:
+		return HttpResponseRedirect('/')
 	user = request.user
 	user_name = user.get_full_name()
 	if user_name == ' ':
