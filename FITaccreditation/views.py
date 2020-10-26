@@ -105,9 +105,6 @@ def submission(request):
 					satisfied_outcome.artifacts.add(artifact)
 					satisfied_outcome.save()
 				else:
-					print(request.FILES)
-					print('-------------')
-					print(request.POST)
 					error = True
 					error_message = 'No file uploaded'
 			else:
