@@ -7,25 +7,19 @@ from django.http import HttpResponseRedirect
 import os
 from FITaccreditation.utils import *
 from FITaccreditation.models import *
-
-def hello(request):
-	print('Hello, World!')
-	return render(request, "hello.html", {
-		'test_string': 'Hello, World!', # 'front_end_name': back_end_name,
-
-		})
+from django_ajax.decorators import ajax
 
 def home(request):
-	print("This is is the home view")
-	test_string = "This is a test"
-	print("utils test:")
-	print("3 + 5 = ", sum(3,5))
-	print("request test:")
-	print(request)
-	return render(request, "home.html", {
-		'test_string': test_string, # 'front_end_name': back_end_name,
-
-		})
+	if request.method == "POST":
+		name = request.POST.get('name')
+		email = request.POST.get('email')
+		subject = request.POST.get('subject')
+		contact = Contact.objects.create(name=name, email=email, subject=subject)
+		if request.user.is_authenticated:
+			contact.user = request.user
+		contact.save()
+		return HttpResponseRedirect('/')
+	return render(request, "home.html")
 
 def eac_criteria(request):
 	return render(request, "eac-criteria.html")
@@ -64,9 +58,16 @@ def register_form(request):
 	if request.POST:
 		email = request.POST.get('email', '').lower()
 		password = request.POST.get('password', '')
+		confirm_password = request.POST.get('confirm_password', '')
 		if UserProfile.objects.filter(email__iexact=email):
 			error = True
 			error_message = "A user with that email address already exists"
+		elif password != confirm_password:
+			error = True
+			error_message = "Password does not match"
+		elif not check_password_validity(password):
+			error = True
+			error_message = "Invalid password: Must be 8 or more characters, including one capital letter and a number"
 		else:
 			user = get_user_model().objects.create_user(email, password)
 			user.save()
@@ -77,11 +78,65 @@ def register_form(request):
 		})
 
 def submission(request):
-	return render(request, "submission.html")
+	if not request.user.is_authenticated:
+		return HttpResponseRedirect('/login/')
+	error = False
+	error_message = ''
+	courses = request.user.course_set.all()
+	linked_course_pk = int(request.GET.get('linked_course', -1))
+	if request.POST:
+		course_pk = request.POST.get('course', '')
+		if course_pk != '':
+			course = Course.objects.get(pk=int(course_pk))
+			outcome_pk = request.POST.get('outcome', '')
+			if outcome_pk != '':
+				outcome = Outcome.objects.get(pk=int(outcome_pk))
+				comment = request.POST.get('comment', '')
+				if request.FILES:
+					upload_file = request.FILES.get('upload')
+					artifact = Artifact.objects.create(upload_file=upload_file, course=course, outcome=outcome, comment=comment, uploader=request.user)
+					artifact.save()
+					if SatisfiedOutcome.objects.filter(course=course, outcome=outcome, archived=False).exists():
+						satisfied_outcome = SatisfiedOutcome.objects.filter(course=course, outcome=outcome, archived=False).last()
+					else:
+						satisfied_outcome = SatisfiedOutcome.objects.create(course=course, outcome=outcome, archived=False)
+					satisfied_outcome.artifacts.add(artifact)
+					satisfied_outcome.save()
+				else:
+					print(request.FILES)
+					print('-------------')
+					print(request.POST)
+					error = True
+					error_message = 'No file uploaded'
+			else:
+				error = True
+				error_message = 'No outcome selected'
+		else:
+			error = True
+			error_message = 'No course selected'
+		
+	return render(request, "submission.html", {
+		'courses': courses,
+		'linked_course_pk': linked_course_pk,
+		'error': error,
+		'error_message': error_message,
+		})
+
+@ajax
+def get_outcomes_for_submission(request):
+	selected_course_pk = request.POST.get('selected_course_pk')
+	if selected_course_pk != '':
+		selected_course = Course.objects.get(pk=int(selected_course_pk))
+		outcomes = selected_course.outcomes.all()
+		outcomes_list = []
+		for outcome in outcomes:
+			outcomes_list.append({'pk': str(outcome.pk), 'name': str(outcome)})
+		return outcomes_list
+	return None
 
 def account_settings(request):
 	if not request.user.is_authenticated:
-		return HttpResponseRedirect('/')
+		return HttpResponseRedirect('/login/')
 	if request.POST:
 		first_name = request.POST.get('first_name', '')
 		last_name = request.POST.get('last_name', '')
@@ -91,5 +146,35 @@ def account_settings(request):
 		if last_name != '':
 			user.last_name = last_name.capitalize()
 		user.save()
+	if request.FILES:
+		image = request.FILES.get('image')
+		user.image = image
+		user = request.user
+		user.save()
 	return render(request, "account_settings.html")
 
+def notfound_handler(request):
+	return render(request, "404.html")
+
+def dashboard(request):
+	if not request.user.is_authenticated:
+		return HttpResponseRedirect('/login/')
+	user = request.user
+	user_name = user.get_full_name()
+	if user_name == ' ':
+		user_name = user.email
+	total_unsatisfied = user.get_unsatisfied_outcomes()
+	total_outcomes = user.get_all_outcomes()
+	total_percent = int( (1 - (len(total_unsatisfied)/len(total_outcomes))) * 100)
+	courses = user.course_set.all()
+	course_list = []
+	for course in courses:
+		course_unsatisfied = course.get_unsatisfied_outcomes()
+		course_percent = int( (1 - len(course_unsatisfied)/course.outcomes.count()) * 100)
+		course_list.append({'title': course.title, 'pk': course.pk,'unsatisfied_outcomes': course_unsatisfied, 'percent_complete': course_percent})
+	return render(request, "dashboard.html", {
+		'user_name': user_name,
+		'total_unsatisfied': total_unsatisfied,
+		'total_percent': total_percent,
+		'course_list': course_list,
+		})

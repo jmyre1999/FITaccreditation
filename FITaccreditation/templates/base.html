@@ -25,11 +25,23 @@ This is where global styling will be called
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 {% endblock css %}
 
-
+{% block scripts %}
+	<!-- Popper source (test) -->
+	<script src="{% static 'js/popper.min.js' %}"></script>
+	<!-- jQuery source required for bootstrap -->
+	<script src="{% static 'js/jquery-3.5.1.min.js' %}"></script>
+	<!-- Bootstrap source -->
+	<script src="{% static 'js/bootstrap.min.js' %}"></script>
+	<!-- Font Awesome -->
+	<script src="{% static 'js/all.min.js' %}"></script>
+	<!-- jQuery Ajax -->
+	<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script> -->
+	<script type="text/javascript" src="{% static 'django_ajax/js/jquery.ajax.min.js' %}"></script>
+{% endblock scripts %}
 
 {% block header %}
 	<!-- Navigation Bar -->
-	<header style="position: fixed; z-index: 10000; width: 100%;">
+	<header style="position: fixed; z-index: 1001; width: 100%;">
 		<nav class="navbar navbar-expand-md navbar-dark bg-white">
 		    <div class="container">
 		        <!-- Logo leading back to home page -->
@@ -49,24 +61,26 @@ This is where global styling will be called
 		                	<li class="nav-item"><a href="/login/" class="nav-link">Login</a></li>
 		                	<li class="nav-item"><a href="/register/" class="nav-link">Register</a></li>
 		                {% else %}
+		                	<li class="nav-item"><a href="/dashboard/" class="nav-link">Progress</a></li>
 		                	<li class="nav-item"><a href="/logout/" class="nav-link">Logout</a></li>
-		                	<li class="nav-item">
-		                		{% if "Mobile" not in request.META.HTTP_USER_AGENT %}
-			                		<div class="avatar avatar-xl pl-1 pt-1">
-			                			<a class="nav-link" href="/account_settings/">
-						                    {% if request.user.image %}
-						                        <img src="{{ request.user.image.url }}" class="rounded-circle" />
-						                    {% else %}
-						                        <i class="fa fa-user"></i>
-						                    {% endif %}
-						                </a>
-					                </div>
-					            {% else %}
-					            	<a class="nav-link" href="/account_settings/">Account Settings</a>
-					            {% endif %}
-				            </li>
+		                	<!-- Make account setttings a list item on mobile -->
+		                	{% if "Mobile" in request.META.HTTP_USER_AGENT %}
+		                		<a class="nav-link" href="/account_settings/">Account Settings</a>
+		                	{% endif %}
 		                {% endif %}
 		            </ul>
+		            <!-- Access account settings through user pfp on desktop -->
+            		{% if "Mobile" not in request.META.HTTP_USER_AGENT and request.user.is_authenticated %}
+                		<div class="avatar avatar-xl pl-1">
+                			<a class="nav-link" href="/account_settings/">
+			                    {% if request.user.image %}
+			                        <img src="{{ request.user.image.url }}" class="rounded-circle" style="height:35px; border:1px solid"/>
+			                    {% else %}
+			                        <i class="fa fa-user"></i>
+			                    {% endif %}
+			                </a>
+		                </div>
+		            {% endif %}
 		        </div>
 		        <!-- {% if request.user.is_authenticated %}
 			        <div class="avatar avatar-xl">
@@ -112,7 +126,10 @@ This is where global styling will be called
 					<a href="https://www.fit.edu/" target="_blank">
 						<img src="{% static 'img/logo-white.png' %}"></div>					
 					</a>
-					<p>Footer text goes here. Footer text goes here. Footer text goes here. Footer text goes here. Footer text goes here. Footer text goes here.</p>
+					<p>Website created to assist the Florida Institute of Technology with their ABET accreditation reporting. 
+					   This project is currently being developed by Jason Myre, Joseph Ackerman, Jonathon Uss, and Justyn Diaz 
+					   as their Computer Science senior undergraduate project.
+					</p>
 					<!-- Social media icons -->
 					<ul class="social pt-3">
 						<li><a href="https://www.facebook.com/FloridaInstituteofTechnology" target="_blank"><i class="fab fa-facebook"></i></a></li>
@@ -132,10 +149,11 @@ This is where global styling will be called
 		<p>&copy; Florida Institute of Technology</a></p>
     </div>
 	<!-- Modal form -->
-	<div class="modal fade" id="contact" role="dialog">
+	<div class="modal fade" id="contact" role="dialog" style="z-index: 10001;"> 
 		<div class="modal-dialog">
-			<form class="form-horizontal">
+			<form class="form-horizontal" method="POST">
 				<div class="modal-content">
+					{% csrf_token %}
 					<div class="modal-header">
 						<h4>Contact the team</h4>
 					</div>
@@ -144,45 +162,31 @@ This is where global styling will be called
 						<div class="form-group">
 							<label for="contact-name" class="col-lg-2 control-label">Name:</label>
 							<div class="col-lg-10">
-								<input type="text" class="form-control" id="contact-name" placeholder="Full Name">
+								<input type="text" name = "name" class="form-control" id="contact-name" placeholder="Full Name">
 							</div>
 						</div>
 						<!-- Email section of form -->
 						<div class="form-group">
 							<label for="contact-email" class="col-lg-2 control-label">Email:</label>
 							<div class="col-lg-10">
-								<input type="email" class="form-control" id="contact-email" placeholder="you@example.com">
+								<input type="email" name = "email" class="form-control" id="contact-email" placeholder="you@example.com">
 							</div>
 						</div>
 						<!-- Text section of form -->
 						<div class="form-group">
 							<label for="contact-message" class="col-lg-2 control-label">Message:</label>
 							<div class="col-lg-10">
-								<textarea class="form-control" rows="8"></textarea>
+								<textarea class="form-control" name = "subject" rows="8"></textarea>
 							</div>
 						</div>
+						<div class="modal-footer">
+							<a class="btn btn-secondary" data-dismiss="modal">Close</a>
+							<button class="btn btn-primary" type="submit">Send</button>
+						</div>
 					</div>
-					<div class="modal-footer">
-						<a class="btn btn-secondary" data-dismiss="modal">Close</a>
-						<button class="btn btn-primary" type="submit">Send</button>
-					</div>
-				</form>
-			</div>
+				</div>
+			</form>
 		</div>
 	</div>
 {% endblock footer %}
-
-
-
-{% block scripts %}
-	<!-- Popper source (test) -->
-	<script src="{% static 'js/popper.min.js' %}"></script>
-	<!-- jQuery source required for bootstrap -->
-	<script src="{% static 'js/jquery-3.5.1.min.js' %}"></script>
-	<!-- Bootstrap source -->
-	<script src="{% static 'js/bootstrap.min.js' %}"></script>
-	<!-- Font Awesome -->
-	<script src="{% static 'js/all.min.js' %}"></script>
-{% endblock scripts %}
-
 </html>

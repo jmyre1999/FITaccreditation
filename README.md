@@ -8,7 +8,7 @@ Website created using Django Web Framework to assist Florida Institute of Techno
 
 ## Contributor Instructions
 
-###### INITIAL SET UP
+###### INITIAL SET UP Test
 
 1. Install Python 3.8
 

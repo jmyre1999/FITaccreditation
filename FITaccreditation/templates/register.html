@@ -16,6 +16,7 @@
                         {% if error %}
                             <!-- Make it look nice lmao -->
                             <!-- Hope this looks nice lmao -->
+                            <!-- Looks nice lmao -->
                             <div class="alert alert-danger">
                                 <strong>{{ error_message }}!</strong>
                             </div>
@@ -33,10 +34,16 @@
                                 <span><i class="fa fa-envelope"></i></span>
                                 <input name="email" type="email" placeholder="you@example.com" required>
                             </div>
+                            <label for="password" class="control-label text-white">Please include a capital letter and a number</label>
                             <!-- Password box -->
                             <div class="form-input">
                                 <span><i class="fa fa-lock"></i></span>
-                                <input name="password" type="password" placeholder="Password" required> 
+                                <input name="password" id="password" type="password" placeholder="Password" minlength="8" required> 
+                            </div>
+                            <!-- Confirm password -->
+                            <div class="form-input">
+                                <span><i class="fa fa-lock"></i></span>
+                                <input name="confirm_password" id="confirm_password" type="password" placeholder="Confirm Password" minlength="8" required> 
                             </div>
                             <div class="row mb-3">
                             </div>
@@ -53,6 +60,7 @@
                         <div class="heading mb-4">
                             <h4>Welcome {% if request.user.first_name != '' %}{{ request.user.first_name }}{% else %}{{ request.user }}{% endif %}</h4>
                             <h4 class="fs-1">You're all set!</h4>
+                            <meta http-equiv="refresh" content="3;/">
                         </div>
                     {% endif %}
                 </div>

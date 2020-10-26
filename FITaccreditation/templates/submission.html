@@ -15,40 +15,68 @@
                     <div class="heading mb-4">
                         <h4>Submission Server</h4>
                     </div>
-                    <!-- Class dropdown -->
-                    <select name="Course" class="custom-select-lg my-4">
-                        <option selected>Select Course</option>
-                        <option value="Class 1">Class 1</option>
-                        <option value="Class 2">Class 2</option>
-                        <option value="Class 3">Class 3</option>
-                    </select>
-                    <!-- Outcome dropdown -->
-                    <select name="Course" class="custom-select-lg my-4">
-                        <option selected>Select Outcome</option>
-                        <option value="Outcome 1">Outcome 1</option>
-                        <option value="Outcome 2">Outcome 2</option>
-                        <option value="Outcome 3">Outcome 3</option>
-                    </select>
-                    <!-- Upload File -->
-                    <div class="form-group">
-                        <span class="btn btn-default btn-file my-4 text-white">
-                            <input id="input-2" name="input2[]" type="file" class="file" multiple data-show-upload="true" data-show-caption="true">
-                        </span>
-                    </div>
-                    <!-- Comment area -->
-                    <div class="form-group">
-                        <label for="comment" class="control-label text-white">Comment:</label>
-                        <textarea class="form-control" id="comment"></textarea>
-                    </div> 
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {% if error %}
+                            <div class="alert alert-danger">
+                                <strong>{{ error_message }}!</strong>
+                            </div>
+                        {% endif %}
+                        <!-- Class dropdown -->
+                        <select name="course" id="course_select" class="custom-select-lg my-4">
+                            <option value="" {% if linked_course_pk == -1 %}selected{% endif %}>Select Course</option>
+                            {% for course in courses %}
+                                <option value="{{ course.pk }}" {% if linked_course_pk == course.pk %}selected{% endif %}>{{ course.title }}</option>
+                            {% endfor %}
+                        </select>
+                        <!-- Outcome dropdown -->
+                        <select name="outcome" id="outcome_select" class="custom-select-lg my-4">
+                            <option value="" selected>Select Outcome</option>
+                            <!-- Options loaded with ajax -->
+                        </select>
+                        <!-- Upload File -->
+                        <div class="form-group">
+                            <span class="btn btn-default btn-file my-4 text-white">
+                                <input id="upload_file" name="upload" type="file" class="file" multiple data-show-upload="true" data-show-caption="true">
+                            </span>
+                        </div>
+                        <!-- Comment area -->
+                        <div class="form-group">
+                            <label for="comment" class="control-label text-white">Comment:</label>
+                            <textarea class="form-control" name="comment" id="comment"></textarea>
+                        </div> 
 
-          
-
-                    <div class="text-center mb-3">
+                        <div class="text-center mb-3">
                             <button type="submit" class="btn btn-primary btn-lg my-4">Submit</button>
-                    </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 </body>
+
+<script type="text/javascript">
+    $('#course_select').change(function(){
+        if($('#course_select').val() != '') {
+            ajaxPost('/submission/get_outcomes_ajax/', {
+                'selected_course_pk': $('#course_select').val(),
+            }, function(response){
+                if(response != null) {
+                    var outcome_name;
+                    var outcome_id;
+                    $('#outcome_select').empty();
+                    $('#outcome_select').append('<option value="" selected>Select Outcome</option>');
+                    for(var i=0;i<response.length;i++){
+                        outcome_name = response[i]['name'];
+                        outcome_id = response[i]['pk'];
+                        $('#outcome_select').append('<option value="' + outcome_id + '">' + outcome_name + '</option>');
+                    }
+                }
+            });
+        }
+    });
+
+    $('#course_select').change();
+</script>
 {% endblock base_body %}
