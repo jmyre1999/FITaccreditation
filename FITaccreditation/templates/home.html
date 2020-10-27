@@ -59,24 +59,26 @@
 
 
 
-	<!-- Fixed background + Login -->
-	<div class="fixed-background">
-		<div class="row text-light py-5">
-			<div class="col-12 text-center">
-				<h1>Submission server</h1>
-				<h3> </h3>
-				{% if not request.user.is_authenticated %}
-					<a href="/login" class="btn btn-primary btn-lg my-4">LOGIN</a>
-				{% else %}
-					<a href="/submission" class="btn btn-primary btn-lg my-4">ENTER</a>
-				{% endif %}
+	{% if 'Mobile' not in request.META.HTTP_USER_AGENT %}
+		<!-- Fixed background + Login -->
+		<div class="fixed-background">
+			<div class="row text-light py-5">
+				<div class="col-12 text-center">
+					<h1>Submission server</h1>
+					<h3> </h3>
+					{% if not request.user.is_authenticated %}
+						<a href="/login" class="btn btn-primary btn-lg my-4">LOGIN</a>
+					{% else %}
+						<a href="/submission" class="btn btn-primary btn-lg my-4">ENTER</a>
+					{% endif %}
+				</div>
+			</div>
+			<div class="fixed-wrap">
+				<div class ="fixed">
+				</div>
 			</div>
 		</div>
-		<div class="fixed-wrap">
-			<div class ="fixed">
-			</div>
-		</div>
-	</div>
+	{% endif %}
  
 
 

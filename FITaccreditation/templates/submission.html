@@ -30,41 +30,45 @@
                     <div class="heading mb-4">
                         <h4>Submission Server</h4>
                     </div>
-                    <form method="POST" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        {% if error %}
-                            <div class="alert alert-danger">
-                                <strong>{{ error_message }}!</strong>
+                    {% if courses.count > 0 %}
+                        <form method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {% if error %}
+                                <div class="alert alert-danger">
+                                    <strong>{{ error_message }}!</strong>
+                                </div>
+                            {% endif %}
+                            <!-- Class dropdown -->
+                            <select name="course" id="course_select" class="custom-select-lg my-4">
+                                <option value="" {% if linked_course_pk == -1 %}selected{% endif %}>Select Course</option>
+                                {% for course in courses %}
+                                    <option value="{{ course.pk }}" {% if linked_course_pk == course.pk %}selected{% endif %}>{{ course.title }}</option>
+                                {% endfor %}
+                            </select>
+                            <!-- Outcome dropdown -->
+                            <select name="outcome" id="outcome_select" class="custom-select-lg my-4">
+                                <option value="" selected>Select Outcome</option>
+                                <!-- Options loaded with ajax -->
+                            </select>
+                            <!-- Upload File -->
+                            <div class="form-group">
+                                <span class="btn btn-default btn-file my-4 text-white">
+                                    <input id="upload_file" name="upload" type="file" class="file" multiple data-show-upload="true" data-show-caption="true">
+                                </span>
                             </div>
-                        {% endif %}
-                        <!-- Class dropdown -->
-                        <select name="course" id="course_select" class="custom-select-lg my-4">
-                            <option value="" {% if linked_course_pk == -1 %}selected{% endif %}>Select Course</option>
-                            {% for course in courses %}
-                                <option value="{{ course.pk }}" {% if linked_course_pk == course.pk %}selected{% endif %}>{{ course.title }}</option>
-                            {% endfor %}
-                        </select>
-                        <!-- Outcome dropdown -->
-                        <select name="outcome" id="outcome_select" class="custom-select-lg my-4">
-                            <option value="" selected>Select Outcome</option>
-                            <!-- Options loaded with ajax -->
-                        </select>
-                        <!-- Upload File -->
-                        <div class="form-group">
-                            <span class="btn btn-default btn-file my-4 text-white">
-                                <input id="upload_file" name="upload" type="file" class="file" multiple data-show-upload="true" data-show-caption="true">
-                            </span>
-                        </div>
-                        <!-- Comment area -->
-                        <div class="form-group">
-                            <label for="comment" class="control-label text-white">Comment:</label>
-                            <textarea class="form-control" name="comment" id="comment"></textarea>
-                        </div> 
+                            <!-- Comment area -->
+                            <div class="form-group">
+                                <label for="comment" class="control-label text-white">Comment:</label>
+                                <textarea class="form-control" name="comment" id="comment"></textarea>
+                            </div> 
 
-                        <div class="text-center mb-3">
-                            <button type="submit" class="btn btn-primary btn-lg my-4">Submit</button>
-                        </div>
-                    </form>
+                            <div class="text-center mb-3">
+                                <button type="submit" class="btn btn-primary btn-lg my-4">Submit</button>
+                            </div>
+                        </form>
+                    {% else %}
+                        <span class="text-white">You are not assigned to any courses</span>
+                    {% endif %}
                 </div>
             </div>
         </div>
