@@ -8,6 +8,7 @@ import os
 from FITaccreditation.utils import *
 from FITaccreditation.models import *
 from django_ajax.decorators import ajax
+from django.core.mail import send_mail
 
 def home(request):
 	if request.method == "POST":
@@ -71,6 +72,21 @@ def register_form(request):
 		else:
 			user = get_user_model().objects.create_user(email, password)
 			user.save()
+			if not os.environ.get('LOCAL_SERVER', None):
+				send_mail(
+					'New Registered User',
+					'Email: ' + email,
+					os.environ.get('FROM_EMAIL',''),
+					os.environ.get('TO_EMAIL',''),
+					fail_silently=True,
+				)
+				send_mail(
+					'ABET reporting registration',
+					'Thank you for registering for faculty status at cse-assessment-test.fit.edu. We would like to confirm that you are responsible for this registrtion so that an administrator may verify your account.',
+					os.environ.get('FROM_EMAIL',''),
+					email,
+					fail_silently=True,
+				)
 			login_user(request, email, password)
 	return render(request, "register.html", {
 		'error': error,
