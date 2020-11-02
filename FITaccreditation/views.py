@@ -76,14 +76,14 @@ def register_form(request):
 				send_mail(
 					'New Registered User',
 					'Email: ' + email,
-					os.environ.get('FROM_EMAIL',''),
-					[os.environ.get('TO_EMAIL',''),],
+					os.environ.get('EMAIL_HOST_USER', ''),
+					[os.environ.get('EMAIL_HOST_USER', ''),],
 					fail_silently=True,
 				)
 				send_mail(
 					'ABET reporting registration',
 					'Thank you for registering for faculty status at cse-assessment-test.fit.edu. We would like to confirm that you are responsible for this registrtion so that an administrator may verify your account.',
-					os.environ.get('FROM_EMAIL',''),
+					os.environ.get('EMAIL_HOST_USER', ''),
 					[email,],
 					fail_silently=True,
 				)
