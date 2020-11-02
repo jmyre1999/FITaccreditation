@@ -82,7 +82,14 @@ def register_form(request):
 				)
 				send_mail(
 					'ABET reporting registration',
-					'Thank you for registering for faculty status at cse-assessment-test.fit.edu. We would like to confirm that you are responsible for this registrtion so that an administrator may verify your account.',
+					'''
+					Thank you for registering for faculty status at cse-assessment-test.fit.edu. 
+					We would like to confirm that you are responsible for this registrtion so that an administrator may verify your account. 
+					Please reply with your confirmation, or let us know if you did not create this registration.
+
+					FIT CSE Assessment Adminstrators
+					http://cse-assessment-test.fit.edu/
+					''',
 					os.environ.get('EMAIL_HOST_USER', ''),
 					[email,],
 					fail_silently=True,
