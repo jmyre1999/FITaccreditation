@@ -84,7 +84,7 @@ def register_form(request):
 					'ABET reporting registration',
 					'''
 					Thank you for registering for faculty status at cse-assessment-test.fit.edu. 
-					We would like to confirm that you are responsible for this registrtion so that an administrator may verify your account. 
+					We would like to confirm that you are responsible for this registration so that an administrator may verify your account. 
 					Please reply with your confirmation, or let us know if you did not create this registration.
 
 					FIT CSE Assessment Adminstrators
