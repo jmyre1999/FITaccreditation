@@ -130,6 +130,7 @@ footer .svg-inline--fa:hover {
 /*-- Login --*/
 .image-container {
   background: url(../img/panther.png) center no-repeat;
+  background-color: #ffffff;
   height: 100vh;
   width: 50vh;
 }

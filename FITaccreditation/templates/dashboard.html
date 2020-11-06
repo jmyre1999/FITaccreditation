@@ -61,7 +61,7 @@
         <!-- Accordion for collapsable courses. -->
         <div class="accordion" id="courses">
             {% for course in course_list %}
-                <!-- Course one. -->
+                <!-- Course. -->
                 <div class="card">
                     <div class="card-header" id="course_{{ course.pk }}">
                         <h3>
@@ -76,7 +76,7 @@
                         <div class="card-body" id="course_progress">
                             <div class="d-flex align-items-center">
                                 <div class="col text-center">
-                                    <!-- Course one progress bar. -->
+                                    <!-- Course progress bar. -->
                                     <div class="progress">
                                         <div class="progress-bar" role="progressbar" aria-valuenow="{{ course.percent_complete }}"
                                         aria-valuemin="0" aria-valuemax="100" style="width:{{ course.percent_complete }}%"></div>

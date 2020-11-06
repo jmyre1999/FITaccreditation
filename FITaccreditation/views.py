@@ -178,6 +178,9 @@ def account_settings(request):
 def notfound_handler(request):
 	return render(request, "404.html")
 
+def forbidden_handler(request):
+	return render(request, "403.html")
+
 def dashboard(request):
 	if not request.user.is_authenticated:
 		return HttpResponseRedirect('/login/')

@@ -17,6 +17,7 @@ urlpatterns = [
     url(r'^submission/get_outcomes_ajax/$', views.get_outcomes_for_submission, name='submission_outcomes_ajax'),
     url(r'^account_settings/$', views.account_settings, name='account_settings'),
     url(r'^404/$', views.notfound_handler, name='404'),
+    url(r'^403/$', views.forbidden_handler, name='403'),
     url(r'^dashboard/$', views.dashboard, name='dashboard'),
 ]
 

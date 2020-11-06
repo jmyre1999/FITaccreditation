@@ -2,11 +2,10 @@
 {% load staticfiles %}
 {% block base_body %} <!-- Will replace base_body block in base.html -->
 <body>
-
-
+    <body style="background-color:#880000;"></body>
 
     <div class="container-fluid">
-        <div class="row">
+        <div class="row" style="margin-right: -15px!important; margin-left: -15px!important;">
             <!-- Left image -->
             <div class="col-lg-6 cold-md-6 d-none d-md-block image-container"></div>
             <!-- Right form -->
@@ -34,7 +33,7 @@
                                 <span><i class="fa fa-envelope"></i></span>
                                 <input name="email" type="email" placeholder="you@example.com" required>
                             </div>
-                            <label for="password" class="control-label text-white">Please include a capital letter and a number</label>
+                            <label for="password" class="control-label text-white mb-4">Please include a capital letter and a number</label>
                             <!-- Password box -->
                             <div class="form-input">
                                 <span><i class="fa fa-lock"></i></span>
