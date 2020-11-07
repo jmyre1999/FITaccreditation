@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'debug_toolbar',
     'django_ajax',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -139,15 +140,35 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
-STATIC_URL = '/static/'
+if not os.environ.get('LOCAL_SERVER', None):
+    STATICFILES_DIRS = [
+        os.path.join(BASE_DIR, 'FITaccreditation/static'),
+    ]
 
-STATIC_ROOT = '/FITaccreditation/static/'
+    AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+    AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+    AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
 
-django_heroku.settings(locals())
+    AWS_S3_OBJECT_PARAMETERS = {
+        'CacheControl': 'max-age=86400',
+    }
 
-MEDIA_URL = '/userprofile/'
+    AWS_LOCATION = 'static'
+    STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    STATIC_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'FITaccreditation/static')
+    DEFAULT_FILE_STORAGE = 'FITaccreditation.storage_backends.MediaStorage' 
+else:
+    STATIC_URL = '/static/'
+
+    STATIC_ROOT = '/FITaccreditation/static/'
+
+    django_heroku.settings(locals())
+
+    MEDIA_URL = '/userprofile/'
+
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'FITaccreditation/static')
 
 # Email
 EMAIL_HOST = 'smtp.gmail.com'
