@@ -221,7 +221,14 @@ footer .svg-inline--fa:hover {
 
 
 
-
+/*-- Scroll back to top, button. --*/
+.back-to-top {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  display: none;
+  border-color: #ffffff;
+}
 
 
 
