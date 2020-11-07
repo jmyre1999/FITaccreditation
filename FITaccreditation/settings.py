@@ -158,7 +158,7 @@ if not os.environ.get('LOCAL_SERVER', None):
     STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
     STATIC_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
 
-    DEFAULT_FILE_STORAGE = 'FITaccreditation.storage_backends.MediaStorage' 
+    DEFAULT_FILE_STORAGE = 'FITaccreditation.storages.MediaStorage' 
 else:
     STATIC_URL = '/static/'
 
