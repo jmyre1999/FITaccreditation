@@ -63,7 +63,7 @@ This is where global styling will be called
 		                {% else %}
 		                	<li class="nav-item"><a href="/submission/" class="nav-link">Submit</a></li>
 		                	<li class="nav-item"><a href="/dashboard/" class="nav-link">Progress</a></li>
-		                	<li class="nav-item"><a href="/logout/" class="nav-link">Logout</a></li>
+		                	<li class="nav-item"><a href="#" data-toggle="modal" data-target="#logoutModal" class="nav-link">Logout</a></li>
 		                	<!-- Make account setttings a list item on mobile -->
 		                	{% if "Mobile" in request.META.HTTP_USER_AGENT %}
 		                		<a class="nav-link" href="/account_settings/">Account Settings</a>
@@ -118,7 +118,8 @@ This is where global styling will be called
 
 			</div>
 		</div>
-    </div>
+	</div>
+	
 	<!-- Footer -->
 	<footer>
 		<div class="container">
@@ -145,11 +146,13 @@ This is where global styling will be called
 			</div>
 		</div>
 	</footer>
+
 	<!-- Socket -->
 	<div class="socket text-light text-center py-3">
 		<p>&copy; Florida Institute of Technology</a></p>
-    </div>
-	<!-- Modal form -->
+	</div>
+	
+	<!-- Contact Us modal form -->
 	<div class="modal fade" id="contact" role="dialog" style="z-index: 10001;"> 
 		<div class="modal-dialog">
 			<form class="form-horizontal" method="POST">
@@ -181,13 +184,36 @@ This is where global styling will be called
 							</div>
 						</div>
 						<div class="modal-footer">
-							<a class="btn btn-secondary" data-dismiss="modal">Close</a>
 							<button class="btn btn-primary" type="submit">Send</button>
+							<a class="btn btn-secondary" data-dismiss="modal">Close</a>
 						</div>
 					</div>
 				</div>
 			</form>
 		</div>
 	</div>
+
+	<!-- Logout confirmation modal form. -->
+	<div class="modal" id="logoutModal" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog modal-md">
+			<div class="modal-content">
+				<div class="modal-header">
+					Confirm
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true"> x </span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<p> Are you sure you want to logout? <br /></p>
+					<!-- Buttons. -->
+			  		<div class="actionsBtns">
+						<a href="/logout/" class="btn btn-primary">Yes</a>
+						<button class="btn btn-secondary" data-dismiss="modal">No</button>
+			  		</div>
+				</div>
+		  	</div>
+		</div>
+	</div>
+
 {% endblock footer %}
 </html>
