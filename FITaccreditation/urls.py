@@ -3,6 +3,7 @@ from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
 from django.conf.urls import include, url
+from django.contrib.auth import views as auth_views
 from FITaccreditation import views
 
 urlpatterns = [
@@ -19,6 +20,15 @@ urlpatterns = [
     url(r'^404/$', views.notfound_handler, name='404'),
     url(r'^403/$', views.forbidden_handler, name='403'),
     url(r'^dashboard/$', views.dashboard, name='dashboard'),
+
+    path('reset_password/', auth_views.PasswordResetView.as_view(template_name="password_reset.html"),
+        name="reset_password"),
+    path('reset_password_sent/', auth_views.PasswordResetDoneView.as_view(template_name="password_reset_sent.html"),
+        name="password_reset_done"),
+    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name="password_reset_form.html"),
+        name="password_reset_confirm"),
+    path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(template_name="password_reset_done.html"),
+        name="password_reset_complete"),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

@@ -31,6 +31,7 @@ class UserProfileManager(BaseUserManager):
 
 		return self._create_user(email, password, **extra_fields)
 
+
 CLASS_CHOICES = (
     ('FA', 'Faculty'),
     ('AD', 'Advisor'),
@@ -44,6 +45,7 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
 	image = models.ImageField(upload_to='userprofile', null=True, blank=True, max_length=500)
 	is_staff = models.BooleanField(default=False)
 	is_faculty = models.BooleanField(default=False)
+	is_active = models.BooleanField(default=True)
 	role = models.CharField(max_length=25, blank=True, choices=CLASS_CHOICES)
 
 	objects = UserProfileManager()
