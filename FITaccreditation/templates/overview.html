@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block base_body %}
+
+<body>
+    <!--Container for filter + other functions to be added -->
+    <div class="container col-12 d-flex justify-content-center pt-5 pb-3">
+        <!-- Search -->
+        <div class="text-center w-50">
+            <h2>Filter Results</h2>
+            <input class="form-control" id="filter" type="text" placeholder="Search...">
+        </div>
+    </div>
+    <!-- Container for table -->
+    <div class="container col-12 d-flex p-3 pb-5">
+        <!-- Table -->
+        <div class = "table-responsive">
+            <table class="table table-bordered">
+                <!-- Table head -->
+                <thead>
+                    <tr>
+                        <th>File</th>
+                        <th>Outcomes</th>
+                        <th>Class</th>
+                        <th>Uploader</th>
+                        <th>Upload Date</th>
+                        <th>Comment</th>
+                    </tr>
+                </thead>
+                <!-- Table body + 3 data examples (replace with backend) -->
+                <tbody id="submission">
+                    <tr>
+                        <td>File 1</td>
+                        <td>Outcomes 1</td>
+                        <td>Class 1</td>
+                        <td>Uploader 1</td>
+                        <td>Upload Date 1</td>
+                        <td>Comment 1</td>
+                    </tr>
+                    <tr>
+                        <td>File 2</td>
+                        <td>Outcomes 2</td>
+                        <td>Class 2</td>
+                        <td>Uploader 2</td>
+                        <td>Upload Date 2</td>
+                        <td>Comment 2</td>
+                    </tr>
+                    <tr>
+                        <td>File 3</td>
+                        <td>Outcomes 3</td>
+                        <td>Class 3</td>
+                        <td>Uploader 3</td>
+                        <td>Upload Date 3</td>
+                        <td>Comment 3</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Script for filtering -->
+    <script>
+    $(document).ready(function(){
+        $("#filter").on("keyup", function() {
+            var value = $(this).val().toLowerCase();
+            $("#submission tr").filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+    </script>
+    
+</body>
+
+{% endblock base_body %}

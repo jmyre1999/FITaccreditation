@@ -181,6 +181,10 @@ def notfound_handler(request):
 def forbidden_handler(request):
 	return render(request, "403.html")
 
+
+def overview(request):
+	return render(request, "overview.html")
+
 def dashboard(request):
 	if not request.user.is_authenticated:
 		return HttpResponseRedirect('/login/')
