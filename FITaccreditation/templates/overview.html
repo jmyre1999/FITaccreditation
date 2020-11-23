@@ -13,49 +13,39 @@
     </div>
     <!-- Container for table -->
     <div class="container col-12 d-flex p-3 pb-5">
-        <!-- Table -->
-        <div class = "table-responsive">
-            <table class="table table-bordered">
-                <!-- Table head -->
-                <thead>
-                    <tr>
-                        <th>File</th>
-                        <th>Outcomes</th>
-                        <th>Class</th>
-                        <th>Uploader</th>
-                        <th>Upload Date</th>
-                        <th>Comment</th>
-                    </tr>
-                </thead>
-                <!-- Table body + 3 data examples (replace with backend) -->
-                <tbody id="submission">
-                    <tr>
-                        <td>File 1</td>
-                        <td>Outcomes 1</td>
-                        <td>Class 1</td>
-                        <td>Uploader 1</td>
-                        <td>Upload Date 1</td>
-                        <td>Comment 1</td>
-                    </tr>
-                    <tr>
-                        <td>File 2</td>
-                        <td>Outcomes 2</td>
-                        <td>Class 2</td>
-                        <td>Uploader 2</td>
-                        <td>Upload Date 2</td>
-                        <td>Comment 2</td>
-                    </tr>
-                    <tr>
-                        <td>File 3</td>
-                        <td>Outcomes 3</td>
-                        <td>Class 3</td>
-                        <td>Uploader 3</td>
-                        <td>Upload Date 3</td>
-                        <td>Comment 3</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        <form id="download_form" method="POST">
+            {% csrf_token %}
+            <input type="hidden" value="" name="artifact_id"/>
+            <!-- Table -->
+            <div class = "table-responsive">
+                <table class="table table-bordered">
+                    <!-- Table head -->
+                    <thead>
+                        <tr>
+                            <th>File</th>
+                            <th>Outcomes</th>
+                            <th>Course</th>
+                            <th>Uploader</th>
+                            <th>Upload Date</th>
+                            <th>Comment</th>
+                        </tr>
+                    </thead>
+                    <!-- Table body + 3 data examples (replace with backend) -->
+                    <tbody id="submission">
+                        {% for artifact in artifacts %}
+                            <tr>
+                                <td><a class="upload_file" data-id="{{artifact.id}}">{{artifact.upload_file}}</a></td>
+                                <td>{{artifact.outcome}}</td>
+                                <td>{{artifact.course}}</td>
+                                <td>{{artifact.uploader}}</td>
+                                <td>{{artifact.upload_date}}</td>
+                                <td>{{artifact.comment}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </form>
     </div>
 
     <!-- Script for filtering -->
@@ -66,6 +56,12 @@
             $("#submission tr").filter(function() {
                 $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
             });
+        });
+
+        $(".upload_file").click(function() {
+            var id = $(this).data("id")
+            $("input[name='artifact_id']").val(id)
+            $("#download_form").submit()
         });
     });
     </script>
