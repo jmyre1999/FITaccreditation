@@ -5,11 +5,13 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.http import HttpResponseRedirect, HttpResponse
 from wsgiref.util import FileWrapper
+from io import StringIO
 import os
 from FITaccreditation.utils import *
 from FITaccreditation.models import *
 from django_ajax.decorators import ajax
 from django.core.mail import send_mail
+from django.conf import settings
 
 def home(request):
 	if request.method == "POST":
@@ -184,16 +186,18 @@ def forbidden_handler(request):
 
 
 def overview(request):
-	# if request.method == "POST":
-	# 	artifact_id = request.POST.get("artifact_id", "")
-	# 	print(artifact_id)
-	# 	if artifact_id != "":
-	# 		download_artifact = Artifact.objects.get(pk=int(artifact_id))
-	# 		download_file = download_artifact.upload_file
-	# 		response = HttpResponse(FileWrapper(download_file.file), content_type='application/zip')
-	# 		response['Content-Disposition'] = 'attachment; filename=artifact.zip'
-	# 		return response
-				
+	if request.method == "POST":
+		artifact_id = request.POST.get("artifact_id", "")
+		if artifact_id != "":
+			download_artifact = Artifact.objects.get(pk=int(artifact_id))
+			download_file = download_artifact.upload_file
+			file_path = os.path.join(settings.MEDIA_ROOT,download_file.name)
+			if os.path.exists(file_path):
+				with open(file_path, 'rb') as fh:
+					response = HttpResponse(fh.read(),content_type="application/upload_file")
+					response['Content-Disposition'] = 'inline;filename=' + os.path.basename(file_path)
+					return response
+
 	artifact_objects = Artifact.objects.all()
 	artifacts = []
 	for artifact in artifact_objects:
