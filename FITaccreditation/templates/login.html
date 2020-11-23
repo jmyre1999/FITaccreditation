@@ -2,11 +2,10 @@
 {% load staticfiles %}
 {% block base_body %} <!-- Will replace base_body block in base.html -->
 <body>
-
-
+    <body style="background-color:#880000;"></body>
 
     <div class="container-fluid">
-        <div class="row">
+        <div class="row" style="margin-right: -15px!important; margin-left: -15px!important;">
             <!-- Left image -->
             <div class="col-lg-6 cold-md-6 d-none d-md-block image-container"></div>
             <!-- Right form -->
@@ -52,6 +51,9 @@
                             </div>
                             <div style="color: #777"><a href="/register/" class="register-link">Request faculty status</a>
                             </div>
+                            <br>
+                            <div style="color: #777"><a href="/reset_password/" class="register-link">Forgot your password?</a>
+                            </div>
                         </form>
                     {% else %}
                         <div class="logo mb-3">
@@ -67,8 +69,6 @@
             </div>
         </div>
     </div>
-
-
 
 </body>
 </html>
