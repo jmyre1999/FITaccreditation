@@ -3,12 +3,15 @@
 
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout, get_user_model
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
+from wsgiref.util import FileWrapper
+from io import StringIO
 import os
 from FITaccreditation.utils import *
 from FITaccreditation.models import *
 from django_ajax.decorators import ajax
 from django.core.mail import send_mail
+from django.conf import settings
 
 def home(request):
 	if request.method == "POST":
@@ -177,6 +180,45 @@ def account_settings(request):
 
 def notfound_handler(request):
 	return render(request, "404.html")
+
+def forbidden_handler(request):
+	return render(request, "403.html")
+
+
+def overview(request):
+	if not request.user.is_authenticated:
+		return HttpResponseRedirect('/login/')
+	if request.user.role in ['']:
+		return HttpResponseRedirect('/')
+	if request.method == "POST":
+		artifact_id = request.POST.get("artifact_id", "")
+		if artifact_id != "":
+			download_artifact = Artifact.objects.get(pk=int(artifact_id))
+			download_file = download_artifact.upload_file
+			file_path = os.path.join(settings.MEDIA_ROOT,download_file.name)
+			if os.path.exists(file_path):
+				with open(file_path, 'rb') as fh:
+					response = HttpResponse(fh.read(),content_type="application/upload_file")
+					response['Content-Disposition'] = 'inline;filename=' + os.path.basename(file_path)
+					return response
+
+	artifact_objects = Artifact.objects.all()
+	artifacts = []
+	for artifact in artifact_objects:
+		artifact_info = {}
+		artifact_info["id"] = artifact.pk
+		artifact_info["upload_file"] = artifact.upload_file
+		artifact_info["outcome"] = artifact.outcome
+		artifact_info["course"] = artifact.course
+		artifact_info["uploader"] = artifact.uploader.get_full_name()
+		if artifact_info["uploader"] == " ":
+			artifact_info["uploader"] = artifact.uploader.email
+		artifact_info["upload_date"] = artifact.date_created
+		artifact_info["comment"] = artifact.comment
+		artifacts.append(artifact_info)
+	return render(request, "overview.html", {
+		"artifacts":artifacts
+		})
 
 def dashboard(request):
 	if not request.user.is_authenticated:

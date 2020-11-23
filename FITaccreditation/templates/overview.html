@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block base_body %}
+
+<body>
+    <!--Container for filter + other functions to be added -->
+    <div class="container col-12 d-flex justify-content-center pt-5 pb-3">
+        <!-- Search -->
+        <div class="text-center w-50">
+            <h2>Filter Results</h2>
+            <input class="form-control" id="filter" type="text" placeholder="Search...">
+        </div>
+    </div>
+    <!-- Container for table -->
+    <div class="container col-12 d-flex justify-content-center p-3 pb-5">
+        <form id="download_form" method="POST">
+            {% csrf_token %}
+            <input type="hidden" value="" name="artifact_id"/>
+            <!-- Table -->
+            <div class = "table-responsive">
+                <table class="table table-bordered">
+                    <!-- Table head -->
+                    <thead>
+                        <tr>
+                            <th>File</th>
+                            <th>Outcomes</th>
+                            <th>Course</th>
+                            <th>Uploader</th>
+                            <th>Upload Date</th>
+                            <th>Comment</th>
+                        </tr>
+                    </thead>
+                    <!-- Table body + 3 data examples (replace with backend) -->
+                    <tbody id="submission">
+                        {% for artifact in artifacts %}
+                            <tr>
+                                <td><a class="upload_file" data-id="{{artifact.id}}">{{artifact.upload_file}}</a></td>
+                                <td>{{artifact.outcome}}</td>
+                                <td>{{artifact.course}}</td>
+                                <td>{{artifact.uploader}}</td>
+                                <td>{{artifact.upload_date}}</td>
+                                <td>{{artifact.comment}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </form>
+    </div>
+
+    <!-- Script for filtering -->
+    <script>
+    $(document).ready(function(){
+        $("#filter").on("keyup", function() {
+            var value = $(this).val().toLowerCase();
+            $("#submission tr").filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+
+        $(".upload_file").click(function() {
+            var id = $(this).data("id")
+            $("input[name='artifact_id']").val(id)
+            $("#download_form").submit()
+        });
+    });
+    </script>
+    
+</body>
+
+{% endblock base_body %}
