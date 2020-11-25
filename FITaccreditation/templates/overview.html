@@ -31,7 +31,12 @@
                     {% for artifact in artifacts %}
                         <tr>
                             <td><a href="/download_artifact/{{artifact.id}}/" target="_blank">{{artifact.upload_file}}</a></td>
-                            <td>{{artifact.outcome}}</td>
+                            <td>
+                                {{artifact.outcome}}
+                                <span data-toggle="tooltip" data-placement="right" title="{{ artifact.outcome.description }}">
+                                  <i class="fa fa-question-circle ml-2" data-fa-transform="shrink-2"></i>
+                                </span> 
+                            </td>
                             <td>{{artifact.course}}</td>
                             <td>{{artifact.uploader}}</td>
                             <td>{{artifact.upload_date}}</td>
@@ -52,6 +57,10 @@
                 $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
             });
         });
+
+        $(function () {
+          $('[data-toggle="tooltip"]').tooltip()
+        })
     });
     </script>
     
