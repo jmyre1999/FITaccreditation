@@ -219,11 +219,10 @@ def download_artifact(request, artifact_id):
 	download_file = download_artifact.upload_file
 	file_path = os.path.join(settings.MEDIA_ROOT,download_file.name)
 	print(file_path)
-	if os.path.exists(file_path):
-		with open(file_path, 'rb') as fh:
-			response = HttpResponse(fh.read(),content_type="application/upload_file")
-			response['Content-Disposition'] = 'inline;filename=' + os.path.basename(file_path)
-			return response
+	with open(file_path, 'rb') as fh:
+		response = HttpResponse(fh.read(),content_type="application/upload_file")
+		response['Content-Disposition'] = 'inline;filename=' + os.path.basename(file_path)
+		return response
 
 	raise Http404
 
