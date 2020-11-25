@@ -168,7 +168,6 @@ if not os.environ.get('LOCAL_SERVER', None):
     MEDIA_LOCATION = "media"
     MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, MEDIA_LOCATION)
     DEFAULT_FILE_STORAGE = 'FITaccreditation.storages.MediaStorage'
-    MEDIA_ROOT = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, MEDIA_LOCATION)
 else:
     STATIC_URL = '/static/'
 
