@@ -195,6 +195,7 @@ def overview(request):
 		if artifact_id != "":
 			download_artifact = Artifact.objects.get(pk=int(artifact_id))
 			download_file = download_artifact.upload_file
+			print(download_file.path)
 			file_path = os.path.join(settings.MEDIA_ROOT,download_file.name)
 			if os.path.exists(file_path):
 				with open(file_path, 'rb') as fh:
