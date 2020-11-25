@@ -190,17 +190,6 @@ def overview(request):
 		return HttpResponseRedirect('/login/')
 	if request.user.role in ['']:
 		return HttpResponseRedirect('/')
-	if request.method == "POST":
-		artifact_id = request.POST.get("artifact_id", "")
-		if artifact_id != "":
-			download_artifact = Artifact.objects.get(pk=int(artifact_id))
-			download_file = download_artifact.upload_file
-			file_path = os.path.join(settings.MEDIA_ROOT,download_file.name)
-			if os.path.exists(file_path):
-				with open(file_path, 'rb') as fh:
-					response = HttpResponse(fh.read(),content_type="application/upload_file")
-					response['Content-Disposition'] = 'inline;filename=' + os.path.basename(file_path)
-					return response
 
 	artifact_objects = Artifact.objects.all()
 	artifacts = []
@@ -219,6 +208,24 @@ def overview(request):
 	return render(request, "overview.html", {
 		"artifacts":artifacts
 		})
+
+def download_artifact(request, artifact_id):
+	if not request.user.is_authenticated:
+		return HttpResponseRedirect('/login/')
+	if request.user.role in ['']:
+		return HttpResponseRedirect('/')
+
+	download_artifact = Artifact.objects.get(pk=artifact_id)
+	download_file = download_artifact.upload_file
+	file_path = os.path.join(settings.MEDIA_ROOT,download_file.name)
+	print(file_path)
+	if os.path.exists(file_path):
+		with open(file_path, 'rb') as fh:
+			response = HttpResponse(fh.read(),content_type="application/upload_file")
+			response['Content-Disposition'] = 'inline;filename=' + os.path.basename(file_path)
+			return response
+
+	raise Http404
 
 def dashboard(request):
 	if not request.user.is_authenticated:
