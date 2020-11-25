@@ -217,10 +217,6 @@ def download_artifact(request, artifact_id):
 
 	download_artifact = Artifact.objects.get(pk=artifact_id)
 	download_file = download_artifact.upload_file
-	try:
-		print(download_file.path)
-	except Exception as e:
-		print(e)
 	file_path = os.path.join(settings.MEDIA_ROOT,download_file.name)
 	print(file_path)
 	if os.path.exists(file_path):
