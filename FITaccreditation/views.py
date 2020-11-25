@@ -220,7 +220,7 @@ def download_artifact(request, artifact_id):
 	download_file = download_artifact.upload_file
 	file_path = os.path.join(settings.MEDIA_ROOT,download_file.name)
 	print(file_path)
-	with default_storage.open(file_path, 'r') as fh:
+	with default_storage.open(file_path) as fh:
 		response = HttpResponse(fh.read(),content_type="application/upload_file")
 		response['Content-Disposition'] = 'inline;filename=' + os.path.basename(file_path)
 		return response
