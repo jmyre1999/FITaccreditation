@@ -142,7 +142,7 @@ class Contact(models.Model):
 class Artifact(models.Model):
 	upload_file = models.FileField(upload_to='artifacts', max_length=500)
 	course = models.ForeignKey('Course', on_delete=models.CASCADE)
-	outcome = models.ForeignKey('Outcome', on_delete=models.CASCADE)
+	outcome = models.ManyToManyField('Outcome',blank=True)
 	comment = models.TextField(default='')
 	date_created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 	uploader = models.ForeignKey('UserProfile', on_delete=models.CASCADE)

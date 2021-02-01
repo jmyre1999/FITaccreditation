@@ -87,8 +87,8 @@ def register_form(request):
 				send_mail(
 					'ABET reporting registration',
 					'''
-					Thank you for registering for faculty status at cse-assessment-test.fit.edu. 
-					We would like to confirm that you are responsible for this registration so that an administrator may verify your account. 
+					Thank you for registering for faculty status at cse-assessment-test.fit.edu.
+					We would like to confirm that you are responsible for this registration so that an administrator may verify your account.
 					Please reply with your confirmation, or let us know if you did not create this registration.
 
 					FIT CSE Assessment Adminstrators
@@ -123,7 +123,9 @@ def submission(request):
 				comment = request.POST.get('comment', '')
 				if request.FILES:
 					upload_file = request.FILES.get('upload')
-					artifact = Artifact.objects.create(upload_file=upload_file, course=course, outcome=outcome, comment=comment, uploader=request.user)
+					artifact = Artifact.objects.create(upload_file=upload_file, course=course, comment=comment, uploader=request.user)
+					print(dir(artifact))
+					artifact.outcome.add(outcome)
 					artifact.save()
 					if SatisfiedOutcome.objects.filter(course=course, outcome=outcome, archived=False).exists():
 						satisfied_outcome = SatisfiedOutcome.objects.filter(course=course, outcome=outcome, archived=False).last()
@@ -140,7 +142,7 @@ def submission(request):
 		else:
 			error = True
 			error_message = 'No course selected'
-		
+
 	return render(request, "submission.html", {
 		'courses': courses,
 		'linked_course_pk': linked_course_pk,
@@ -248,7 +250,7 @@ def dashboard(request):
 		course_unsatisfied = course.get_unsatisfied_outcomes()
 		if course.outcomes.count() != 0:
 			course_percent = int( (1 - len(course_unsatisfied)/course.outcomes.count()) * 100)
-		else: 
+		else:
 			course_percent = 100
 		course_list.append({'title': course.title, 'pk': course.pk,'unsatisfied_outcomes': course_unsatisfied, 'percent_complete': course_percent})
 	return render(request, "dashboard.html", {
