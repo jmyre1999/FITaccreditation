@@ -21,6 +21,7 @@ urlpatterns = [
     url(r'^403/$', views.forbidden_handler, name='403'),
     url(r'^dashboard/$', views.dashboard, name='dashboard'),
     url(r'^overview/$', views.overview, name='overview'),
+    url(r'^download_artifact/(?P<artifact_id>\d+)/$', views.download_artifact, name='download_artifact'),
 
     path('reset_password/', auth_views.PasswordResetView.as_view(template_name="password_reset.html"),
         name="reset_password"),
@@ -32,4 +33,4 @@ urlpatterns = [
         name="password_reset_complete"),
 ]
 
-urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
+# urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

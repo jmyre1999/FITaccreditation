@@ -144,6 +144,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 if not os.environ.get('LOCAL_SERVER', None):
+    PROJECT_SETTING_PATH = os.path.dirname(os.path.abspath(__file__))
+    PROJECT_ROOT_PATH = os.path.abspath(os.path.join(PROJECT_SETTING_PATH, '..'))
+    
     STATICFILES_DIRS = [
         os.path.join(BASE_DIR, 'FITaccreditation/static'),
     ]
@@ -161,7 +164,10 @@ if not os.environ.get('LOCAL_SERVER', None):
     STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
     STATIC_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
 
-    DEFAULT_FILE_STORAGE = 'FITaccreditation.storage_backends.MediaStorage' 
+
+    MEDIA_LOCATION = "media"
+    MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, MEDIA_LOCATION)
+    DEFAULT_FILE_STORAGE = 'FITaccreditation.storages.MediaStorage'
 else:
     STATIC_URL = '/static/'
 

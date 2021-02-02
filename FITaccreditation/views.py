@@ -3,9 +3,10 @@
 
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout, get_user_model
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, Http404
 from wsgiref.util import FileWrapper
 from io import StringIO
+from django.core.files.storage import default_storage
 import os
 from FITaccreditation.utils import *
 from FITaccreditation.models import *
@@ -186,36 +187,45 @@ def forbidden_handler(request):
 
 
 def overview(request):
-	if request.method == "POST":
-		artifact_id = request.POST.get("artifact_id", "")
-		if artifact_id != "":
-			download_artifact = Artifact.objects.get(pk=int(artifact_id))
-			download_file = download_artifact.upload_file
-			file_path = os.path.join(settings.MEDIA_ROOT,download_file.name)
-			if os.path.exists(file_path):
-				with open(file_path, 'rb') as fh:
-					response = HttpResponse(fh.read(),content_type="application/upload_file")
-					response['Content-Disposition'] = 'inline;filename=' + os.path.basename(file_path)
-					return response
+	if not request.user.is_authenticated:
+		return HttpResponseRedirect('/login/')
+	if request.user.role in ['']:
+		return HttpResponseRedirect('/')
 
 	artifact_objects = Artifact.objects.all()
 	artifacts = []
 	for artifact in artifact_objects:
-		artifactInfo = {}
-		artifactInfo["id"] = artifact.pk
-		artifactInfo["upload_file"] = artifact.upload_file
-		artifactInfo["outcome"] = artifact.outcome
-		artifactInfo["course"] = artifact.course
-		if artifact.uploader.get_full_name() == " ":
-			artifactInfo["uploader"] = artifact.uploader.email
-		else:
-			artifactInfo["uploader"] = artifact.uploader.get_full_name()
-		artifactInfo["upload_date"] = artifact.date_created
-		artifactInfo["comment"] = artifact.comment
-		artifacts.append(artifactInfo)
+		artifact_info = {}
+		artifact_info["id"] = artifact.pk
+		artifact_info["upload_file"] = artifact.upload_file
+		artifact_info["outcome"] = artifact.outcome
+		artifact_info["course"] = artifact.course
+		artifact_info["uploader"] = artifact.uploader.get_full_name()
+		if artifact_info["uploader"] == " ":
+			artifact_info["uploader"] = artifact.uploader.email
+		artifact_info["upload_date"] = artifact.date_created
+		artifact_info["comment"] = artifact.comment
+		artifacts.append(artifact_info)
 	return render(request, "overview.html", {
 		"artifacts":artifacts
 		})
+
+def download_artifact(request, artifact_id):
+	if not request.user.is_authenticated:
+		return HttpResponseRedirect('/login/')
+	if request.user.role in ['']:
+		return HttpResponseRedirect('/')
+
+	download_artifact = Artifact.objects.get(pk=artifact_id)
+	download_file = download_artifact.upload_file
+	file_path = os.path.join(settings.MEDIA_ROOT,download_file.name)
+	print(file_path)
+	with default_storage.open(file_path) as fh:
+		response = HttpResponse(fh.read(),content_type="application/upload_file")
+		response['Content-Disposition'] = 'inline;filename=' + os.path.basename(file_path)
+		return response
+
+	raise Http404
 
 def dashboard(request):
 	if not request.user.is_authenticated:
