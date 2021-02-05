@@ -3,4 +3,5 @@ local.bat
 debug.log
 latest.dump
 db.sqlite3
-static/*
+static/artifacts/*
+static/userprofile/*
