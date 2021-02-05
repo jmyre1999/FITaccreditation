@@ -31,7 +31,7 @@
                         <h4>Submission Server</h4>
                     </div>
                     {% if courses.count > 0 %}
-                        <form method="POST" enctype="multipart/form-data">
+                        <form id="submission_form" method="POST" enctype="multipart/form-data">
                             {% csrf_token %}
                             {% if error %}
                                 <div class="alert alert-danger">
@@ -45,12 +45,8 @@
                                     <option value="{{ course.pk }}" {% if linked_course_pk == course.pk %}selected{% endif %}>{{ course.title }}</option>
                                 {% endfor %}
                             </select>
-                            <!-- Outcome dropdown -->
-                            <select name="outcome" id="outcome_select" class="custom-select-lg my-4">
-                                <option value="" selected>Select Outcome</option>
-                                <!-- Options loaded with ajax -->
-                            </select>
                             <!-- Upload File -->
+                            <h4 class="pt-4">Upload Artifact</h4>
                             <div class="form-group">
                                 <span class="btn btn-default btn-file my-4 text-white">
                                     <input id="upload_file" name="upload" type="file" class="file" multiple data-show-upload="true" data-show-caption="true">
@@ -58,12 +54,16 @@
                             </div>
                             <!-- Comment area -->
                             <div class="form-group">
-                                <label for="comment" class="control-label text-white">Comment:</label>
+                                <label for="comment" class="control-label text-white">Comment (optional):</label>
                                 <textarea class="form-control" name="comment" id="comment"></textarea>
                             </div> 
-
+                            <!-- Outcome dropdown -->
+                            <h4 id="outcome_label"></h4>
+                            <div id="outcome_select">
+                                <!-- Append checkboxes -->                         
+                            </div>
                             <div class="text-center mb-3">
-                                <button type="submit" class="btn btn-primary btn-lg my-4">Submit</button>
+                                <button type="submit" class="btn btn-primary btn-lg my-4" id="submission_button">Submit</button>
                             </div>
                         </form>
                     {% else %}
@@ -75,27 +75,34 @@
     </div>
 </body>
 
-<script type="text/javascript">
-    $('#course_select').change(function(){
-        if($('#course_select').val() != '') {
-            ajaxPost('/submission/get_outcomes_ajax/', {
-                'selected_course_pk': $('#course_select').val(),
-            }, function(response){
-                if(response != null) {
-                    var outcome_name;
-                    var outcome_id;
-                    $('#outcome_select').empty();
-                    $('#outcome_select').append('<option value="" selected>Select Outcome</option>');
-                    for(var i=0;i<response.length;i++){
-                        outcome_name = response[i]['name'];
-                        outcome_id = response[i]['pk'];
-                        $('#outcome_select').append('<option value="' + outcome_id + '">' + outcome_name + '</option>');
-                    }
-                }
-            });
-        }
-    });
+<script id="outcome_script"></script>
 
-    $('#course_select').change();
+<script type="text/javascript">
+
+    $(document).ready(function(){
+        $('#course_select').change(function(){
+            if($('#course_select').val() != '') {
+                ajaxPost('/submission/get_outcomes_ajax/', {
+                    'selected_course_pk': $('#course_select').val(),
+                }, function(response){
+                    if(response != null) {
+                        var outcome_name;
+                        var outcome_id;
+                        $('#outcome_label').html('Apply Outcomes')
+                        $('#outcome_select').empty();
+                        for(var i=0;i<response.length;i++){
+                            outcome_name = response[i]['name'];
+                            outcome_id = response[i]['pk'];
+                            outcome_description = response[i]['description'];
+                            $('#outcome_select').append('<div class="form-check"><input class="form-check-input" name="outcome" type="checkbox" value="' + outcome_id + '"><label class="form-check-label text-white">' + outcome_name + '</label><span data-toggle="tooltip" data-placement="right" title="' + outcome_description + '"><i class="fa fa-question-circle ml-2 text-white" data-fa-transform="shrink-2"></i></span></div>');
+                        }
+                        $('[data-toggle="tooltip"]').tooltip();
+                    }
+                });
+            }
+        });
+
+        $('#course_select').change();
+    });
 </script>
 {% endblock base_body %}

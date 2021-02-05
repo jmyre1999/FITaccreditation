@@ -117,28 +117,29 @@ def submission(request):
 		course_pk = request.POST.get('course', '')
 		if course_pk != '':
 			course = Course.objects.get(pk=int(course_pk))
-			outcome_pk = request.POST.get('outcome', '')
-			if outcome_pk != '':
-				outcome = Outcome.objects.get(pk=int(outcome_pk))
-				comment = request.POST.get('comment', '')
+			outcome_pks = request.POST.getlist('outcome', '')
+			comment = request.POST.get('comment', '')
+			if len(outcome_pks) > 0:
 				if request.FILES:
 					upload_file = request.FILES.get('upload')
 					artifact = Artifact.objects.create(upload_file=upload_file, course=course, comment=comment, uploader=request.user)
-					print(dir(artifact))
-					artifact.outcome.add(outcome)
-					artifact.save()
-					if SatisfiedOutcome.objects.filter(course=course, outcome=outcome, archived=False).exists():
-						satisfied_outcome = SatisfiedOutcome.objects.filter(course=course, outcome=outcome, archived=False).last()
-					else:
-						satisfied_outcome = SatisfiedOutcome.objects.create(course=course, outcome=outcome, archived=False)
-					satisfied_outcome.artifacts.add(artifact)
-					satisfied_outcome.save()
+					for outcome_pk in outcome_pks:
+						outcome = Outcome.objects.get(pk=int(outcome_pk))
+						artifact.outcome.add(outcome)
+						artifact.save()
+						if SatisfiedOutcome.objects.filter(course=course, outcome=outcome, archived=False).exists():
+							satisfied_outcome = SatisfiedOutcome.objects.filter(course=course, outcome=outcome, archived=False).last()
+						else:
+							satisfied_outcome = SatisfiedOutcome.objects.create(course=course, outcome=outcome, archived=False)
+						satisfied_outcome.artifacts.add(artifact)
+						satisfied_outcome.save()
+					return redirect('/dashboard/')
 				else:
 					error = True
 					error_message = 'No file uploaded'
 			else:
 				error = True
-				error_message = 'No outcome selected'
+				error_message = 'No outcomes applied'
 		else:
 			error = True
 			error_message = 'No course selected'
@@ -158,7 +159,7 @@ def get_outcomes_for_submission(request):
 		outcomes = selected_course.outcomes.all()
 		outcomes_list = []
 		for outcome in outcomes:
-			outcomes_list.append({'pk': str(outcome.pk), 'name': str(outcome)})
+			outcomes_list.append({'pk': str(outcome.pk), 'name': str(outcome), 'description': str(outcome.description)})
 		return outcomes_list
 	return None
 
