@@ -87,8 +87,8 @@ def register_form(request):
 				send_mail(
 					'ABET reporting registration',
 					'''
-					Thank you for registering for faculty status at cse-assessment-test.fit.edu. 
-					We would like to confirm that you are responsible for this registration so that an administrator may verify your account. 
+					Thank you for registering for faculty status at cse-assessment-test.fit.edu.
+					We would like to confirm that you are responsible for this registration so that an administrator may verify your account.
 					Please reply with your confirmation, or let us know if you did not create this registration.
 
 					FIT CSE Assessment Adminstrators
@@ -117,30 +117,33 @@ def submission(request):
 		course_pk = request.POST.get('course', '')
 		if course_pk != '':
 			course = Course.objects.get(pk=int(course_pk))
-			outcome_pk = request.POST.get('outcome', '')
-			if outcome_pk != '':
-				outcome = Outcome.objects.get(pk=int(outcome_pk))
-				comment = request.POST.get('comment', '')
+			outcome_pks = request.POST.getlist('outcome', '')
+			comment = request.POST.get('comment', '')
+			if len(outcome_pks) > 0:
 				if request.FILES:
 					upload_file = request.FILES.get('upload')
-					artifact = Artifact.objects.create(upload_file=upload_file, course=course, outcome=outcome, comment=comment, uploader=request.user)
-					artifact.save()
-					if SatisfiedOutcome.objects.filter(course=course, outcome=outcome, archived=False).exists():
-						satisfied_outcome = SatisfiedOutcome.objects.filter(course=course, outcome=outcome, archived=False).last()
-					else:
-						satisfied_outcome = SatisfiedOutcome.objects.create(course=course, outcome=outcome, archived=False)
-					satisfied_outcome.artifacts.add(artifact)
-					satisfied_outcome.save()
+					artifact = Artifact.objects.create(upload_file=upload_file, course=course, comment=comment, uploader=request.user)
+					for outcome_pk in outcome_pks:
+						outcome = Outcome.objects.get(pk=int(outcome_pk))
+						artifact.outcome.add(outcome)
+						artifact.save()
+						if SatisfiedOutcome.objects.filter(course=course, outcome=outcome, archived=False).exists():
+							satisfied_outcome = SatisfiedOutcome.objects.filter(course=course, outcome=outcome, archived=False).last()
+						else:
+							satisfied_outcome = SatisfiedOutcome.objects.create(course=course, outcome=outcome, archived=False)
+						satisfied_outcome.artifacts.add(artifact)
+						satisfied_outcome.save()
+					return redirect('/dashboard/')
 				else:
 					error = True
 					error_message = 'No file uploaded'
 			else:
 				error = True
-				error_message = 'No outcome selected'
+				error_message = 'No outcomes applied'
 		else:
 			error = True
 			error_message = 'No course selected'
-		
+
 	return render(request, "submission.html", {
 		'courses': courses,
 		'linked_course_pk': linked_course_pk,
@@ -156,7 +159,7 @@ def get_outcomes_for_submission(request):
 		outcomes = selected_course.outcomes.all()
 		outcomes_list = []
 		for outcome in outcomes:
-			outcomes_list.append({'pk': str(outcome.pk), 'name': str(outcome)})
+			outcomes_list.append({'pk': str(outcome.pk), 'name': str(outcome), 'description': str(outcome.description)})
 		return outcomes_list
 	return None
 
@@ -248,7 +251,7 @@ def dashboard(request):
 		course_unsatisfied = course.get_unsatisfied_outcomes()
 		if course.outcomes.count() != 0:
 			course_percent = int( (1 - len(course_unsatisfied)/course.outcomes.count()) * 100)
-		else: 
+		else:
 			course_percent = 100
 		course_list.append({'title': course.title, 'pk': course.pk,'unsatisfied_outcomes': course_unsatisfied, 'percent_complete': course_percent})
 	return render(request, "dashboard.html", {

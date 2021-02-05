@@ -43,7 +43,7 @@ class SatisfiedOutcomeAdmin(ForeignKeyAutocompleteAdmin):
 admin.site.register(SatisfiedOutcome, SatisfiedOutcomeAdmin)
 
 class ArtifactAdmin(ForeignKeyAutocompleteAdmin):
-	list_display = ('course', 'outcome', 'uploader', 'upload_file')
+	list_display = ('course', 'uploader', 'upload_file')
 
 	search_fields = ('outcome__key', 'outcome__program', 'course__title', 'uploader__first_name', 'uploader__last_name', 'uploader__email', 'upload_file__name', 'comment')
 

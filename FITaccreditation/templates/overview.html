@@ -22,7 +22,6 @@
                 <thead>
                     <tr>
                         <th>File</th>
-                        <th>Outcomes</th>
                         <th>Course</th>
                         <th>Uploader</th>
                         <th>Upload Date</th>
@@ -34,12 +33,6 @@
 >>>>>>> 75d81de54ec2315d20eb1c618e0c3b4af5b550cb
                         <tr>
                             <td><a href="/download_artifact/{{artifact.id}}/" target="_blank">{{artifact.upload_file}}</a></td>
-                            <td>
-                                {{artifact.outcome}}
-                                <span data-toggle="tooltip" data-placement="right" title="{{ artifact.outcome.description }}">
-                                  <i class="fa fa-question-circle ml-2" data-fa-transform="shrink-2"></i>
-                                </span> 
-                            </td>
                             <td>{{artifact.course}}</td>
                             <td>{{artifact.uploader}}</td>
                             <td>{{artifact.upload_date}}</td>
