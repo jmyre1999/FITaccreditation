@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block base_body %}
+    <head>
+        <meta http-equiv="refresh" content="4;url=/dashboard/" />
+    </head>
+
+	<body>
+        <style>
+            [id*="outter-col"] {
+                padding: 2rem;
+                border-radius: 25px;
+                text-align: center;
+                font-weight: bold;
+            }
+        </style>
+
+        <div class = "container-md px-0">
+            <div class = "row">
+                <div class = "col-sm" id="outter-col">
+                    <br><br>
+                    <h3 class="text-dark" style="font-size: 10em;"> 
+                        <i class="fas fa-check-circle" style="color:#880000"></i> 
+                    </h3>
+                    <h3 class="text" style="font-size: 3em; color:#808080;"> Thank you! </h3>
+                    <h3 class="text" style="font-size: 1em;"> Your submission has been received. </h3>
+                    <h3 class="text" style="font-size: 1em;"> You will be redirected to your dashboard shortly. </h3>
+                    <h3 class="text" style="font-size: 1em;"> 
+                        <a href="/dashboard/"> 
+                            Click here to return now. 
+                        </a>
+                    </h3>
+                    <br><br>
+                </div>
+            </div>
+        </div>
+    </body>
+{% endblock base_body %}

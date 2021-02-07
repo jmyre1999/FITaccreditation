@@ -16,6 +16,9 @@
                 margin-right: auto;
                 text-align: center;
             }
+            [id*="helpbutton"]:hover {
+                color: black !important;
+            }
         </style>
 
     <body style="background-color:#880000;">
@@ -28,7 +31,14 @@
                         <img src="{% static 'img/logo-white.png' %}" width="150px">
                     </div>
                     <div class="heading mb-4">
-                        <h4>Submission Server</h4>
+                        <h4>
+                            Submission Server
+                            <!-- Help button. -->
+                            <a class="control-label text-white" data-toggle="modal" data-target="#help1"> 
+                                <i class="far fa-question-circle fa-xs" id="helpbutton"></i>
+                            </a>
+                            <!-- End help button.-->
+                        </h4>
                     </div>
                     {% if courses.count > 0 %}
                         <form id="submission_form" method="POST" enctype="multipart/form-data">
@@ -46,9 +56,9 @@
                                 {% endfor %}
                             </select>
                             <!-- Upload File -->
-                            <h4 class="pt-4">Upload Artifact</h4>
+                            <label for="upload" class="control-label text-white mt-4">Upload Artifact</label>
                             <div class="form-group">
-                                <span class="btn btn-default btn-file my-4 text-white">
+                                <span class="btn btn-default btn-file text-white mb-4">
                                     <input id="upload_file" name="upload" type="file" class="file" multiple data-show-upload="true" data-show-caption="true">
                                 </span>
                             </div>
@@ -57,19 +67,116 @@
                                 <label for="comment" class="control-label text-white">Comment (optional):</label>
                                 <textarea class="form-control" name="comment" id="comment"></textarea>
                             </div> 
-                            <!-- Outcome dropdown -->
-                            <h4 id="outcome_label"></h4>
+                            <!-- Outcome checkboxes -->
+                            <label id="outcome_label" class="control-label text-white mt-4"></label>
                             <div id="outcome_select">
                                 <!-- Append checkboxes -->                         
                             </div>
-                            <div class="text-center mb-3">
-                                <button type="submit" class="btn btn-primary btn-lg my-4" id="submission_button">Submit</button>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary btn-lg mb-4" id="submission_button">Submit</button>
                             </div>
                         </form>
                     {% else %}
                         <span class="text-white">You are not assigned to any courses</span>
                     {% endif %}
                 </div>
+
+
+
+
+                <!-- Start of modal help. -->
+                <!-- Need help? First slide. -->
+                <div class="modal fade" id="help1" role="dialog" style="z-index: 10001;">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">
+                                    Modal title 1
+                                </h4>
+                            </div>
+                            <div class="modal-body">
+                                Info goes here.
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary">Next</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <!-- Need help? Second slide. -->
+                <div class="modal fade" id="help2" role="dialog" style="z-index: 10001;">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">
+                                    Modal title 2
+                                </h4>
+                            </div>
+                            <div class="modal-body">
+                                Info goes here.
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger">Prev</button>
+                                <button type="button" class="btn btn-primary">Next</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <!-- Need help? Third slide. -->
+                <div class="modal fade" id="help3" role="dialog" style="z-index: 10001;">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">
+                                    Modal title 3
+                                </h4>
+                            </div>
+                            <div class="modal-body">
+                                Info goes here.
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger">Prev</button>
+                                <button type="button" class="btn btn-primary">Next</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+
+
+                <!-- Need help? Fourth slide. -->
+                <div class="modal fade" id="help4" role="dialog" style="z-index: 10001;">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">
+                                    Modal title 4
+                                </h4>
+                            </div>
+                            <div class="modal-body">
+                                Info goes here.
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger">Prev</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End of modal help.-->
+
+
+
+
             </div>
         </div>
     </div>
@@ -96,6 +203,7 @@
                             outcome_description = response[i]['description'];
                             $('#outcome_select').append('<div class="form-check"><input class="form-check-input" name="outcome" type="checkbox" value="' + outcome_id + '"><label class="form-check-label text-white">' + outcome_name + '</label><span data-toggle="tooltip" data-placement="right" title="' + outcome_description + '"><i class="fa fa-question-circle ml-2 text-white" data-fa-transform="shrink-2"></i></span></div>');
                         }
+                        $('#outcome_select').append('<br><br>')
                         $('[data-toggle="tooltip"]').tooltip();
                     }
                 });
@@ -104,5 +212,28 @@
 
         $('#course_select').change();
     });
+
+    // Modal slider functionality.
+    $("div[id^='help']").each(function(){
+        var slide = $(this);
+
+        // Next functionality.
+        slide.find('.btn-primary').click(function(){
+            // Hide previous modal.
+            slide.modal('hide');
+            // Show next modal.
+            slide.closest("div[id^='help']").nextAll("div[id^='help']").first().modal('show');
+        });
+
+        // Previous functionality.
+        slide.find('.btn-danger').click(function(){
+            // Hide previous modal. 
+            slide.modal('hide');
+            // Show previous modal.
+            slide.closest("div[id^='help']").prevAll("div[id^='help']").first().modal('show');
+        });
+
+    });
+    
 </script>
 {% endblock base_body %}
