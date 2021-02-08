@@ -21,6 +21,7 @@ urlpatterns = [
     url(r'^403/$', views.forbidden_handler, name='403'),
     url(r'^success/$', views.successful_submission_handler, name='success'),
     url(r'^dashboard/$', views.dashboard, name='dashboard'),
+    url(r'^reviewer_dashboard/$', views.reviewer_dashboard, name='reviewer_dashboard'),
     url(r'^overview/$', views.overview, name='overview'),
     url(r'^download_artifact/(?P<artifact_id>\d+)/$', views.download_artifact, name='download_artifact'),
 

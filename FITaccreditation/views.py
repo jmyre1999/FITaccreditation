@@ -262,3 +262,11 @@ def dashboard(request):
 		'total_percent': total_percent,
 		'course_list': course_list,
 		})
+
+def reviewer_dashboard(request):
+	if not request.user.is_authenticated:
+		return HttpResponseRedirect('/login/')
+	if request.user.role in ['','FA', 'AD']:
+		return HttpResponseRedirect('/')
+
+	return render(request, "reviewer_dashboard.html")

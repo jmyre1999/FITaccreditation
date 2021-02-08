@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block base_body %}
+	<body>
+        <body style="background-color:#880000;">
+        <!-- Styling -->
+        <!-- Will be part of style.css after testing. -->
+        <style>
+            [id*="outter-col"] {
+                padding-top: 6rem;
+                padding-bottom: 6rem;
+                color: white;
+                text-align: center;
+                font-weight: bold;
+            }
+            [id*="inner-col"] {
+                padding-top: 5rem;
+                text-align: center;
+                font-weight: normal;
+            }
+            [id*="courses"] {
+                text-align: center;
+            }
+            [id*="course_progress"] {
+                width: 75%;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        </style>
+
+        <!-- Welcome area. -->
+        <div class = "container-md px-0">
+            <div class = "row">
+                <div class = "col-sm" id="outter-col">
+                    <h3 class="text pt-2"> Progress Dashboard </h3>
+                    <h3 class="text pt-2"> {{user_name}} </h3>
+                    <div class = "col-sm" id="inner-col">
+                        {% if course_list|length != 0 %}
+                            There is something to review.
+                        {% else %}
+                            There is nothing to review.
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Accordion for collapsable courses. -->
+        <div class="accordion" id="courses">
+            {% for course in course_list %}
+                <!-- Course. -->
+                <div class="card">
+                    <div class="card-header" id="course_{{ course.pk }}">
+                        <h3>
+                            {{ course.title }}
+                            <button class="btn btn-link" id="collapse_btn_{{ course.pk }}" type="button" data-toggle="collapse" 
+                            data-target="#collapse{{ course.pk }}" aria-expanded="false" aria-controls="collapse{{ course.pk }}">
+                                <i class="fas fa-angle-right"></i>
+                            </button>
+                        </h3>
+                    </div>
+                    <div id="collapse{{ course.pk }}" class="collapse" aria-labelledby="course_{{ course.pk }}" data-parent="#courses">
+                        <div class="card-body" id="course_progress">
+                            <div class="d-flex align-items-center">
+                                <span class="goto">
+                                    <!-- Go to upload page. -->
+                                    <a href="/submission/?linked_course={{ course.pk }}" target="_blank">
+                                        <i class="fas fa-arrow-circle-up fa-2x" style="color:#880000;"></i>
+                                    </a>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </body>
+{% endblock base_body %}
