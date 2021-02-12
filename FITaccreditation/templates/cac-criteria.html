@@ -2,7 +2,7 @@
 {% load staticfiles %}
 {% block base_body %} <!-- Will replace base_body block in base.html -->
 <div>
-    <body style="background-color:#880000;"></body>
+    <body style="background-color:white;"></body>
 
     <!-- Styling -->
     <!-- Will be part of style.css after testing. -->
@@ -10,9 +10,9 @@
         [id*="outter-col"] {
             padding: 2rem;
             background-color: #ffffff;
-            border: 5px solid #880000;
-            border-top: 10px solid #880000;
-            border-bottom: 10px solid #880000;
+            border: 5px solid white;
+            border-top: 10px solid white;
+            border-bottom: 10px solid white;
             border-radius: 25px;
             color: #000;
             text-align: center;
@@ -23,22 +23,30 @@
             text-align: left;
             font-weight: normal;
         }
+        [id*="sidebar"] {
+            position: fixed;
+            bottom: 25px;
+            left: 25px;
+            border-color: #ffffff;
+            z-index: 9998;
+        }
     </style>
 
     <!-- Definitions container. -->
-    <div class = "container-md px-0 mt-4">
+    <div id="def" class = "container-md px-0 mt-4">
         <!-- Definitions row. -->
         <div class = "row">
             <div class = "col-sm" id="outter-col">
                 <!-- Start of accordion. -->
-                <div class="panel-group" id="criteria">
+                <div class="panel-group">
                     <!-- Definitions. -->
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h4 class="panel-title">
                                 <h3 class="text-dark pt-3"> 
+                                    <br>
                                     Definitions
-                                    <a data-toggle="collapse" data-parent="#criteria" href="#definitions">
+                                    <a data-toggle="collapse" data-parent="#def" href="#definitions">
                                         <button class="btn btn-link" type="button" data-toggle="collapse" aria-expanded="false">
                                             <i class="fas fa-angle-down" style="color:#880000;"></i>
                                         </button>
@@ -47,7 +55,7 @@
                             </h4>
                         </div>
                     </div>
-                    <div id="definitions" class="panel-collapse collapse in">
+                    <div id="definitions" class="panel-collapse collapse show">
                         <div class="panel-body">
                             <div class = "col-sm" id="inner-col">
                                 <div class="border-top border-primary w-100 mx-auto my-3"></div>
@@ -96,19 +104,20 @@
     </div>
 
     <!-- General Criteria container. -->
-    <div class = "container-md px-0">
+    <div id="gen_criteria" class = "container-md px-0">
         <!-- General criteria row. -->    
         <div class = "row">
             <div class = "col-sm" id="outter-col">
                 <!-- Start of accordion. -->
-                <div class="panel-group" id="criteria">
+                <div class="panel-group">
                     <!-- General criteria. -->
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h4 class="panel-title">
                                 <h3 class="text-dark pt-3"> 
+                                    <br>
                                     General Criteria
-                                    <a data-toggle="collapse" data-parent="#criteria" href="#general_criteria">
+                                    <a data-toggle="collapse" data-parent="#gen_criteria" href="#general_criteria">
                                         <button class="btn btn-link" type="button" data-toggle="collapse" aria-expanded="false">
                                             <i class="fas fa-angle-down" style="color:#880000;"></i>
                                         </button>
@@ -117,7 +126,7 @@
                             </h4>
                         </div>
                     </div>
-                    <div id="general_criteria" class="panel-collapse collapse in">
+                    <div id="general_criteria" class="panel-collapse collapse show">
                         <div class="panel-body">
                             <div class = "col-sm" id="inner-col">
                                 <div class="border-top border-primary w-100 mx-auto my-3"></div>
@@ -228,19 +237,20 @@
     </div>
 
     <!-- Program Criteria container. -->
-    <div class = "container-md px-0 mb-4">
+    <div id="prog_criteria" class = "container-md px-0 mb-4">
         <!-- Program Criteria row. --> 
         <div class = "row">
             <div class = "col-sm" id="outter-col">
                 <!-- Start of accordion. -->
-                <div class="panel-group" id="criteria">
+                <div class="panel-group">
                     <!-- Program Criteria. -->
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h4 class="panel-title">
                                 <h3 class="text-dark pt-3"> 
+                                    <br>
                                     Program Criteria for Computer Sciences
-                                    <a data-toggle="collapse" data-parent="#criteria" href="#program_criteria">
+                                    <a data-toggle="collapse" data-parent="#prog_criteria" href="#program_criteria">
                                         <button class="btn btn-link" type="button" data-toggle="collapse" aria-expanded="false">
                                             <i class="fas fa-angle-down" style="color:#880000;"></i>
                                         </button>
@@ -249,7 +259,7 @@
                             </h4>
                         </div>
                     </div>
-                    <div id="program_criteria" class="panel-collapse collapse in">
+                    <div id="program_criteria" class="panel-collapse collapse show">
                         <div class="panel-body">
                             <div class = "col-sm" id="inner-col">
                                 <div class="border-top border-primary w-100 mx-auto my-3"></div>
@@ -299,11 +309,14 @@
             </div>
         </div>
     </div>
+    <br><br>
 
     <!-- Scroll to top button. -->
     <a id="top" href="#" class="btn btn-dark btn-md back-to-top" role="button">
         <i class="fas fa-angle-up"></i>
     </a>
+
+    <!-- Scrolling script. -->
     <script>
         $(document).ready(function() {
             // Scroll back to top.
@@ -322,5 +335,30 @@
         });
     </script>
 
+    <!-- Side navigation bar. -->
+    <div id="mySidenav" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()" style="position: absolute; top: 0; margin-left: 180px;">
+            <i class="fas fa-times"></i>
+        </a>
+        <a href="#def" onclick="closeNav()">Definitions</a>
+        <a href="#gen_criteria" onclick="closeNav()">General Criteria</a>
+        <a href="#prog_criteria" onclick="closeNav()">Program Criteria</a>
+    </div>
+
+    <!-- Open side navigation button. -->
+    <a onclick="openNav()" id="sidebar" class="btn btn-dark btn-md" role="button">
+        <i class="fas fa-bars"></i>
+    </a>
+
+    <!-- Open and close navigation script. -->
+    <script>
+        function openNav() {
+            document.getElementById("mySidenav").style.width = "250px";
+        }
+
+        function closeNav() {
+            document.getElementById("mySidenav").style.width = "0";
+        } 
+    </script>
 </body>
 {% endblock base_body %}
