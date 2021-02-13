@@ -19,10 +19,10 @@
                 text-align: center;
                 font-weight: normal;
             }
-            [id*="courses"] {
+            [id*="outcomes"] {
                 text-align: center;
             }
-            [id*="course_progress"] {
+            [id*="outcome_progress"] {
                 width: 75%;
                 margin-left: auto;
                 margin-right: auto;
@@ -33,10 +33,9 @@
         <div class = "container-md px-0">
             <div class = "row">
                 <div class = "col-sm" id="outter-col">
-                    <h3 class="text pt-2"> Progress Dashboard </h3>
-                    <h3 class="text pt-2"> {{user_name}} </h3>
+                    <h3 class="text pt-2"> Outcome Progress Dashboard </h3>
                     <div class = "col-sm" id="inner-col">
-                        {% if course_list|length != 0 %}
+                        {% if outcome_list|length != 0 %}
                             There is something to review.
                         {% else %}
                             There is nothing to review.
@@ -46,29 +45,67 @@
             </div>
         </div>
 
-        <!-- Accordion for collapsable courses. -->
-        <div class="accordion" id="courses">
-            {% for course in course_list %}
-                <!-- Course. -->
+        <!-- Accordion for collapsable outcomes. -->
+        <div class="accordion" id="outcomes">
+            {% for outcome in outcome_list %}
+                <!-- outcome. -->
                 <div class="card">
-                    <div class="card-header" id="course_{{ course.pk }}">
+                    <div class="card-header" id="outcome_{{ outcome.pk }}">
                         <h3>
-                            {{ course.title }}
-                            <button class="btn btn-link" id="collapse_btn_{{ course.pk }}" type="button" data-toggle="collapse" 
-                            data-target="#collapse{{ course.pk }}" aria-expanded="false" aria-controls="collapse{{ course.pk }}">
+                            {{ outcome.name }}
+                            <button class="btn btn-link" id="collapse_btn_{{ outcome.pk }}" type="button" data-toggle="collapse" 
+                            data-target="#collapse{{ outcome.pk }}" aria-expanded="false" aria-controls="collapse{{ outcome.pk }}">
                                 <i class="fas fa-angle-right"></i>
                             </button>
                         </h3>
                     </div>
-                    <div id="collapse{{ course.pk }}" class="collapse" aria-labelledby="course_{{ course.pk }}" data-parent="#courses">
-                        <div class="card-body" id="course_progress">
-                            <div class="d-flex align-items-center">
-                                <span class="goto">
-                                    <!-- Go to upload page. -->
-                                    <a href="/submission/?linked_course={{ course.pk }}" target="_blank">
-                                        <i class="fas fa-arrow-circle-up fa-2x" style="color:#880000;"></i>
-                                    </a>
-                                </span>
+                    <div id="collapse{{ outcome.pk }}" class="collapse" aria-labelledby="outcome_{{ outcome.pk }}" data-parent="#outcomes">
+                        <div class="card-body" id="outcome_progress">
+                            <div class="align-items-center">
+                                <div class="row py-2">
+                                    <div class="col-6 text-center">
+                                        <p> {{ outcome.description }}</p>
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <!-- outcome progress bar. -->
+                                        <div class="progress">
+                                            <div class="progress-bar" role="progressbar" aria-valuenow="{{ outcome.percent_complete }}"
+                                            aria-valuemin="0" aria-valuemax="100" style="width:{{ outcome.percent_complete }}%"></div>
+                                        </div> 
+                                        {{ outcome.percent_complete }}%
+                                    </div>
+                                </div>
+                                <h4>Artifacts</h4>
+                                {% if outcome.artifacts %}
+                                    {% for artifact in outcome.artifacts %}
+                                        <div class="row py-2">
+                                            <div class="col-5 text-center">
+                                                {% if artifact.comment != "" %}
+                                                    {{ artifact.comment }}
+                                                {% else %}
+                                                    No comment
+                                                {% endif %}
+                                            </div>
+                                            <div class="col-5 text-right">
+                                                {{ artifact }}
+                                            </div>
+                                            <div class="col-2 text-left">
+                                                <span class="goto">
+                                                    <!-- download artifact -->
+                                                    <a href="/download_artifact/{{artifact.id}}/" target="_blank">
+                                                        <i class="fas fa-download fa-2x" style="color:#880000;"></i>
+                                                    </a>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div class="row">
+                                        <div class="col-12 text-center">
+                                            <p>No artifacts uploaded</p>
+                                        </div>
+                                    </div>
+                                {% endif %}
                             </div>
                         </div>
                     </div>

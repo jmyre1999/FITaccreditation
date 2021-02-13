@@ -269,4 +269,31 @@ def reviewer_dashboard(request):
 	if request.user.role in ['','FA', 'AD']:
 		return HttpResponseRedirect('/')
 
-	return render(request, "reviewer_dashboard.html")
+
+	outcomes = Outcome.objects.all()
+	outcome_list = []
+	for outcome in outcomes:
+		outcomeinfo = {}
+		satisfied_outcomes = SatisfiedOutcome.objects.filter(archived=False,outcome=outcome)
+		artifacts = []
+		for satisfied_outcome in satisfied_outcomes:
+			for artifact in satisfied_outcome.artifacts.all():
+				artifacts.append(artifact)
+		outcomeinfo["artifacts"] = artifacts
+		outcomeinfo["name"] = str(outcome)
+		outcomeinfo["description"] = outcome.description
+		outcomeinfo["pk"] = outcome.pk
+		courses = Course.objects.filter(outcomes__pk=outcome.pk)
+		if courses:
+			num_complete = 0
+			for course in courses:
+				if satisfied_outcomes.filter(course=course).exists():
+					num_complete = num_complete + 1
+			outcomeinfo["percent_complete"] = int(100 * num_complete/courses.count())
+		else:
+			outcomeinfo["percent_complete"] = 100
+		outcome_list.append(outcomeinfo)
+
+	return render(request, "reviewer_dashboard.html",{
+		"outcome_list": outcome_list,
+		})
