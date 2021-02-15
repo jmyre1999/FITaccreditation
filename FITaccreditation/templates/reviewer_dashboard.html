@@ -77,28 +77,40 @@
                                 </div>
                                 <h4>Artifacts</h4>
                                 {% if outcome.artifacts %}
-                                    {% for artifact in outcome.artifacts %}
-                                        <div class="row py-2">
-                                            <div class="col-5 text-center">
-                                                {% if artifact.comment != "" %}
-                                                    {{ artifact.comment }}
-                                                {% else %}
-                                                    No comment
-                                                {% endif %}
-                                            </div>
-                                            <div class="col-5 text-right">
-                                                {{ artifact }}
-                                            </div>
-                                            <div class="col-2 text-left">
-                                                <span class="goto">
-                                                    <!-- download artifact -->
-                                                    <a href="/download_artifact/{{artifact.id}}/" target="_blank">
-                                                        <i class="fas fa-download fa-2x" style="color:#880000;"></i>
-                                                    </a>
-                                                </span>
-                                            </div>
+                                    <div class="row justify-content-center">
+                                        <div class="col-auto">
+                                            <table class="table table-responsive">
+                                                <thead class="text-black fs--1">
+                                                    <tr>
+                                                        <th>Comment</th>
+                                                        <th>Upload File</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for artifact in outcome.artifacts %}
+                                                        <tr>
+                                                            <td>
+                                                                {% if artifact.comment != "" %}
+                                                                    {{ artifact.comment }}
+                                                                {% else %}
+                                                                    No comment
+                                                                {% endif %}
+                                                            </td>
+                                                            <td>
+                                                                {{ artifact }}
+                                                                <span class="goto">
+                                                                    <!-- download artifact -->
+                                                                    <a href="/download_artifact/{{artifact.id}}/" target="_blank">
+                                                                        <i class="fas fa-download" style="color:#880000;"></i>
+                                                                    </a>
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
                                         </div>
-                                    {% endfor %}
+                                    </div>
                                 {% else %}
                                     <div class="row">
                                         <div class="col-12 text-center">
