@@ -42,7 +42,12 @@ def login_form(request):
 		if error:
 			error_message = "There is no user matching the given email and password"
 		else:
-			return HttpResponseRedirect('/')
+			if request.user.role == 'RE':
+				return HttpResponseRedirect('/dashboard/')
+			elif request.user.role == 'FA':
+				return HttpResponseRedirect('/reviewer_dashboard/')
+			else:
+				return HttpResponseRedirect('/')
 
 	return render(request, "login.html", {
 		'error': error,
