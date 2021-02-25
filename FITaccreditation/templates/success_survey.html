@@ -1,0 +1,211 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block base_body %}
+<body>
+    <style>
+        [id*="outter-col"] {
+            padding: 2rem;
+            border-radius: 25px;
+            text-align: center;
+            font-weight: bold;
+        }
+    </style>
+
+    <!-- Main screen. -->
+    <div class = "container-md px-0">
+        <div class = "row">
+            <div class = "col-sm" id="outter-col">
+                <br><br>
+                <h3 class="text-dark" style="font-size: 10em;"> 
+                    <i class="fas fa-check-circle" style="color:#880000"></i> 
+                </h3>
+                <h3 class="text" style="font-size: 3em; color:#808080;"> Thank you! </h3>
+                <h3 class="text" style="font-size: 1em;"> Your submission has been received. </h3>
+                <h3 class="text" style="font-size: 1em;"> Would you like to take a quick survey? </h3>
+                <h3 class="text" style="font-size: 1em;"> 
+
+                    <a data-toggle="modal" data-target="#survey"> 
+                        <button type="button" class="btn btn-primary">Yes.</button>
+                    </a>
+
+                    <a href="/dashboard/"> 
+                        <button type="button" class="btn btn-danger">No.</button>
+                    </a>
+
+                </h3>
+                <br><br>
+            </div>
+        </div>
+    </div>
+</body>
+
+<!-- Survey modal. -->
+<div class="modal fade" id="survey" role="dialog" style="z-index: 10001;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    Accreditaton Survey
+                </h4>
+            </div>
+            <div class="modal-body">
+                <!-- Survey form. -->
+                <iframe name = "invis" id = "invis" style = "display: none;"></iframe>
+                <form action="https://docs.google.com/forms/u/0/d/e/1FAIpQLSdc-ae69Y8tGf8Pv6lx4NNDkZc1x7L0c3uF6CpW6vmqsUnDqw/formResponse"
+                    target = "invis" >
+
+                    <!-- First question. -->
+                    <div class = "Q1">
+                        <label for="Q1" class="control-label"> How would you rate your experience from 1 to 5? </label>
+
+                        <div class = "radio">
+                            <input type = "radio" id = "1" name="entry.644400820" value="1">
+                            <label for = "1"> 1 </label>
+
+                            <input type = "radio" id = "2" name="entry.644400820" value="2">
+                            <label for = "2"> 2 </label>
+
+                            <input type = "radio" id = "3" name="entry.644400820" value="3">
+                            <label for = "3"> 3 </label>
+
+                            <input type = "radio" id = "4" name="entry.644400820" value="4">
+                            <label for = "4"> 4 </label>
+
+                            <input type = "radio" id = "5" name="entry.644400820" value="5">
+                            <label for = "5"> 5 </label>
+                        </div>
+
+                    </div>
+
+                    <!-- Second question removed. -->
+
+                    <!-- Third question. -->
+                    <div class = "Q3">
+                        <label for="Q3" class="control-label"> Did you use the help modal? </label>
+
+                        <div class = "radio">
+                            <input type = "radio" id = "Yes" name="entry.561650903" value="Yes">
+                            <label for = "Yes"> Yes </label>
+
+                            <input type = "radio" id = "No" name="entry.561650903" value="No">
+                            <label for = "No"> No </label>
+                        </div>
+                        
+                    </div>
+
+                    <!-- Fourth question. -->
+                    <div class = "Q4">
+                        <label for="Q4" class="control-label"> If so, how useful was the help modal? </label>
+
+                        <div class = "radio">
+                            <input type = "radio" id = "1" name="entry.695516090" value="1">
+                            <label for = "1"> 1 </label>
+
+                            <input type = "radio" id = "2" name="entry.695516090" value="2">
+                            <label for = "2"> 2 </label>
+
+                            <input type = "radio" id = "3" name="entry.695516090" value="3">
+                            <label for = "3"> 3 </label>
+
+                            <input type = "radio" id = "4" name="entry.695516090" value="4">
+                            <label for = "4"> 4 </label>
+
+                            <input type = "radio" id = "5" name="entry.695516090" value="5">
+                            <label for = "5"> 5 </label>
+                        </div>
+
+                    </div>
+
+                    <!-- Fifth question. -->
+                    <div class = "Q5">
+                        <label for="Q5" class="control-label"> Did you run into any issues? </label>
+
+                        <div class="">
+                            <textarea name = "entry.1278047414" placeholder = "Your message." rows="1"></textarea>
+                        </div>
+                        
+                    </div>
+
+                    <!-- Sixth question. -->
+                    <div class = "Q6">
+                        <label for="Q6" class="control-label"> What features did you feel were missing, if any? </label>
+
+                        <div class="">
+                            <textarea name = "entry.1954383759" placeholder = "Your message." rows="1"></textarea>
+                        </div>
+                        
+                    </div>
+
+                    <!-- Seventh question. -->
+                    <div class = "Q7">
+                        <label for="Q7" class="control-label"> Any comments or concerns? </label>
+
+                        <div class="">
+                            <textarea name = "entry.332319358" placeholder = "Your message." rows="1"></textarea>
+                        </div>
+                        
+                    </div>
+
+                    <!-- Eighth question. -->
+                    <div class = "Q8">
+                        <label for="Q8" class="control-label"> Can we email you with further questions? </label>
+
+                        <input type = "checkbox" id = "Yes" name="entry.1386201762" value="{{ request.user.email }}">
+                        <label for = "Yes"> Yes </label>
+
+                    </div>
+
+                    <!-- Submit form. -->
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" onclick="nextModal()"> Submit </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Thank you modal (after survey) -->
+<div class="modal fade" id="thankyou" role="dialog" style="z-index: 10001;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body text-center" style="font-size: 1em;">
+                <h3 class="text-dark" style="font-size: 5em;"> 
+                    <i class="fas fa-check-circle" style="color:#880000"></i> 
+                </h3>
+                
+                Thank you!
+
+                <br><br>
+                We value your feedback and we appreciate you taking your time to fill
+                out our survey. We look forward to improving your experience with the
+                accreditation process. 
+
+                <br><br>
+                You will be redirected to your dashboard shortly. 
+
+                <h3 class="text-center" style="font-size: 1em;"> 
+                    <a href="/dashboard/"> 
+                        Click here to return now. 
+                    </a>
+                </h3>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hide survey modal, show thank you modal, and redirect. -->
+<script>
+    function nextModal() {
+        $("#thankyou").modal('show');
+        $("#survey").modal('hide');
+        setTimeout(function () {
+            window.location.href = "/dashboard/";
+        }, 8000);
+    }
+</script>
+
+{% endblock base_body %}

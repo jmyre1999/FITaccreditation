@@ -133,7 +133,7 @@ def submission(request):
 							satisfied_outcome = SatisfiedOutcome.objects.create(course=course, outcome=outcome, archived=False)
 						satisfied_outcome.artifacts.add(artifact)
 						satisfied_outcome.save()
-					return redirect('/success/')
+					return redirect('/success_survey/')
 				else:
 					error = True
 					error_message = 'No file uploaded'
@@ -190,6 +190,9 @@ def forbidden_handler(request):
 
 def successful_submission_handler(request):
 	return render(request, "success.html")
+
+def successful_submission_survey_handler(request):
+	return render(request, "success_survey.html")
 
 def overview(request):
 	if not request.user.is_authenticated:
