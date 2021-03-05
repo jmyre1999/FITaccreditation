@@ -37,7 +37,7 @@
                     <h3 class="text pt-2"> {{user_name}} </h3>
                     <div class = "col-sm" id="inner-col">
                         {% if course_list|length != 0 %}
-                            Total progress:
+                            Your total progress:
                             <br><br>
                             <div class="col text-center">
                                 <!-- Total progress bar. -->
@@ -68,11 +68,11 @@
                             {{ course.title }}
                             <button class="btn btn-link" id="collapse_btn_{{ course.pk }}" type="button" data-toggle="collapse" 
                             data-target="#collapse{{ course.pk }}" aria-expanded="false" aria-controls="collapse{{ course.pk }}">
-                                <i class="fas fa-angle-right"></i>
+                                <i class="fas fa-angle-down"></i>
                             </button>
                         </h3>
                     </div>
-                    <div id="collapse{{ course.pk }}" class="collapse" aria-labelledby="course_{{ course.pk }}" data-parent="#courses">
+                    <div id="collapse{{ course.pk }}" class="collapse show" aria-labelledby="course_{{ course.pk }}" data-parent="#courses">
                         <div class="card-body" id="course_progress">
                             <div class="d-flex align-items-center">
                                 <div class="col text-center">

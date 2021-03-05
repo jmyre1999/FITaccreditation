@@ -42,7 +42,12 @@ def login_form(request):
 		if error:
 			error_message = "There is no user matching the given email and password"
 		else:
-			return HttpResponseRedirect('/')
+			if request.user.role == 'RE':
+				return HttpResponseRedirect('/dashboard/')
+			elif request.user.role == 'FA':
+				return HttpResponseRedirect('/reviewer_dashboard/')
+			else:
+				return HttpResponseRedirect('/')
 
 	return render(request, "login.html", {
 		'error': error,
@@ -177,8 +182,8 @@ def account_settings(request):
 		user.save()
 	if request.FILES:
 		image = request.FILES.get('image')
-		user.image = image
 		user = request.user
+		user.image = image
 		user.save()
 	return render(request, "account_settings.html")
 
@@ -272,4 +277,31 @@ def reviewer_dashboard(request):
 	if request.user.role in ['','FA', 'AD']:
 		return HttpResponseRedirect('/')
 
-	return render(request, "reviewer_dashboard.html")
+
+	outcomes = Outcome.objects.all()
+	outcome_list = []
+	for outcome in outcomes:
+		outcomeinfo = {}
+		satisfied_outcomes = SatisfiedOutcome.objects.filter(archived=False,outcome=outcome)
+		artifacts = []
+		for satisfied_outcome in satisfied_outcomes:
+			for artifact in satisfied_outcome.artifacts.all():
+				artifacts.append(artifact)
+		outcomeinfo["artifacts"] = artifacts
+		outcomeinfo["name"] = str(outcome)
+		outcomeinfo["description"] = outcome.description
+		outcomeinfo["pk"] = outcome.pk
+		courses = Course.objects.filter(outcomes__pk=outcome.pk)
+		if courses:
+			num_complete = 0
+			for course in courses:
+				if satisfied_outcomes.filter(course=course).exists():
+					num_complete = num_complete + 1
+			outcomeinfo["percent_complete"] = int(100 * num_complete/courses.count())
+		else:
+			outcomeinfo["percent_complete"] = 100
+		outcome_list.append(outcomeinfo)
+
+	return render(request, "reviewer_dashboard.html",{
+		"outcome_list": outcome_list,
+		})

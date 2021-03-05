@@ -64,8 +64,8 @@
                             </div>
                             <!-- Comment area -->
                             <div class="form-group">
-                                <label for="comment" class="control-label text-white">Comment (optional):</label>
-                                <textarea class="form-control" name="comment" id="comment"></textarea>
+                                <label for="comment" class="control-label text-white">Comment:</label>
+                                <textarea class="form-control" name="comment" id="comment" placeholder="Briefly describe your artifact..."></textarea>
                             </div> 
                             <!-- Outcome checkboxes -->
                             <label id="outcome_label" class="control-label text-white mt-4"></label>
@@ -213,7 +213,7 @@
                     if(response != null) {
                         var outcome_name;
                         var outcome_id;
-                        $('#outcome_label').html('Apply Outcomes')
+                        $('#outcome_label').html('Apply Outcomes');
                         $('#outcome_select').empty();
                         for(var i=0;i<response.length;i++){
                             outcome_name = response[i]['name'];
@@ -225,6 +225,10 @@
                         $('[data-toggle="tooltip"]').tooltip();
                     }
                 });
+            }
+            else {
+                $('#outcome_label').html('');
+                $('#outcome_select').empty();
             }
         });
 
