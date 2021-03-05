@@ -182,8 +182,8 @@ def account_settings(request):
 		user.save()
 	if request.FILES:
 		image = request.FILES.get('image')
-		user.image = image
 		user = request.user
+		user.image = image
 		user.save()
 	return render(request, "account_settings.html")
 
