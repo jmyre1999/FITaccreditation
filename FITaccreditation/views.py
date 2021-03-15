@@ -275,7 +275,20 @@ def dashboard(request):
 			course_percent = int( (1 - len(course_unsatisfied)/course.outcomes.count()) * 100)
 		else:
 			course_percent = 100
-		course_list.append({'title': course.title, 'pk': course.pk,'unsatisfied_outcomes': course_unsatisfied, 'percent_complete': course_percent})
+		unsatisfied_outcome_pks = course.get_unsatisfied_outcome_pks()
+		print(course)
+		print(unsatisfied_outcome_pks)
+		outcome_info_list = []
+		for outcome in course.outcomes.all():
+			outcome_info = {}
+			outcome_info['name'] = str(outcome)
+			if outcome.pk in unsatisfied_outcome_pks:
+				outcome_info['satisfied'] = False
+			else:
+				outcome_info['satisfied'] = True
+			outcome_info['description'] = outcome.description
+			outcome_info_list.append(outcome_info)
+		course_list.append({'title': course.title, 'pk': course.pk,'unsatisfied_outcomes': course_unsatisfied, 'percent_complete': course_percent, 'outcome_info_list': outcome_info_list,})
 	return render(request, "dashboard.html", {
 		'user_name': user_name,
 		'total_unsatisfied': total_unsatisfied,
@@ -286,7 +299,7 @@ def dashboard(request):
 def reviewer_dashboard(request):
 	if not request.user.is_authenticated:
 		return HttpResponseRedirect('/login/')
-	if request.user.role in ['','FA', 'AD']:
+	if request.user.role in ['','FA']:
 		return HttpResponseRedirect('/')
 
 	outcomes = Outcome.objects.all()

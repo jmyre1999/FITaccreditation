@@ -108,6 +108,13 @@ class Course(models.Model):
 	def __str__(self):
 		return self.title
 
+	def get_unsatisfied_outcome_pks(self):
+		outcomes_list = []
+		for outcome in self.outcomes.all():
+			if not SatisfiedOutcome.objects.filter(course=self, outcome=outcome, archived=False).exists():
+				outcomes_list.append(outcome.pk)
+		return outcomes_list
+
 	def get_unsatisfied_outcomes(self):
 		outcomes_list = []
 		for outcome in self.outcomes.all():

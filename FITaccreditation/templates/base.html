@@ -65,10 +65,12 @@ This is where global styling will be called
 								<li class="nav-item"><a href="/submission/" class="nav-link">Submit</a></li>
 		                		<li class="nav-item"><a href="/dashboard/" class="nav-link">Progress</a></li>
 							{% elif request.user.role == 'RE' %}
-		                		<li class="nav-item"><a href="/reviewer_dashboard/" class="nav-link">Dashboard</a></li>
-		                	{% elif request.user.role != ''  %}
+		                		<li class="nav-item"><a href="/reviewer_dashboard/" class="nav-link">Review Dashboard</a></li>
+		                	{% elif request.user.role == 'AD'  %}
 								<li class="nav-item"><a href="/submission/" class="nav-link">Submit</a></li>
-		                		<li class="nav-item"><a href="/overview/" class="nav-link">Overview</a></li>
+								<li class="nav-item"><a href="/dashboard/" class="nav-link">Progress</a></li>
+								<li class="nav-item"><a href="/reviewer_dashboard/" class="nav-link">Review</a></li>
+		                		<li class="nav-item"><a href="/overview/" class="nav-link">Artifacts</a></li>
 		                	{% endif %}
 		                	<li class="nav-item"><a href="#" data-toggle="modal" data-target="#logoutModal" class="nav-link">Logout</a></li>
 		                	<!-- Make account setttings a list item on mobile -->

@@ -90,6 +90,34 @@
                                     </a>
                                 </span>
                             </div>
+                            <div class="row justify-content-center">
+                                <div class="col-auto">
+                                    <table class="table table-responsive">
+                                        <thead class="text-black fs--1">
+                                            <tr>
+                                                <th>Outcome</th>
+                                                <th>Description</th>
+                                                <th>Satisfied</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for outcome_info in course.outcome_info_list %}
+                                                <tr>
+                                                    <td>{{ outcome_info.name }}</td>
+                                                    <td>{{ outcome_info.description }}</td>
+                                                    <td>
+                                                        {% if outcome_info.satisfied %}
+                                                            <i class="fas fa-check-circle" style="color:green;"></i>
+                                                        {% else %}
+                                                            <i class="fas fa-times-circle" style="color:red;"></i>
+                                                        {% endif %}
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
