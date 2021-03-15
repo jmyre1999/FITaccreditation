@@ -20,6 +20,7 @@ urlpatterns = [
     url(r'^404/$', views.notfound_handler, name='404'),
     url(r'^403/$', views.forbidden_handler, name='403'),
     url(r'^success/$', views.successful_submission_handler, name='success'),
+    url(r'^success_survey/$', views.successful_submission_survey_handler, name='success_survey'),
     url(r'^dashboard/$', views.dashboard, name='dashboard'),
     url(r'^reviewer_dashboard/$', views.reviewer_dashboard, name='reviewer_dashboard'),
     url(r'^overview/$', views.overview, name='overview'),

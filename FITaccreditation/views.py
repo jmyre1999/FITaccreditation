@@ -127,7 +127,6 @@ def submission(request):
 			if len(outcome_pks) > 0:
 				if request.FILES:
 					upload_file = request.FILES.get('upload')
-					print(upload_file.name)
 					file_name,file_ext = os.path.splitext(upload_file.name)
 					if (file_ext not in [".exe",".EXE",".bat",".BAT"]):
 						artifact = Artifact.objects.create(upload_file=upload_file, course=course, comment=comment, uploader=request.user)
@@ -141,7 +140,7 @@ def submission(request):
 								satisfied_outcome = SatisfiedOutcome.objects.create(course=course, outcome=outcome, archived=False)
 								satisfied_outcome.artifacts.add(artifact)
 								satisfied_outcome.save()
-							return redirect('/success/')
+							return redirect('/success_survey/')
 					else:
 						error = True
 						error_message = 'File type not allowed'
@@ -203,6 +202,9 @@ def forbidden_handler(request):
 
 def successful_submission_handler(request):
 	return render(request, "success.html")
+
+def successful_submission_survey_handler(request):
+	return render(request, "success_survey.html")
 
 def overview(request):
 	if not request.user.is_authenticated:
