@@ -57,10 +57,15 @@
                             </select>
                             <!-- Upload File -->
                             <label for="upload" class="control-label text-white mt-4">Upload Artifact</label>
-                            <div class="form-group">
-                                <span class="btn btn-default btn-file text-white mb-4">
-                                    <input id="upload_file" name="upload" type="file" class="file" data-show-upload="true" data-show-caption="true">
-                                </span>
+                            <div id="artifact_section">
+                                <div  class="form-group">
+                                    <span class="btn btn-default btn-file text-white mb-2">
+                                        <input id="upload_file_1" name="upload" type="file" class="file" data-show-upload="true" data-show-caption="true">
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <a id="add_file_button" class="btn btn-primary my-4">+ Add Another File</a>
                             </div>
                             <!-- Comment area -->
                             <div class="form-group">
@@ -234,6 +239,24 @@
 
         $('#course_select').change();
     });
+
+    var num_files = 1
+    var max_files = 5
+    var upload_limit = false
+
+    $("#add_file_button").click(function(){
+        if(num_files < max_files){
+            num_files = num_files+1
+            $("#artifact_section").append('<div class="form-group"><span class="btn btn-default btn-file text-white mb-2"><input id="upload_file_' + num_files.toString() + '" name="upload" type="file" class="file" data-show-upload="true" data-show-caption="true"></span></div>')
+        }
+        else if(!upload_limit){
+            $("#artifact_section").append('<div class="alert alert-danger"><strong>File Limit Reached!</strong></div>')
+            upload_limit = true
+        }
+
+            
+
+    })
 
     // Modal slider functionality.
     $("div[id^='help']").each(function(){

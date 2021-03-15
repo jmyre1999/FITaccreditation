@@ -126,24 +126,29 @@ def submission(request):
 			comment = request.POST.get('comment', '')
 			if len(outcome_pks) > 0:
 				if request.FILES:
-					upload_file = request.FILES.get('upload')
-					file_name,file_ext = os.path.splitext(upload_file.name)
-					if (file_ext not in [".exe",".EXE",".bat",".BAT"]):
-						artifact = Artifact.objects.create(upload_file=upload_file, course=course, comment=comment, uploader=request.user)
-						for outcome_pk in outcome_pks:
-							outcome = Outcome.objects.get(pk=int(outcome_pk))
-							artifact.outcome.add(outcome)
-							artifact.save()
-							if SatisfiedOutcome.objects.filter(course=course, outcome=outcome, archived=False).exists():
-								satisfied_outcome = SatisfiedOutcome.objects.filter(course=course, outcome=outcome, archived=False).last()
+					upload_files = request.FILES.getlist('upload')
+					for upload_file in upload_files:
+						file_name,file_ext = os.path.splitext(upload_file.name)
+						if (file_ext not in [".exe",".EXE",".bat",".BAT"]):
+							artifact = Artifact.objects.create(upload_file=upload_file, course=course, comment=comment, uploader=request.user)
+							for outcome_pk in outcome_pks:
+								outcome = Outcome.objects.get(pk=int(outcome_pk))
+								artifact.outcome.add(outcome)
+								artifact.save()
+								if SatisfiedOutcome.objects.filter(course=course, outcome=outcome, archived=False).exists():
+									satisfied_outcome = SatisfiedOutcome.objects.filter(course=course, outcome=outcome, archived=False).last()
+								else:
+									satisfied_outcome = SatisfiedOutcome.objects.create(course=course, outcome=outcome, archived=False)
+									satisfied_outcome.artifacts.add(artifact)
+									satisfied_outcome.save()
+						else:
+							if not error:
+								error_message = 'The following files were denied: ' + file_name + file_ext
 							else:
-								satisfied_outcome = SatisfiedOutcome.objects.create(course=course, outcome=outcome, archived=False)
-								satisfied_outcome.artifacts.add(artifact)
-								satisfied_outcome.save()
-							return redirect('/success_survey/')
-					else:
-						error = True
-						error_message = 'File type not allowed'
+								error_message = error_message + ", " + file_name + file_ext
+							error = True
+					if not error:	
+						return redirect('/success_survey/')
 				else:
 					error = True
 					error_message = 'No file uploaded'
