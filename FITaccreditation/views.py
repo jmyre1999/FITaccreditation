@@ -90,13 +90,13 @@ def register_form(request):
 					fail_silently=True,
 				)
 				send_mail(
-					'ABET reporting registration',
+					'FIT Accreditation Assessment Registration',
 					'''
 					Thank you for registering for faculty status at cse-assessment-test.fit.edu.
 					We would like to confirm that you are responsible for this registration so that an administrator may verify your account.
 					Please reply with your confirmation, or let us know if you did not create this registration.
 
-					FIT CSE Assessment Adminstrators
+					FIT Accreditation Assessment Adminstrators
 					http://cse-assessment-test.fit.edu/
 					''',
 					os.environ.get('EMAIL_HOST_USER', ''),
@@ -172,9 +172,14 @@ def get_outcomes_for_submission(request):
 	if selected_course_pk != '':
 		selected_course = Course.objects.get(pk=int(selected_course_pk))
 		outcomes = selected_course.outcomes.all()
+		unsatisfied_outcome_pks = selected_course.get_unsatisfied_outcome_pks()
 		outcomes_list = []
 		for outcome in outcomes:
-			outcomes_list.append({'pk': str(outcome.pk), 'name': str(outcome), 'description': str(outcome.description)})
+			if outcome.pk in unsatisfied_outcome_pks:
+				satisfied = False
+			else:
+				satisfied = True
+			outcomes_list.append({'pk': str(outcome.pk), 'name': str(outcome), 'description': str(outcome.description), 'satisfied': satisfied,})
 		return outcomes_list
 	return None
 
@@ -276,8 +281,6 @@ def dashboard(request):
 		else:
 			course_percent = 100
 		unsatisfied_outcome_pks = course.get_unsatisfied_outcome_pks()
-		print(course)
-		print(unsatisfied_outcome_pks)
 		outcome_info_list = []
 		for outcome in course.outcomes.all():
 			outcome_info = {}
@@ -302,6 +305,15 @@ def reviewer_dashboard(request):
 	if request.user.role in ['','FA']:
 		return HttpResponseRedirect('/')
 
+	message = None
+	error = False
+
+	if request.POST:
+		if request.POST.get('action', '') == 'remind_all':
+
+			message = "Successfully sent reminder email to faculty."
+
+	all_satisfied = True
 	outcomes = Outcome.objects.all()
 	outcome_list = []
 	for outcome in outcomes:
@@ -322,10 +334,15 @@ def reviewer_dashboard(request):
 				if satisfied_outcomes.filter(course=course).exists():
 					num_complete = num_complete + 1
 			outcomeinfo["percent_complete"] = int(100 * num_complete/courses.count())
+			if outcomeinfo["percent_complete"] != 100:
+				all_satisfied = False
 		else:
 			outcomeinfo["percent_complete"] = 100
 		outcome_list.append(outcomeinfo)
 
 	return render(request, "reviewer_dashboard.html",{
 		"outcome_list": outcome_list,
+		'all_satisfied': all_satisfied,
+		'error': error,
+		'message': message,
 		})

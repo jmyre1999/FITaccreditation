@@ -33,12 +33,31 @@
         <div class = "container-md px-0">
             <div class = "row">
                 <div class = "col-sm" id="outter-col">
-                    <h3 class="text pt-2"> Outcome Progress Dashboard </h3>
+                    {% if message %}
+                        <div class="alert alert-{% if error %}danger{% else %}success{% endif %}">
+                            <strong>{{ message }}</strong>
+                        </div>
+                    {% endif %}
+                    <h3 class="text pt-2"> Outcome Progress Review Dashboard </h3>
+                    
                     <div class = "col-sm" id="inner-col">
-                        {% if outcome_list|length != 0 %}
-                            There is something to review.
-                        {% else %}
-                            There is nothing to review.
+                        {% if request.user.role == 'RE' %}
+                            {% if outcome_list|length != 0 %}
+                                The following outcomes are available for progress review.
+                            {% else %}
+                                There is nothing to review.
+                            {% endif %}
+                        {% elif request.user.role == 'AD' %}
+                            {% if not all_satisfied %}
+                                <form method="POST">
+                                    {% csrf_token %}
+                                    There are outcomes that have not been satisfied. 
+                                    <input hidden name="action" value="remind_all"/>
+                                    <!-- <button type="submit" class="btn btn-primary">Send faculty reminder</button> -->
+                                </form>
+                            {% else %}
+                                All outcomes have been satisfied.
+                            {% endif %}
                         {% endif %}
                     </div>
                 </div>
@@ -52,14 +71,14 @@
                 <div class="card">
                     <div class="card-header" id="outcome_{{ outcome.pk }}">
                         <h3>
-                            {{ outcome.name }}
+                            {{ outcome.name }} {% if outcome.percent_complete == 100 %}<i class="fas fa-check-circle" style="color:green;"></i>{% else %}<i class="fas fa-times-circle" style="color:red;"></i>{% endif %}
                             <button class="btn btn-link" id="collapse_btn_{{ outcome.pk }}" type="button" data-toggle="collapse" 
                             data-target="#collapse{{ outcome.pk }}" aria-expanded="false" aria-controls="collapse{{ outcome.pk }}">
-                                <i class="fas fa-angle-right"></i>
+                                <i class="fas fa-angle-{% if forloop.counter == 1 %}down{% else %}right{% endif %}"></i>
                             </button>
                         </h3>
                     </div>
-                    <div id="collapse{{ outcome.pk }}" class="collapse" aria-labelledby="outcome_{{ outcome.pk }}" data-parent="#outcomes">
+                    <div id="collapse{{ outcome.pk }}" class="collapse{% if forloop.counter == 1 %} show{% endif %}" aria-labelledby="outcome_{{ outcome.pk }}" data-parent="#outcomes">
                         <div class="card-body" id="outcome_progress">
                             <div class="align-items-center">
                                 <div class="row py-2">
@@ -125,4 +144,20 @@
             {% endfor %}
         </div>
     </body>
+
+    <script>
+        $('.collapse').on('show.bs.collapse', function() {
+            var pk = $(this).attr('id').replace('collapse', '');
+            var btn_id = '#collapse_btn_' + pk;
+            $(btn_id).empty(); 
+            $(btn_id).append('<i class="fas fa-angle-down"></i>');
+        });
+
+        $('.collapse').on('hide.bs.collapse', function() {
+            var pk = $(this).attr('id').replace('collapse', '');
+            var btn_id = '#collapse_btn_' + pk;
+            $(btn_id).empty();
+            $(btn_id).append('<i class="fas fa-angle-right"></i>');
+        });
+    </script>
 {% endblock base_body %}

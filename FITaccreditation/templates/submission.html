@@ -82,6 +82,7 @@
                                                 <th>Select</th>
                                                 <th wdith="100">Outcome</th>
                                                 <th width="400">Description</th>
+                                                <th>Satisfied</th>
                                             </tr>
                                         </thead>
                                         <tbody class="text-white fs--1" id="outcome_table_body">
@@ -238,7 +239,14 @@
                             outcome_name = response[i]['name'];
                             outcome_id = response[i]['pk'];
                             outcome_description = response[i]['description'];
-                            $('#outcome_table_body').append('<tr><td><div class="form-check"><input class="form-check-input" name="outcome" type="checkbox" value="' + outcome_id + '"></td><td>' + outcome_name + '</td><td>' + outcome_description + '</td></tr>');
+                            outcome_satisfied = response[i]['satisfied'];
+                            if(outcome_satisfied ==  true) {
+                                outcome_satisfied_html = '<i class="fas fa-check-circle" style="color:green;">'
+                            } 
+                            else {
+                                outcome_satisfied_html = '<i class="fas fa-times-circle" style="color:grey;"></i>'
+                            }
+                            $('#outcome_table_body').append('<tr><td><div class="form-check"><input class="form-check-input" name="outcome" type="checkbox" value="' + outcome_id + '"></td><td>' + outcome_name + '</td><td>' + outcome_description + '</td><td>' + outcome_satisfied_html + '</td></tr>');
                         }
                     }
                 });
