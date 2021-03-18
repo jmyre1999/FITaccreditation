@@ -87,7 +87,7 @@ def register_form(request):
 					'Email: ' + email,
 					os.environ.get('EMAIL_HOST_USER', ''),
 					[os.environ.get('EMAIL_HOST_USER', ''),],
-					fail_silently=False,
+					fail_silently=True,
 				)
 				send_mail(
 					'FIT Accreditation Assessment Registration',
