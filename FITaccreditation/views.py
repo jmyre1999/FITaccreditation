@@ -346,3 +346,85 @@ def reviewer_dashboard(request):
 		'error': error,
 		'message': message,
 		})
+
+# Tool for admins, advisors, and faculty
+def move_artifacts(request):
+	if not request.user.is_authenticated:
+		return HttpResponseRedirect('/login/')
+	if request.user.role in ['','RE']:
+		return HttpResponseRedirect('/')
+
+	error = False
+	error_message = ''
+
+	# Get a list of artifacts
+	# | If admin or advisor
+	# | | Get all artifacts
+	# | If faculty
+	# | | Get uploaded artifacts
+	if request.user.role == 'AD' or request.user.is_staff:
+		artifacts = Artifact.objects.all()
+	else:
+		faculty_courses = request.user.course_set.all()
+		artifacts = Artifact.objects.filter(course__in=faculty_courses)
+
+	if request.POST:
+		artifact_id = request.POST.get('artifact', None)
+		if artifact_id:
+			artifact = Artifact.objects.get(pk=int(artifact_id))
+
+			from_set_id = request.POST.get('from_set', None)
+			to_set_id = request.POST.get('to_set', None)
+			new_set_name = request.POST.get('new_set_name', '')
+			new_set_type = request.POST.get('new_set_type')
+
+			if from_set_id:
+				from_set = ArtifactSet.objects.get(pk=int(from_set_id))
+			else:
+				from_set = None
+
+			if to_set_id:
+				to_set = ArtifactSet.objects.get(pk=int(to_set_id))
+			elif new_set_name != '':
+				try:
+					to_set = ArtifactSet.objects.create(course=artifact.course, set_type=new_set_type, name=new_set_name)
+				except:
+					error = True
+					error_message = 'Course "' + str(artifact.course) + '" already has a set with the name "' + new_set_name + '"' 
+			else:
+				error = True
+				error_message = 'No valid target set'
+
+			if not error:
+				if from_set:
+					from_set.artifacts.remove(artifact)
+				to_set.artifacts.add(artifact)
+		else:
+			error = True
+			error_message = 'No artifact selected'
+
+	return render(request, "move_tool.html",{
+		'artifacts': artifacts,
+		'SET_TYPE_CHOICES': SET_TYPE_CHOICES,
+		'error': error,
+		'error_message': error_message,
+		})
+
+@ajax
+def get_sets_ajax(request):
+	selected_artifact_id = request.POST.get('selected_artifact_id')
+	if selected_artifact_id != '':
+		selected_artifact = Artifact.objects.get(pk=int(selected_artifact_id))
+		from_set = selected_artifact.artifactset_set.first()
+		from_set_info = {}
+		if from_set:
+			from_set_info = {'id': str(from_set.pk), 'name': str(from_set.name), 'course': str(from_set.course)}
+		else:
+			from_set_info = {'id': "", 'name': 'None', 'course': str(selected_artifact.course)}
+		to_sets = ArtifactSet.objects.filter(course=selected_artifact.course)
+		to_set_list = []
+		for to_set in to_sets:
+			if to_set != from_set:
+				to_set_list.append({'id': str(to_set.pk), 'name': str(to_set.name), 'course': str(to_set.course)})
+		return {'from_set_info': from_set_info, 'to_set_list': to_set_list}
+	return None

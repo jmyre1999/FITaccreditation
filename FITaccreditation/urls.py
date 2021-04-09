@@ -25,6 +25,8 @@ urlpatterns = [
     url(r'^reviewer_dashboard/$', views.reviewer_dashboard, name='reviewer_dashboard'),
     url(r'^overview/$', views.overview, name='overview'),
     url(r'^download_artifact/(?P<artifact_id>\d+)/$', views.download_artifact, name='download_artifact'),
+    url(r'^move_artifacts/$', views.move_artifacts, name='move_artifacts'),
+    url(r'^move_artifacts/get_sets_ajax/$', views.get_sets_ajax, name='get_sets_ajax'),
 
     path('reset_password/', auth_views.PasswordResetView.as_view(template_name="password_reset.html"),
         name="reset_password"),

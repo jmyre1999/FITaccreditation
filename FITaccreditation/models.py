@@ -44,7 +44,6 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
 	last_name = models.CharField(max_length=25, blank=True)
 	image = models.ImageField(upload_to='userprofile', null=True, blank=True, max_length=500)
 	is_staff = models.BooleanField(default=False)
-	is_faculty = models.BooleanField(default=False)
 	is_active = models.BooleanField(default=True)
 	role = models.CharField(max_length=25, blank=True, choices=CLASS_CHOICES)
 
@@ -146,6 +145,7 @@ class Contact(models.Model):
 	def __str__(self):
 		return self.name
 
+# Instances of student work
 class Artifact(models.Model):
 	upload_file = models.FileField(upload_to='artifacts', max_length=500)
 	course = models.ForeignKey('Course', on_delete=models.CASCADE)
@@ -164,4 +164,28 @@ class Artifact(models.Model):
 			satisfied_outcome.artifacts.remove(self)
 			if not satisfied_outcome.artifacts.all().exists():
 				satisfied_outcome.delete()
+		artifact_sets = self.artifactset_set.all()
+		for artifact_set in artifact_sets:
+			artifact_set.artifacts.remove(self)
 		super(Artifact, self).delete(*args, **kwargs)
+
+SET_TYPE_CHOICES = (
+	('AS', 'Assignment'),
+	('EX', 'Exam'),
+	('OT', 'Other')
+)
+
+# Exams, Assignments, Other
+class ArtifactSet(models.Model):
+	name = models.CharField(max_length = 200)
+	set_type = models.CharField(max_length=2, choices=SET_TYPE_CHOICES)
+	artifacts = models.ManyToManyField('Artifact',blank=True, null=True)
+	course = models.ForeignKey('Course', on_delete=models.CASCADE)
+	outcome = models.ManyToManyField('Outcome',blank=True, null=True)
+	date_created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+
+	def __str__(self):
+		return str(self.upload_file)
+
+	class Meta:
+		unique_together = (('name', 'course',),)
