@@ -342,7 +342,15 @@ def reviewer_dashboard(request):
 		artifacts = []
 		for satisfied_outcome in satisfied_outcomes:
 			for artifact in satisfied_outcome.artifacts.all():
-				artifacts.append(artifact)
+				artifact_set = artifact.get_artifact_set()
+				if artifact_set:
+					set_name = artifact_set.name
+					set_type = artifact_set.display_set_type()
+				else:
+					set_name = 'None'
+					set_type = 'None'				
+				artifacts.append({'comment': artifact.comment, 'name': str(artifact), 'id': artifact.pk, 'set_name': set_name, 'set_type': set_type})
+		artifacts = sorted(artifacts, key = lambda i: i['set_type'])
 		outcomeinfo["artifacts"] = artifacts
 		outcomeinfo["name"] = str(outcome)
 		outcomeinfo["description"] = outcome.description

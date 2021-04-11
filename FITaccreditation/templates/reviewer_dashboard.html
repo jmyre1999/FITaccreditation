@@ -101,6 +101,8 @@
                                             <table class="table table-responsive">
                                                 <thead class="text-black fs--1">
                                                     <tr>
+                                                        <th>Set Name</th>
+                                                        <th>Set Type</th>
                                                         <th>Comment</th>
                                                         <th>Upload File</th>
                                                     </tr>
@@ -109,6 +111,12 @@
                                                     {% for artifact in outcome.artifacts %}
                                                         <tr>
                                                             <td>
+                                                                {{ artifact.set_name }}
+                                                            </td>
+                                                            <td>
+                                                                {{ artifact.set_type }}
+                                                            </td>
+                                                            <td>
                                                                 {% if artifact.comment != "" %}
                                                                     {{ artifact.comment }}
                                                                 {% else %}
@@ -116,7 +124,7 @@
                                                                 {% endif %}
                                                             </td>
                                                             <td>
-                                                                {{ artifact }}
+                                                                {{ artifact.name }}
                                                                 <span class="goto">
                                                                     <!-- download artifact -->
                                                                     <a href="/download_artifact/{{artifact.id}}/" target="_blank">

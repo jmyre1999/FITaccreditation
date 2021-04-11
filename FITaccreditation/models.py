@@ -157,6 +157,11 @@ class Artifact(models.Model):
 	def __str__(self):
 		return str(self.upload_file)
 
+	def get_artifact_set(self):
+		try:
+			return self.artifactset_set.first()
+		except:
+			return None
 
 	def delete(self, *args, **kwargs):
 		satisfied_outcomes = self.satisfiedoutcome_set.all()
@@ -185,7 +190,13 @@ class ArtifactSet(models.Model):
 	date_created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
 	def __str__(self):
-		return str(self.upload_file)
+		return str(self.name)
+
+	def display_set_type(self):
+		for type_choice in SET_TYPE_CHOICES:
+			if self.set_type == type_choice[0]:
+				return type_choice[1]
+		return ''
 
 	class Meta:
 		unique_together = (('name', 'course',),)
