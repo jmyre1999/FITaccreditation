@@ -124,6 +124,9 @@ def submission(request):
 			course = Course.objects.get(pk=int(course_pk))
 			outcome_pks = request.POST.getlist('outcome', '')
 			comment = request.POST.get('comment', '')
+			to_set_pk = request.POST.get('to_set', None)
+			new_set_name = request.POST.get('new_set_name', '')
+			new_set_type = request.POST.get('new_set_type')
 			if len(outcome_pks) > 0:
 				if request.FILES:
 					upload_files = request.FILES.getlist('upload')
@@ -141,6 +144,22 @@ def submission(request):
 									satisfied_outcome = SatisfiedOutcome.objects.create(course=course, outcome=outcome, archived=False)
 									satisfied_outcome.artifacts.add(artifact)
 									satisfied_outcome.save()
+
+							# Add to selected set
+							if to_set_pk:
+								to_set = ArtifactSet.objects.get(pk=int(to_set_pk))
+							elif new_set_name != '':
+								try:
+									to_set = ArtifactSet.objects.create(course=course, set_type=new_set_type, name=new_set_name)
+								except:
+									error = True
+									error_message = 'Course "' + str(course) + '" already has a set with the name "' + new_set_name + '"' 
+							else:
+								error = True
+								error_message = 'No valid target set'
+
+							if not error:
+								to_set.artifacts.add(artifact)
 						else:
 							if not error:
 								error_message = 'The following files were denied: ' + file_name + file_ext
@@ -164,6 +183,7 @@ def submission(request):
 		'linked_course_pk': linked_course_pk,
 		'error': error,
 		'error_message': error_message,
+		'SET_TYPE_CHOICES': SET_TYPE_CHOICES,
 		})
 
 @ajax
@@ -357,11 +377,6 @@ def move_artifacts(request):
 	error = False
 	error_message = ''
 
-	# Get a list of artifacts
-	# | If admin or advisor
-	# | | Get all artifacts
-	# | If faculty
-	# | | Get uploaded artifacts
 	if request.user.role == 'AD' or request.user.is_staff:
 		artifacts = Artifact.objects.all()
 	else:
@@ -427,4 +442,16 @@ def get_sets_ajax(request):
 			if to_set != from_set:
 				to_set_list.append({'id': str(to_set.pk), 'name': str(to_set.name), 'course': str(to_set.course)})
 		return {'from_set_info': from_set_info, 'to_set_list': to_set_list}
+	return None
+
+@ajax
+def get_sets_from_course_ajax(request):
+	selected_course_pk = request.POST.get('selected_course_pk')
+	if selected_course_pk != '':
+		selected_course = Course.objects.get(pk=int(selected_course_pk))
+		to_sets = ArtifactSet.objects.filter(course=selected_course)
+		to_set_list = []
+		for to_set in to_sets:
+			to_set_list.append({'id': str(to_set.pk), 'name': str(to_set.name)})
+		return to_set_list
 	return None

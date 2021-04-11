@@ -32,12 +32,7 @@
                     </div>
                     <div class="heading mb-4">
                         <h4>
-                            Submission Server
-                            <!-- Help button. -->
-                            <a class="control-label text-white" data-toggle="modal" data-target="#help1"> 
-                                <i class="far fa-question-circle fa-xs" id="helpbutton"></i>
-                            </a>
-                            <!-- End help button.-->
+                            Move Artifacts
                         </h4>
                     </div>
                     {% if artifacts.count > 0 %}
@@ -131,7 +126,6 @@
             }
             else {
                 $('#to_set_select').html('<option value="" selected>Select Existing Target Set</option>');
-                $('#outcome_table_body').empty();
                 $('#from_course').html('');
                 $('#from_name').html('');
                 $('input[name="from_set"]').val("");
