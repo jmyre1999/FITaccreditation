@@ -10,6 +10,18 @@
                 margin-right: auto;
                 text-align: center;
             }
+            [id*="to_set_select"] {
+                width: 100%;
+                margin-left: auto;
+                margin-right: auto;
+                text-align: center;
+            }
+            [id*="new_set_type"] {
+                width: 50%;
+                margin-left: auto;
+                margin-right: auto;
+                text-align: center;
+            }
             [id*="outcome_select"] {
                 width: 100%;
                 margin-left: auto;
@@ -22,11 +34,13 @@
         </style>
 
     <body style="background-color:#880000;">
+    <br><br>
     <div class="container">
         <div class="row">
             <!-- WIP -->
             <div class="col-lg-12 col-md-12 form-container">
                 <div class="form-box text-center">
+                    <br><br>
                     <div class="logo mb-3 my-4">
                         <img src="{% static 'img/logo-white.png' %}" width="150px">
                     </div>
@@ -57,10 +71,28 @@
                             </select>
                             <!-- Upload File -->
                             <label for="upload" class="control-label text-white mt-4">Upload Artifact</label>
-                            <div class="form-group">
-                                <span class="btn btn-default btn-file text-white mb-4">
-                                    <input id="upload_file" name="upload" type="file" class="file" multiple data-show-upload="true" data-show-caption="true">
-                                </span>
+                            <div id="artifact_section">
+                                <div  class="form-group">
+                                    <span class="btn btn-default btn-file text-white mb-2">
+                                        <input id="upload_file_1" name="upload" type="file" class="file" data-show-upload="true" data-show-caption="true">
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <a id="add_file_button" class="btn btn-primary my-4">+ Add Another File</a>
+                            </div>
+                            <!-- To set dropdown -->
+                            <select name="to_set" id="to_set_select" class="custom-select-lg my-4">
+                                <option value="" selected>Add to existing set</option>
+                            </select>
+                            <div class="form-input mb-4" id="new_set_section">
+                                <label for="new_set_name" class="control-label text-white">Or Create New Set (Optional)</label>
+                                <input name="new_set_name" id="new_set_name" type="text" placeholder="New Set Name" value="">
+                                <select name="new_set_type" id="new_set_type" class="custom-select-lg my-2">
+                                    {% for choice in SET_TYPE_CHOICES %}
+                                        <option value="{{ choice.0 }}" {% if forloop.first %}selected{% endif %}>New Set Type: {{ choice.1 }}</option>
+                                    {% endfor %}
+                                </select>
                             </div>
                             <!-- Comment area -->
                             <div class="form-group">
@@ -69,12 +101,26 @@
                             </div> 
                             <!-- Outcome checkboxes -->
                             <label id="outcome_label" class="control-label text-white mt-4"></label>
-                            <div id="outcome_select">
-                                <!-- Append checkboxes -->                         
+                            <div class="row justify-content-center" id="outcome_table_section" style="display: none;">
+                                <table class="table table-responsive center" style="width: 450px; font-size: 80%;">
+                                    <thead class="text-white fs--1">
+                                        <tr>
+                                            <th>Select</th>
+                                            <th width="100">Outcome</th>
+                                            <th width="400">Description</th>
+                                            <th>Satisfied</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-white fs--1" id="outcome_table_body">
+                                        <!-- Append outcomes via ajax -->
+                                    </tbody>
+                                </table>
                             </div>
+                            <br>
                             <div class="text-center">
                                 <button type="submit" class="btn btn-primary btn-lg mb-4" id="submission_button">Submit</button>
                             </div>
+                            <br>
                         </form>
                     {% else %}
                         <span class="text-white">You are not assigned to any courses</span>
@@ -214,26 +260,80 @@
                         var outcome_name;
                         var outcome_id;
                         $('#outcome_label').html('Apply Outcomes');
-                        $('#outcome_select').empty();
+                        $('#outcome_table_section').show();
+                        $('#outcome_table_body').empty();
                         for(var i=0;i<response.length;i++){
                             outcome_name = response[i]['name'];
                             outcome_id = response[i]['pk'];
                             outcome_description = response[i]['description'];
-                            $('#outcome_select').append('<div class="form-check"><input class="form-check-input" name="outcome" type="checkbox" value="' + outcome_id + '"><label class="form-check-label text-white">' + outcome_name + '</label><span data-toggle="tooltip" data-placement="right" title="' + outcome_description + '"><i class="fa fa-question-circle ml-2 text-white" data-fa-transform="shrink-2"></i></span></div>');
+                            outcome_satisfied = response[i]['satisfied'];
+                            if(outcome_satisfied ==  true) {
+                                outcome_satisfied_html = '<i class="fas fa-check-circle" style="color:green;">'
+                            } 
+                            else {
+                                outcome_satisfied_html = '<i class="fas fa-times-circle" style="color:grey;"></i>'
+                            }
+                            $('#outcome_table_body').append('<tr><td><div class="form-check"><input class="form-check-input" name="outcome" type="checkbox" value="' + outcome_id + '"></td><td>' + outcome_name + '</td><td>' + outcome_description + '</td><td>' + outcome_satisfied_html + '</td></tr>');
                         }
-                        $('#outcome_select').append('<br><br>')
-                        $('[data-toggle="tooltip"]').tooltip();
+                    }
+                });
+                ajaxPost('/submission/get_sets_ajax/', {
+                    'selected_course_pk': $('#course_select').val(),
+                }, function(response){
+                    if(response != null) {
+                        var to_set_name;
+                        var to_set_id;
+
+                        $('#to_set_select').html('<option value="" selected>Select Existing Target Set</option>');
+                        for(var i=0;i<response.length;i++){
+                            to_set_name = response[i]['name'];
+                            to_set_id = response[i]['id'];
+                            $('#to_set_select').append('<option value="' + to_set_id +'">' + to_set_name + '</option>');
+                        }
                     }
                 });
             }
             else {
+                $('#to_set_select').html('<option value="" selected>Select Existing Target Set</option>');
                 $('#outcome_label').html('');
-                $('#outcome_select').empty();
+                $('#outcome_table_section').hide();
+                $('#outcome_table_body').empty();
             }
+            $('#to_set_select').val('');
+            $('#to_set_select').change();
         });
 
         $('#course_select').change();
+
+        $('#to_set_select').change(function(){
+            if($('#to_set_select').val() == '') {
+                $('#new_set_section').show();
+            }
+            else {
+                $('#new_set_section').hide();
+            }
+        });
+
+        $('#artifact_select').change();
     });
+
+    var num_files = 1
+    var max_files = 5
+    var upload_limit = false
+
+    $("#add_file_button").click(function(){
+        if(num_files < max_files){
+            num_files = num_files+1
+            $("#artifact_section").append('<div class="form-group"><span class="btn btn-default btn-file text-white mb-2"><input id="upload_file_' + num_files.toString() + '" name="upload" type="file" class="file" data-show-upload="true" data-show-caption="true"></span></div>')
+        }
+        else if(!upload_limit){
+            $("#artifact_section").append('<div class="alert alert-danger"><strong>File Limit Reached!</strong></div>')
+            upload_limit = true
+        }
+
+            
+
+    })
 
     // Modal slider functionality.
     $("div[id^='help']").each(function(){

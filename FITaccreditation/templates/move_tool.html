@@ -1,0 +1,150 @@
+{% extends 'base.html' %} <!-- IMPORTANT -->
+{% load staticfiles %}
+
+{% block base_body %} <!-- Will replace base_body block in base.html -->
+<body>
+        <style>
+            [id*="course_select"] {
+                width: 100%;
+                margin-left: auto;
+                margin-right: auto;
+                text-align: center;
+            }
+            [id*="outcome_select"] {
+                width: 100%;
+                margin-left: auto;
+                margin-right: auto;
+                text-align: center;
+            }
+            [id*="helpbutton"]:hover {
+                color: black !important;
+            }
+        </style>
+
+    <body style="background-color:#880000;">
+    <div class="container">
+        <div class="row">
+            <!-- WIP -->
+            <div class="col-lg-12 col-md-12 form-container">
+                <div class="form-box text-center">
+                    <div class="logo mb-3 my-4">
+                        <img src="{% static 'img/logo-white.png' %}" width="150px">
+                    </div>
+                    <div class="heading mb-4">
+                        <h4>
+                            Move Artifacts
+                        </h4>
+                    </div>
+                    {% if artifacts.count > 0 %}
+                        <form id="submission_form" method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {% if error %}
+                                <div class="alert alert-danger">
+                                    <strong>{{ error_message }}!</strong>
+                                </div>
+                            {% endif %}
+                            <!-- Artifact dropdown -->
+                            <select name="artifact" id="artifact_select" class="custom-select-lg my-4">
+                                <option value="" selected>Select Artifact</option>
+                                {% for artifact in artifacts %}
+                                    <option value="{{ artifact.pk }}">{{ artifact }}</option>
+                                {% endfor %}
+                            </select>
+                            <!-- Show from set info -->
+                            <input hidden name="from_set" value=""/>
+                            <div class="row" id="from_set_info">
+                                <div class="col-6 text-center">
+                                    <label class="control-label text-white">Course</label>
+                                    <p class="text-white" id="from_course"></p>
+                                </div>
+                                <div class="col-6 text-center">
+                                    <label class="control-label text-white">Current Set</label>
+                                    <p class="text-white" id="from_name"></p>
+                                </div>
+                            </div>
+                            <!-- To set dropdown -->
+                            <select name="to_set" id="to_set_select" class="custom-select-lg my-4">
+                                <option value="" selected>Select Existing Target Set</option>
+                            </select>
+                            <div class="form-input" id="new_set_section">
+                                <label for="new_set_name" class="control-label text-white">Or Create New Set (Optional)</label>
+                                <input name="new_set_name" id="new_set_name" type="text" placeholder="New Set Name" value="">
+                                <select name="new_set_type" id="new_set_type" class="custom-select-lg my-2">
+                                    {% for choice in SET_TYPE_CHOICES %}
+                                        <option value="{{ choice.0 }}" {% if forloop.first %}selected{% endif %}>Type: {{ choice.1 }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="text-center my-4">
+                                <button type="submit" class="btn btn-primary btn-lg mb-4" id="submission_button">Submit</button>
+                            </div>
+                        </form>
+                    {% else %}
+                        {% if request.user.role == 'FA' %}
+                            <span class="text-white">You have not uploaded any artifacts</span>
+                        {% else %}
+                            <span class="text-white">No artifacts are available to move</span>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script id="outcome_script"></script>
+
+<script type="text/javascript">
+
+    $(document).ready(function(){
+        $('#artifact_select').change(function(){
+            if($('#artifact_select').val() != '') {
+                ajaxPost('/move_artifacts/get_sets_ajax/', {
+                    'selected_artifact_id': $('#artifact_select').val(),
+                }, function(response){
+                    if(response != null) {
+                        var from_set_name = response['from_set_info']['name'];
+                        var from_set_id = response['from_set_info']['id'];
+                        var from_set_course = response['from_set_info']['course'];
+                        var to_set_name;
+                        var to_set_id;
+                        var to_set_course;
+
+                        $('#from_course').html(from_set_course);
+                        $('#from_name').html(from_set_name);
+                        $('input[name="from_set"]').val(from_set_id);
+
+                        $('#to_set_select').html('<option value="" selected>Select Existing Target Set</option>');
+                        for(var i=0;i<response['to_set_list'].length;i++){
+                            to_set_name = response['to_set_list'][i]['name'];
+                            to_set_id = response['to_set_list'][i]['id'];
+                            to_set_course = response['to_set_list'][i]['course'];
+                            $('#to_set_select').append('<option value="' + to_set_id +'">' + to_set_course + ' | ' + to_set_name + '</option>');
+                        }
+                    }
+                });
+            }
+            else {
+                $('#to_set_select').html('<option value="" selected>Select Existing Target Set</option>');
+                $('#from_course').html('');
+                $('#from_name').html('');
+                $('input[name="from_set"]').val("");
+            }
+            $('#to_set_select').val('');
+            $('#to_set_select').change();
+        });
+
+        $('#to_set_select').change(function(){
+            if($('#to_set_select').val() == '') {
+                $('#new_set_section').show();
+            }
+            else {
+                $('#new_set_section').hide();
+            }
+        });
+
+        $('#artifact_select').change();
+    });
+    
+</script>
+{% endblock base_body %}

@@ -16,6 +16,7 @@ urlpatterns = [
     url(r'^register/$', views.register_form, name='register'),
     url(r'^submission/$', views.submission, name='submission'),
     url(r'^submission/get_outcomes_ajax/$', views.get_outcomes_for_submission, name='submission_outcomes_ajax'),
+    url(r'^submission/get_sets_ajax/$', views.get_sets_from_course_ajax, name='get_sets_from_course_ajax'),
     url(r'^account_settings/$', views.account_settings, name='account_settings'),
     url(r'^404/$', views.notfound_handler, name='404'),
     url(r'^403/$', views.forbidden_handler, name='403'),
@@ -25,6 +26,8 @@ urlpatterns = [
     url(r'^reviewer_dashboard/$', views.reviewer_dashboard, name='reviewer_dashboard'),
     url(r'^overview/$', views.overview, name='overview'),
     url(r'^download_artifact/(?P<artifact_id>\d+)/$', views.download_artifact, name='download_artifact'),
+    url(r'^move_artifacts/$', views.move_artifacts, name='move_artifacts'),
+    url(r'^move_artifacts/get_sets_ajax/$', views.get_sets_ajax, name='get_sets_ajax'),
 
     path('reset_password/', auth_views.PasswordResetView.as_view(template_name="password_reset.html"),
         name="reset_password"),
@@ -36,4 +39,4 @@ urlpatterns = [
         name="password_reset_complete"),
 ]
 
-# urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

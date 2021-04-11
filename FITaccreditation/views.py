@@ -90,13 +90,13 @@ def register_form(request):
 					fail_silently=True,
 				)
 				send_mail(
-					'ABET reporting registration',
+					'FIT Accreditation Assessment Registration',
 					'''
 					Thank you for registering for faculty status at cse-assessment-test.fit.edu.
 					We would like to confirm that you are responsible for this registration so that an administrator may verify your account.
 					Please reply with your confirmation, or let us know if you did not create this registration.
 
-					FIT CSE Assessment Adminstrators
+					FIT Accreditation Assessment Adminstrators
 					http://cse-assessment-test.fit.edu/
 					''',
 					os.environ.get('EMAIL_HOST_USER', ''),
@@ -124,21 +124,50 @@ def submission(request):
 			course = Course.objects.get(pk=int(course_pk))
 			outcome_pks = request.POST.getlist('outcome', '')
 			comment = request.POST.get('comment', '')
+			to_set_pk = request.POST.get('to_set', None)
+			new_set_name = request.POST.get('new_set_name', '')
+			new_set_type = request.POST.get('new_set_type')
 			if len(outcome_pks) > 0:
 				if request.FILES:
-					upload_file = request.FILES.get('upload')
-					artifact = Artifact.objects.create(upload_file=upload_file, course=course, comment=comment, uploader=request.user)
-					for outcome_pk in outcome_pks:
-						outcome = Outcome.objects.get(pk=int(outcome_pk))
-						artifact.outcome.add(outcome)
-						artifact.save()
-						if SatisfiedOutcome.objects.filter(course=course, outcome=outcome, archived=False).exists():
-							satisfied_outcome = SatisfiedOutcome.objects.filter(course=course, outcome=outcome, archived=False).last()
+					upload_files = request.FILES.getlist('upload')
+					for upload_file in upload_files:
+						file_name,file_ext = os.path.splitext(upload_file.name)
+						if (file_ext not in [".exe",".EXE",".bat",".BAT"]):
+							artifact = Artifact.objects.create(upload_file=upload_file, course=course, comment=comment, uploader=request.user)
+							for outcome_pk in outcome_pks:
+								outcome = Outcome.objects.get(pk=int(outcome_pk))
+								artifact.outcome.add(outcome)
+								artifact.save()
+								if SatisfiedOutcome.objects.filter(course=course, outcome=outcome, archived=False).exists():
+									satisfied_outcome = SatisfiedOutcome.objects.filter(course=course, outcome=outcome, archived=False).last()
+								else:
+									satisfied_outcome = SatisfiedOutcome.objects.create(course=course, outcome=outcome, archived=False)
+									satisfied_outcome.artifacts.add(artifact)
+									satisfied_outcome.save()
+
+							# Add to selected set
+							if to_set_pk:
+								to_set = ArtifactSet.objects.get(pk=int(to_set_pk))
+							elif new_set_name != '':
+								try:
+									to_set = ArtifactSet.objects.create(course=course, set_type=new_set_type, name=new_set_name)
+								except:
+									error = True
+									error_message = 'Course "' + str(course) + '" already has a set with the name "' + new_set_name + '"' 
+							else:
+								error = True
+								error_message = 'No valid target set'
+
+							if not error:
+								to_set.artifacts.add(artifact)
 						else:
-							satisfied_outcome = SatisfiedOutcome.objects.create(course=course, outcome=outcome, archived=False)
-						satisfied_outcome.artifacts.add(artifact)
-						satisfied_outcome.save()
-					return redirect('/success_survey/')
+							if not error:
+								error_message = 'The following files were denied: ' + file_name + file_ext
+							else:
+								error_message = error_message + ", " + file_name + file_ext
+							error = True
+					if not error:	
+						return redirect('/success_survey/')
 				else:
 					error = True
 					error_message = 'No file uploaded'
@@ -154,6 +183,7 @@ def submission(request):
 		'linked_course_pk': linked_course_pk,
 		'error': error,
 		'error_message': error_message,
+		'SET_TYPE_CHOICES': SET_TYPE_CHOICES,
 		})
 
 @ajax
@@ -162,9 +192,14 @@ def get_outcomes_for_submission(request):
 	if selected_course_pk != '':
 		selected_course = Course.objects.get(pk=int(selected_course_pk))
 		outcomes = selected_course.outcomes.all()
+		unsatisfied_outcome_pks = selected_course.get_unsatisfied_outcome_pks()
 		outcomes_list = []
 		for outcome in outcomes:
-			outcomes_list.append({'pk': str(outcome.pk), 'name': str(outcome), 'description': str(outcome.description)})
+			if outcome.pk in unsatisfied_outcome_pks:
+				satisfied = False
+			else:
+				satisfied = True
+			outcomes_list.append({'pk': str(outcome.pk), 'name': str(outcome), 'description': str(outcome.description), 'satisfied': satisfied,})
 		return outcomes_list
 	return None
 
@@ -182,9 +217,11 @@ def account_settings(request):
 		user.save()
 	if request.FILES:
 		image = request.FILES.get('image')
-		user = request.user
-		user.image = image
-		user.save()
+		image_name,image_extension = os.path.splitext(image.name)
+		if image_extension in ['.JPG', '.TIF', '.PNG', '.GIF', '.JPEG', '.jpg', '.tif', '.png', '.jpeg', '.gif']:
+			user.image = image
+			user = request.user
+			user.save()
 	return render(request, "account_settings.html")
 
 def notfound_handler(request):
@@ -263,7 +300,18 @@ def dashboard(request):
 			course_percent = int( (1 - len(course_unsatisfied)/course.outcomes.count()) * 100)
 		else:
 			course_percent = 100
-		course_list.append({'title': course.title, 'pk': course.pk,'unsatisfied_outcomes': course_unsatisfied, 'percent_complete': course_percent})
+		unsatisfied_outcome_pks = course.get_unsatisfied_outcome_pks()
+		outcome_info_list = []
+		for outcome in course.outcomes.all():
+			outcome_info = {}
+			outcome_info['name'] = str(outcome)
+			if outcome.pk in unsatisfied_outcome_pks:
+				outcome_info['satisfied'] = False
+			else:
+				outcome_info['satisfied'] = True
+			outcome_info['description'] = outcome.description
+			outcome_info_list.append(outcome_info)
+		course_list.append({'title': course.title, 'pk': course.pk,'unsatisfied_outcomes': course_unsatisfied, 'percent_complete': course_percent, 'outcome_info_list': outcome_info_list,})
 	return render(request, "dashboard.html", {
 		'user_name': user_name,
 		'total_unsatisfied': total_unsatisfied,
@@ -274,10 +322,18 @@ def dashboard(request):
 def reviewer_dashboard(request):
 	if not request.user.is_authenticated:
 		return HttpResponseRedirect('/login/')
-	if request.user.role in ['','FA', 'AD']:
+	if request.user.role in ['','FA']:
 		return HttpResponseRedirect('/')
 
+	message = None
+	error = False
 
+	if request.POST:
+		if request.POST.get('action', '') == 'remind_all':
+
+			message = "Successfully sent reminder email to faculty."
+
+	all_satisfied = True
 	outcomes = Outcome.objects.all()
 	outcome_list = []
 	for outcome in outcomes:
@@ -286,7 +342,15 @@ def reviewer_dashboard(request):
 		artifacts = []
 		for satisfied_outcome in satisfied_outcomes:
 			for artifact in satisfied_outcome.artifacts.all():
-				artifacts.append(artifact)
+				artifact_set = artifact.get_artifact_set()
+				if artifact_set:
+					set_name = artifact_set.name
+					set_type = artifact_set.display_set_type()
+				else:
+					set_name = 'None'
+					set_type = 'None'				
+				artifacts.append({'comment': artifact.comment, 'name': str(artifact), 'id': artifact.pk, 'set_name': set_name, 'set_type': set_type})
+		artifacts = sorted(artifacts, key = lambda i: i['set_type'])
 		outcomeinfo["artifacts"] = artifacts
 		outcomeinfo["name"] = str(outcome)
 		outcomeinfo["description"] = outcome.description
@@ -298,10 +362,104 @@ def reviewer_dashboard(request):
 				if satisfied_outcomes.filter(course=course).exists():
 					num_complete = num_complete + 1
 			outcomeinfo["percent_complete"] = int(100 * num_complete/courses.count())
+			if outcomeinfo["percent_complete"] != 100:
+				all_satisfied = False
 		else:
 			outcomeinfo["percent_complete"] = 100
 		outcome_list.append(outcomeinfo)
 
 	return render(request, "reviewer_dashboard.html",{
 		"outcome_list": outcome_list,
+		'all_satisfied': all_satisfied,
+		'error': error,
+		'message': message,
 		})
+
+# Tool for admins, advisors, and faculty
+def move_artifacts(request):
+	if not request.user.is_authenticated:
+		return HttpResponseRedirect('/login/')
+	if request.user.role in ['','RE']:
+		return HttpResponseRedirect('/')
+
+	error = False
+	error_message = ''
+
+	if request.user.role == 'AD' or request.user.is_staff:
+		artifacts = Artifact.objects.all()
+	else:
+		faculty_courses = request.user.course_set.all()
+		artifacts = Artifact.objects.filter(course__in=faculty_courses)
+
+	if request.POST:
+		artifact_id = request.POST.get('artifact', None)
+		if artifact_id:
+			artifact = Artifact.objects.get(pk=int(artifact_id))
+
+			from_set_id = request.POST.get('from_set', None)
+			to_set_id = request.POST.get('to_set', None)
+			new_set_name = request.POST.get('new_set_name', '')
+			new_set_type = request.POST.get('new_set_type')
+
+			if from_set_id:
+				from_set = ArtifactSet.objects.get(pk=int(from_set_id))
+			else:
+				from_set = None
+
+			if to_set_id:
+				to_set = ArtifactSet.objects.get(pk=int(to_set_id))
+			elif new_set_name != '':
+				try:
+					to_set = ArtifactSet.objects.create(course=artifact.course, set_type=new_set_type, name=new_set_name)
+				except:
+					error = True
+					error_message = 'Course "' + str(artifact.course) + '" already has a set with the name "' + new_set_name + '"' 
+			else:
+				error = True
+				error_message = 'No valid target set'
+
+			if not error:
+				if from_set:
+					from_set.artifacts.remove(artifact)
+				to_set.artifacts.add(artifact)
+		else:
+			error = True
+			error_message = 'No artifact selected'
+
+	return render(request, "move_tool.html",{
+		'artifacts': artifacts,
+		'SET_TYPE_CHOICES': SET_TYPE_CHOICES,
+		'error': error,
+		'error_message': error_message,
+		})
+
+@ajax
+def get_sets_ajax(request):
+	selected_artifact_id = request.POST.get('selected_artifact_id')
+	if selected_artifact_id != '':
+		selected_artifact = Artifact.objects.get(pk=int(selected_artifact_id))
+		from_set = selected_artifact.artifactset_set.first()
+		from_set_info = {}
+		if from_set:
+			from_set_info = {'id': str(from_set.pk), 'name': str(from_set.name), 'course': str(from_set.course)}
+		else:
+			from_set_info = {'id': "", 'name': 'None', 'course': str(selected_artifact.course)}
+		to_sets = ArtifactSet.objects.filter(course=selected_artifact.course)
+		to_set_list = []
+		for to_set in to_sets:
+			if to_set != from_set:
+				to_set_list.append({'id': str(to_set.pk), 'name': str(to_set.name), 'course': str(to_set.course)})
+		return {'from_set_info': from_set_info, 'to_set_list': to_set_list}
+	return None
+
+@ajax
+def get_sets_from_course_ajax(request):
+	selected_course_pk = request.POST.get('selected_course_pk')
+	if selected_course_pk != '':
+		selected_course = Course.objects.get(pk=int(selected_course_pk))
+		to_sets = ArtifactSet.objects.filter(course=selected_course)
+		to_set_list = []
+		for to_set in to_sets:
+			to_set_list.append({'id': str(to_set.pk), 'name': str(to_set.name)})
+		return to_set_list
+	return None
