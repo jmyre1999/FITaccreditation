@@ -1,0 +1,127 @@
+{% extends 'base.html' %} <!-- IMPORTANT -->
+{% load staticfiles %}
+
+{% block base_body %} <!-- Will replace base_body block in base.html -->
+<body>
+    <style>
+        div.move-artifacts {
+            padding: 40px;
+        }
+        ul.Courses {
+            background-color: #707070;
+            padding-bottom: 25px;
+            padding-right: 40px;
+        }
+        ul.Sets {
+            background-color: #b3b3b3;
+            padding-bottom: 25px;
+            padding-right: 40px;
+        }
+        ul.Artifacts {
+            background-color: #ffffff;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+    </style>
+
+    <div class="move-artifacts">
+        <!-- List of courses. -->
+        <ul class="Courses">
+            <li class="Course1">
+                Course 1
+                <!-- List of sets. -->
+                <ul class = "Sets">
+                    <li class="Set1">
+                        Set 1
+                        <!-- List of artifacts. -->
+                        <ul class="Artifacts" id="set1-artifacts">
+                            <li class="artifact1">
+                                Artifact 1
+                            </li>
+                            <li class="artifact2">
+                                Artifact 2
+                            </li>
+                            <li class="artifact3">
+                                Artifact 3
+                            </li>
+                            <li class="artifact4">
+                                Artifact 4
+                            </li>
+                        <!-- End of artifacts. -->
+                        </ul>
+                    </li>
+                    <li class="Set2">
+                        Set 2
+                        <!-- List of artifacts. -->
+                        <ul class="Artifacts" id="set2-artifacts">
+                            <li class="artifact5">
+                                Artifact 5
+                            </li>
+                            <li class="artifact6">
+                                Artifact 6
+                            </li>
+                            <li class="artifact7">
+                                Artifact 7
+                            </li>
+                            <li class="artifact8">
+                                Artifact 8
+                            </li>
+                        <!-- End of artifacts. -->
+                        </ul>
+                    </li>
+                <!-- End of sets. -->
+                </ul>
+            </li>
+            <li class="Course2">
+                Course 2
+                <!-- List of sets. -->
+                <ul class = "Sets">
+                    <li class="Set3">
+                        Set 3
+                        <!-- List of artifacts. -->
+                        <ul class="Artifacts" id="set3-artifacts">
+                            <li class="artifact9">
+                                Artifact 9
+                            </li>
+                            <li class="artifact10">
+                                Artifact 10
+                            </li>
+                            <li class="artifact11">
+                                Artifact 11
+                            </li>
+                            <li class="artifact12">
+                                Artifact 12
+                            </li>
+                        <!-- End of artifacts. -->
+                        </ul>
+                    </li>
+                <!-- End of sets. -->
+                </ul>
+            </li>
+        <!-- End of courses. -->
+        </ul>
+    </div>
+
+<script type="text/javascript">
+
+    dragula([
+        document.getElementById("set1-artifacts"),
+        document.getElementById("set2-artifacts"),
+        document.getElementById("set3-artifacts"),
+    ]);
+    removeOnSpill: false
+    .on("drag", function(el) {
+        el.className.replace("ex-moved", "");
+    })
+    .on("drop", function(el) {
+        el.className += "ex-moved";
+    })
+    .on("over", function(el, container) {
+        container.className += "ex-over";
+    })
+    .on("out", function(el, container) {
+        container.className.replace("ex-over", "");
+    });
+
+</script>
+{% endblock base_body %}

@@ -463,3 +463,6 @@ def get_sets_from_course_ajax(request):
 			to_set_list.append({'id': str(to_set.pk), 'name': str(to_set.name)})
 		return to_set_list
 	return None
+
+def move_tool_test(request):
+	return render(request, "move_tool_test.html")
