@@ -17,7 +17,7 @@
                 text-align: center;
             }
             [id*="new_set_type"] {
-                width: 50%;
+                width: 100%;
                 margin-left: auto;
                 margin-right: auto;
                 text-align: center;
@@ -73,22 +73,22 @@
                             <label for="upload" class="control-label text-white mt-4">Upload Artifact</label>
                             <div id="artifact_section">
                                 <div  class="form-group">
-                                    <span class="btn btn-default btn-file text-white mb-2">
+                                    <span class="btn btn-default btn-file text-white">
                                         <input id="upload_file_1" name="upload" type="file" class="file" data-show-upload="true" data-show-caption="true">
                                     </span>
                                 </div>
                             </div>
-                            <div class="mb-4">
+                            <div class="mb-2">
                                 <a id="add_file_button" class="btn btn-primary my-4">+ Add Another File</a>
                             </div>
                             <!-- To set dropdown -->
                             <select name="to_set" id="to_set_select" class="custom-select-lg my-4">
                                 <option value="" selected>Add to existing set</option>
                             </select>
-                            <div class="form-input mb-4" id="new_set_section">
-                                <label for="new_set_name" class="control-label text-white">Or Create New Set (Optional)</label>
+                            <div class="form-input" id="new_set_section">
+                                <label for="new_set_name" class="control-label text-white mt-4">Or Create New Set (Optional)</label><br>
                                 <input name="new_set_name" id="new_set_name" type="text" placeholder="New Set Name" value="">
-                                <select name="new_set_type" id="new_set_type" class="custom-select-lg my-2">
+                                <select name="new_set_type" id="new_set_type" class="custom-select-lg my-4">
                                     {% for choice in SET_TYPE_CHOICES %}
                                         <option value="{{ choice.0 }}" {% if forloop.first %}selected{% endif %}>New Set Type: {{ choice.1 }}</option>
                                     {% endfor %}
@@ -96,7 +96,7 @@
                             </div>
                             <!-- Comment area -->
                             <div class="form-group">
-                                <label for="comment" class="control-label text-white">Comment:</label>
+                                <label for="comment" class="control-label text-white mt-4">Comment:</label>
                                 <textarea class="form-control" name="comment" id="comment" placeholder="Briefly describe your artifact..."></textarea>
                             </div> 
                             <!-- Outcome checkboxes -->
@@ -184,7 +184,7 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h4 class="modal-title">
-                                    Step 2. Choose a file.
+                                    Step 2. Choose your files.
                                 </h4>
                             </div>
                             <div class="modal-body">
@@ -205,7 +205,7 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h4 class="modal-title">
-                                    Step 3. Choose applicable outcomes.
+                                    Step 3. Choose or create a set.
                                 </h4>
                             </div>
                             <div class="modal-body">
@@ -226,11 +226,32 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h4 class="modal-title">
-                                    Step 4. Submit.
+                                    Step 4. Choose applicable outcomes.
                                 </h4>
                             </div>
                             <div class="modal-body">
                                 <img class="img-responsive" src="{% static 'img/help/step4.gif' %}" style="width:100%; height:auto;">
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger">Prev</button>
+                                <button type="button" class="btn btn-primary">Next</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Need help? Sixth slide. -->
+                <div class="modal fade" id="help5" role="dialog" style="z-index: 10001;">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">
+                                    Step 5. Submit and finish!
+                                </h4>
+                            </div>
+                            <div class="modal-body">
+                                <img class="img-responsive" src="{% static 'img/help/step5.gif' %}" style="width:100%; height:auto;">
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-danger">Prev</button>
