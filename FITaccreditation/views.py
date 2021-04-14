@@ -372,25 +372,53 @@ def reviewer_dashboard(request):
 	all_satisfied = True
 	outcomes = Outcome.objects.all()
 	outcome_list = []
+	# Outcome ..
+	# | Course ..
+	# | | Exams
+	# | | | Set ..
+	# | | | | Artifact ..
+	# | | Assignments
+	# | | | Set ..
+	# | | | | Artifact ..
+	# | | Other
+	# | | | Set ..
+	# | | | | Artifact ..
 	for outcome in outcomes:
+		course_folders = []
+		courses = Course.objects.filter(outcomes__pk=outcome.pk)
+		for course in courses:
+			outer_folder = {}
+			assignment_sets = ArtifactSet.objects.filter(outcome=outcome, course=course, set_type="AS")
+			exam_sets = ArtifactSet.objects.filter(outcome=outcome, course=course, set_type="EX")
+			other_sets = ArtifactSet.objects.filter(outcome=outcome, course=course, set_type="OT")
+			outer_folder['course'] = str(course)
+			assignments_list = []
+			for artifact_set in assignment_sets:
+				artifacts = []
+				for artifact in artifact_set.artifacts.all():
+					artifacts.append({'comment': artifact.comment, 'name': str(artifact), 'id': artifact.pk})
+				assignments_list.append({'name': artifact_set.name, 'artifacts': artifacts})
+			exam_list = []
+			for artifact_set in exam_sets:
+				artifacts = []
+				for artifact in artifact_set.artifacts.all():
+					artifacts.append({'comment': artifact.comment, 'name': str(artifact), 'id': artifact.pk})
+				exam_list.append({'name': artifact_set.name, 'artifacts': artifacts})
+				exam_list = []
+			for artifact_set in other_sets:
+				artifacts = []
+				for artifact in artifact_set.artifacts.all():
+					artifacts.append({'comment': artifact.comment, 'name': str(artifact), 'id': artifact.pk})
+				exam_list.append({'name': artifact_set.name, 'artifacts': artifacts})
+			course_folders.append(outer_folder)
+
 		outcomeinfo = {}
-		satisfied_outcomes = SatisfiedOutcome.objects.filter(archived=False,outcome=outcome)
-		artifacts = []
-		for satisfied_outcome in satisfied_outcomes:
-			for artifact in satisfied_outcome.artifacts.all():
-				artifact_set = artifact.get_artifact_set()
-				if artifact_set:
-					set_name = artifact_set.name
-					set_type = artifact_set.display_set_type()
-				else:
-					set_name = 'None'
-					set_type = 'None'				
-				artifacts.append({'comment': artifact.comment, 'name': str(artifact), 'id': artifact.pk, 'set_name': set_name, 'set_type': set_type})
-		artifacts = sorted(artifacts, key = lambda i: i['set_type'])
-		outcomeinfo["artifacts"] = artifacts
+		outcomeinfo["course_folders"] = course_folders
 		outcomeinfo["name"] = str(outcome)
 		outcomeinfo["description"] = outcome.description
 		outcomeinfo["pk"] = outcome.pk
+
+		satisfied_outcomes = SatisfiedOutcome.objects.filter(archived=False,outcome=outcome)
 		courses = Course.objects.filter(outcomes__pk=outcome.pk)
 		if courses:
 			num_complete = 0
