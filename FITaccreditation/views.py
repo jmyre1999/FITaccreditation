@@ -130,6 +130,20 @@ def submission(request):
 			if len(outcome_pks) > 0:
 				if request.FILES:
 					upload_files = request.FILES.getlist('upload')
+
+					# Get selected set
+					if to_set_pk:
+						to_set = ArtifactSet.objects.get(pk=int(to_set_pk))
+					elif new_set_name != '':
+						try:
+							to_set = ArtifactSet.objects.create(course=course, set_type=new_set_type, name=new_set_name)
+						except:
+							error = True
+							error_message = 'Course "' + str(course) + '" already has a set with the name "' + new_set_name + '"' 
+					else:
+						error = True
+						error_message = 'No valid target set'
+
 					for upload_file in upload_files:
 						file_name,file_ext = os.path.splitext(upload_file.name)
 						if (file_ext not in [".exe",".EXE",".bat",".BAT"]):
@@ -142,30 +156,20 @@ def submission(request):
 									satisfied_outcome = SatisfiedOutcome.objects.filter(course=course, outcome=outcome, archived=False).last()
 								else:
 									satisfied_outcome = SatisfiedOutcome.objects.create(course=course, outcome=outcome, archived=False)
-									satisfied_outcome.artifacts.add(artifact)
-									satisfied_outcome.save()
+								satisfied_outcome.artifacts.add(artifact)
+								satisfied_outcome.save()
 
 							# Add to selected set
-							if to_set_pk:
-								to_set = ArtifactSet.objects.get(pk=int(to_set_pk))
-							elif new_set_name != '':
-								try:
-									to_set = ArtifactSet.objects.create(course=course, set_type=new_set_type, name=new_set_name)
-								except:
-									error = True
-									error_message = 'Course "' + str(course) + '" already has a set with the name "' + new_set_name + '"' 
-							else:
-								error = True
-								error_message = 'No valid target set'
-
 							if not error:
 								to_set.artifacts.add(artifact)
+
 						else:
 							if not error:
 								error_message = 'The following files were denied: ' + file_name + file_ext
 							else:
 								error_message = error_message + ", " + file_name + file_ext
 							error = True
+
 					if not error:	
 						return redirect('/success_survey/')
 				else:
@@ -243,6 +247,17 @@ def overview(request):
 		return HttpResponseRedirect('/')
 
 	artifact_objects = Artifact.objects.all()
+	course_id = request.GET.get('course', None)
+	if course_id:
+		course_id = int(course_id)
+		artifact_objects = artifact_objects.filter(course__pk=course_id)
+	outcome_id = request.GET.get('outcome', None)
+	if outcome_id:
+		outcome_id = int(outcome_id)
+		artifact_objects = artifact_objects.filter(outcome__pk=outcome_id)
+	filter_set_type = request.GET.get('set_type', None)
+	if filter_set_type:
+		artifact_objects = artifact_objects.filter(artifactset__set_type=filter_set_type)
 	artifacts = []
 	for artifact in artifact_objects:
 		artifact_info = {}
@@ -255,9 +270,26 @@ def overview(request):
 			artifact_info["uploader"] = artifact.uploader.email
 		artifact_info["upload_date"] = artifact.date_created
 		artifact_info["comment"] = artifact.comment
+		# Set Info
+		artifact_set = artifact.get_artifact_set()
+		if artifact_set:
+			set_name = artifact_set.name
+			set_type = artifact_set.display_set_type()
+		else:
+			set_name = 'None'
+			set_type = 'None'				
+		artifact_info['set_name'] = set_name
+		artifact_info['set_type'] = set_type
 		artifacts.append(artifact_info)
+	artifacts = sorted(artifacts, key = lambda i: i['upload_date'])
 	return render(request, "overview.html", {
-		"artifacts":artifacts
+		"artifacts":artifacts,
+		"course_id":course_id,
+		"outcome_id":outcome_id,
+		"set_type":filter_set_type,
+		"courses":Course.objects.all(),
+		"outcomes":Outcome.objects.all(),
+		"SET_TYPE_CHOICES":SET_TYPE_CHOICES,
 		})
 
 def download_artifact(request, artifact_id):
@@ -330,8 +362,12 @@ def reviewer_dashboard(request):
 
 	if request.POST:
 		if request.POST.get('action', '') == 'remind_all':
-
-			message = "Successfully sent reminder email to faculty."
+			try:
+				remind_all_faculty()
+				message = "Successfully sent reminder emails to faculty."
+			except:
+				error = True
+				message = "There was an error sending the reminder emails, please try again later!"
 
 	all_satisfied = True
 	outcomes = Outcome.objects.all()

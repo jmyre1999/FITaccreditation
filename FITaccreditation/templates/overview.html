@@ -11,6 +11,36 @@
             <input class="form-control" id="filter" type="text" placeholder="Search...">
         </div>
     </div>
+    <div class="container col-12 d-flex justify-content-center pt-2 pb-3">
+        <form id="filter_form" method="GET" enctype="multipart/form-data">
+            <div class="row">
+                <select name="outcome" id="outcome_select" class="custom-select-lg my-4 mx-3 pr-5">
+                    <option value="" {% if not outcome_id %}selected{% endif %}>Outcome Filter</option>
+                    {% for outcome in outcomes %}
+                        <option value="{{ outcome.pk }}" {% if outcome_id == outcome.pk %}selected{% endif %}>{{ outcome }}</option>
+                    {% endfor %}
+                </select>
+                <select name="course" id="course_select" class="custom-select-lg my-4 mx-3">
+                    <option value="" {% if not course_id %}selected{% endif %}>Course Filter</option>
+                    {% for course in courses %}
+                        <option value="{{ course.pk }}" {% if course_id == course.pk %}selected{% endif %}>{{ course.title }}</option>
+                    {% endfor %}
+                </select>
+                <select name="set_type" id="set_type_select" class="custom-select-lg my-4 mx-3">
+                    <option value="" {% if not set_type %}selected{% endif %}>Set Type Filter</option>
+                    {% for choice in SET_TYPE_CHOICES %}
+                        <option value="{{ choice.0 }}" {% if set_type == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
+                    {% endfor %}
+                </select>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary btn-lg mt-4 mx-3" id="submission_button">Filter</button>
+                </div>
+                <div class="text-center">
+                    <a type="submit" class="btn btn-secondary btn-lg mt-4 mx-3" id="reset_button" href="/overview/">Clear</a>
+                </div>
+            </div>
+        </form>
+    </div>
     <!-- Container for table -->
     <div class="container col-12 d-flex justify-content-center p-3 pb-5">
         <!-- Table -->
@@ -20,6 +50,8 @@
                 <thead>
                     <tr>
                         <th>File</th>
+                        <th>Set Name</th>
+                        <th>Set Type</th>
                         <th>Course</th>
                         <th>Uploader</th>
                         <th>Upload Date</th>
@@ -30,6 +62,8 @@
                     {% for artifact in artifacts %}
                         <tr>
                             <td><a href="/download_artifact/{{artifact.id}}/" target="_blank">{{artifact.upload_file}}</a></td>
+                            <td>{{ artifact.set_name }}</td>
+                            <td>{{ artifact.set_type }}</td>
                             <td>{{artifact.course}}</td>
                             <td>{{artifact.uploader}}</td>
                             <td>{{artifact.upload_date}}</td>

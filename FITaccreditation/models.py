@@ -58,6 +58,20 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
 	def get_full_name(self):
 		return self.first_name + ' ' + self.last_name
 
+	def get_display_name(self):
+		if self.first_name != '' and self.last_name != '':
+			return get_full_name()
+		else:
+			return str(email)
+
+	def get_unsatisfied_courses(self):
+		user_courses = self.course_set.all()
+		course_list = []
+		for course in user_courses:
+			if not SatisfiedOutcome.objects.filter(course=course, archived=False).exists():
+				course_list.append(course)
+		return course_list
+
 	def get_unsatisfied_outcomes(self):
 		user_courses = self.course_set.all()
 		outcomes_list = []

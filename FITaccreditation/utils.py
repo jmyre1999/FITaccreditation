@@ -21,24 +21,39 @@ def check_password_validity(password):
 
 def remind_all_faculty():
 	if not os.environ.get('LOCAL_SERVER', None):
-		send_mail(
-			'Accreditation Reporting Reminder',
-			'Email: ' + email,
-			os.environ.get('EMAIL_HOST_USER', ''),
-			[os.environ.get('EMAIL_HOST_USER', ''),],
-			fail_silently=True,
-		)
-		send_mail(
-			'ABET reporting registration',
-			'''
-			Thank you for registering for faculty status at cse-assessment-test.fit.edu.
-			We would like to confirm that you are responsible for this registration so that an administrator may verify your account.
-			Please reply with your confirmation, or let us know if you did not create this registration.
+		users = UserProfile.objects.filter(role__in=['FA', 'AD'])
+		for user in users:
+			unsatisfied_courses = user.get_unsatisfied_courses()
+			if len(unsatisfied_courses) > 0:
+				user_name = user.get_display_name()
+				courses = ""
+				counter = 0
+				for course in unsatisfied_courses:
+					counter += 1
+					courses += str(course)
+					if counter != len(unsatisfied_courses):
+						courses += ", "
 
-			FIT CSE Assessment Adminstrators
-			http://cse-assessment-test.fit.edu/
-			''',
-			os.environ.get('EMAIL_HOST_USER', ''),
-			[email,],
-			fail_silently=True,
-		)
+				body = '''
+					{user_name},
+
+					This is a manual reminder from a faculty advisor.
+
+					You have {num_courses} courses with unsatisied ABET outcomes:
+					{courses}.
+
+					Please refer to your progress dashboard for more information: http://cse-assessment-test.fit.edu/submission
+
+					FIT CSE Assessment Adminstrators
+					http://cse-assessment-test.fit.edu/
+					'''.format(user_name=user_name, num_courses=len(unsatisfied_courses, courses=courses))
+
+				send_mail(
+					'ABET reporting reminder',
+					body,
+					os.environ.get('EMAIL_HOST_USER', ''),
+					[user.email,],
+					fail_silently=True,
+				)
+
+		

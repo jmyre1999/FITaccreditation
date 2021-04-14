@@ -85,8 +85,14 @@
                                 </div>
                                 <span class="goto">
                                     <!-- Go to upload page. -->
-                                    <a href="/submission/?linked_course={{ course.pk }}" target="_blank" title="Submit for this class">
-                                        <i class="fas fa-arrow-circle-up fa-2x" style="color:#880000;"></i>
+                                    <a href="/submission/?linked_course={{ course.pk }}" target="_blank" title="Submit for this course">
+                                        <i class="fas fa-arrow-circle-up fa-2x mr-1" style="color:#880000;"></i>
+                                    </a>
+                                </span>
+                                <span class="goto">
+                                    <!-- Go to upload page. -->
+                                    <a href="/overview/?course={{ course.pk }}" target="_blank" title="View uploaded artifacts for this course">
+                                        <i class="fas fa-file-alt fa-2x" style="color:#880000;"></i>
                                     </a>
                                 </span>
                             </div>
