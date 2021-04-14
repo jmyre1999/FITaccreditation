@@ -3,7 +3,7 @@
     <div class="card">
         <div class="card-header" id="set_{{ folder.course_id }}_{{ outcome.pk }}_{{ label }}">
             <h3>
-                {{ label }}
+                {{ label }} ({{ sets|length }})
                 <button class="btn btn-link" id="collapse_btn_{{ folder.course_id }}_{{ outcome.pk }}_{{ label }}" type="button" data-toggle="collapse" 
                 data-target="#collapse{{ folder.course_id }}_{{ outcome.pk }}_{{ label }}" aria-expanded="false" aria-controls="collapse{{ folder.course_id }}_{{ outcome.pk }}_{{ label }}">
                     <i class="fas fa-angle-right"></i>
@@ -13,10 +13,13 @@
         <div id="collapse{{ folder.course_id }}_{{ outcome.pk }}_{{ label }}" class="collapse" aria-labelledby="set_{{ folder.course_id }}_{{ outcome.pk }}_{{ label }}" data-parent="#course_{{ folder.course_id }}_{{ outcome.pk }}_{{ label }}">
             <div class="card-body" id="course_folders">
                 <div class="align-items-center">
-                    {{ sets }}
-                    {% for set in sets %}
-                        {% include 'display_artifacts.html' %}
-                    {% endfor %}
+                    {% if sets %}
+                        {% for set in sets %}
+                            {% include 'display_artifacts.html' %}
+                        {% endfor %}
+                    {% else %}
+                        <p>No sets of type {{ label }}</p>
+                    {% endif %}
                 </div>
             </div>
         </div>

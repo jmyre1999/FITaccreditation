@@ -142,7 +142,7 @@ class Course(models.Model):
 class SatisfiedOutcome(models.Model):
 	course = models.ForeignKey('Course', on_delete=models.CASCADE)
 	outcome = models.ForeignKey('Outcome', on_delete=models.CASCADE)
-	artifacts = models.ManyToManyField('Artifact', blank=True)
+	artifact_sets = models.ManyToManyField('ArtifactSet', blank=True)
 	date_created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 	last_updated = models.DateTimeField(auto_now=True, blank=True, null=True)
 	archived = models.BooleanField(default=False)
@@ -163,7 +163,6 @@ class Contact(models.Model):
 class Artifact(models.Model):
 	upload_file = models.FileField(upload_to='artifacts', max_length=500)
 	course = models.ForeignKey('Course', on_delete=models.CASCADE)
-	outcome = models.ManyToManyField('Outcome',blank=True, null=True)
 	comment = models.TextField(default='')
 	date_created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 	uploader = models.ForeignKey('UserProfile', on_delete=models.CASCADE)
@@ -178,14 +177,11 @@ class Artifact(models.Model):
 			return None
 
 	def delete(self, *args, **kwargs):
-		satisfied_outcomes = self.satisfiedoutcome_set.all()
-		for satisfied_outcome in satisfied_outcomes:
-			satisfied_outcome.artifacts.remove(self)
-			if not satisfied_outcome.artifacts.all().exists():
-				satisfied_outcome.delete()
 		artifact_sets = self.artifactset_set.all()
 		for artifact_set in artifact_sets:
 			artifact_set.artifacts.remove(self)
+			if not artifact_set.artifacts.all().exists():
+				artifact_set.delete()
 		super(Artifact, self).delete(*args, **kwargs)
 
 SET_TYPE_CHOICES = (
@@ -200,7 +196,7 @@ class ArtifactSet(models.Model):
 	set_type = models.CharField(max_length=2, choices=SET_TYPE_CHOICES)
 	artifacts = models.ManyToManyField('Artifact',blank=True, null=True)
 	course = models.ForeignKey('Course', on_delete=models.CASCADE)
-	outcome = models.ManyToManyField('Outcome',blank=True, null=True)
+	outcomes = models.ManyToManyField('Outcome',blank=True, null=True)
 	date_created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
 	def __str__(self):
@@ -211,6 +207,14 @@ class ArtifactSet(models.Model):
 			if self.set_type == type_choice[0]:
 				return type_choice[1]
 		return ''
+
+	def delete(self, *args, **kwargs):
+		satisfied_outcomes = self.satisfiedoutcome_set.all()
+		for satisfied_outcome in satisfied_outcomes:
+			satisfied_outcome.artifact_sets.remove(self)
+			if not satisfied_outcome.artifact_sets.all().exists():
+				satisfied_outcome.delete()
+		super(ArtifactSet, self).delete(*args, **kwargs)
 
 	class Meta:
 		unique_together = (('name', 'course',),)

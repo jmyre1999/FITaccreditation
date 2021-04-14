@@ -308,9 +308,11 @@
         $('#to_set_select').change(function(){
             if($('#to_set_select').val() == '') {
                 $('#new_set_section').show();
+                $('#outcome_table_section').show();
             }
             else {
                 $('#new_set_section').hide();
+                $('#outcome_table_section').hide();
             }
         });
 

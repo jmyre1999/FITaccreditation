@@ -61,4 +61,10 @@ class ArtifactSetAdmin(ForeignKeyAutocompleteAdmin):
 
 	search_fields = ('name',)
 
+	# Override original delete selected so satisfied outcomes are handled
+	def delete_selected(self, request, queryset):
+		for artifact_set in queryset:
+			artifact_set.delete()
+	delete_selected.short_description = "Delete selected artifacts sets"
+
 admin.site.register(ArtifactSet, ArtifactSetAdmin)

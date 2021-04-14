@@ -71,7 +71,7 @@
                 <div class="card">
                     <div class="card-header" id="outcome_{{ outcome.pk }}">
                         <h3>
-                            {{ outcome.name }} {% if outcome.percent_complete == 100 %}<i class="fas fa-check-circle" style="color:green;"></i>{% else %}<i class="fas fa-times-circle" style="color:red;"></i>{% endif %}
+                            {{ outcome.name }} ({{ outcome.total_sets }}) {% if outcome.percent_complete == 100 %}<i class="fas fa-check-circle" style="color:green;"></i>{% else %}<i class="fas fa-times-circle" style="color:red;"></i>{% endif %}
                             <button class="btn btn-link" id="collapse_btn_{{ outcome.pk }}" type="button" data-toggle="collapse" 
                             data-target="#collapse{{ outcome.pk }}" aria-expanded="false" aria-controls="collapse{{ outcome.pk }}">
                                 <i class="fas fa-angle-{% if forloop.counter == 1 %}down{% else %}right{% endif %}"></i>
@@ -86,10 +86,10 @@
                         <div class="card-body" id="outcome_progress">
                             <div class="align-items-center">
                                 <div class="row py-2">
-                                    <div class="col-6 text-center">
+                                    <div class="col-lg-6 col-sm-12 text-center">
                                         <p> {{ outcome.description }}</p>
                                     </div>
-                                    <div class="col-6 text-center">
+                                    <div class="col-lg-6 col-sm-12 text-center">
                                         <!-- outcome progress bar. -->
                                         <div class="progress">
                                             <div class="progress-bar" role="progressbar" aria-valuenow="{{ outcome.percent_complete }}"
@@ -104,14 +104,14 @@
                                     <div class="card">
                                         <div class="card-header" id="course_{{ folder.course_id }}_{{ outcome.pk }}">
                                             <h3>
-                                                {{ folder.course }}
+                                                {{ folder.course }} ({{ folder.total_sets }})
                                                 <button class="btn btn-link" id="collapse_btn_{{ folder.course_id }}_{{ outcome.pk }}" type="button" data-toggle="collapse" 
                                                 data-target="#collapse{{ folder.course_id }}_{{ outcome.pk }}" aria-expanded="false" aria-controls="collapse{{ folder.course_id }}_{{ outcome.pk }}">
-                                                    <i class="fas fa-angle-{% if forloop.counter == 1 %}down{% else %}right{% endif %}"></i>
+                                                    <i class="fas fa-angle-right"></i>
                                                 </button>
                                             </h3>
                                         </div>
-                                        <div id="collapse{{ folder.course_id }}_{{ outcome.pk }}" class="collapse{% if forloop.counter == 1 %} show{% endif %}" aria-labelledby="course_{{ folder.course_id }}_{{ outcome.pk }}" data-parent="#courses_{{ outcome.pk }}">
+                                        <div id="collapse{{ folder.course_id }}_{{ outcome.pk }}" class="collapse" aria-labelledby="course_{{ folder.course_id }}_{{ outcome.pk }}" data-parent="#courses_{{ outcome.pk }}">
                                             <div class="card-body" id="course_folders">
                                                 <div class="align-items-center">
                                                     {% include 'set_folders.html' with sets=folder.assignments label='Assignments' %}

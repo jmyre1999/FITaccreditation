@@ -127,57 +127,64 @@ def submission(request):
 			to_set_pk = request.POST.get('to_set', None)
 			new_set_name = request.POST.get('new_set_name', '')
 			new_set_type = request.POST.get('new_set_type')
-			if len(outcome_pks) > 0:
-				if request.FILES:
-					upload_files = request.FILES.getlist('upload')
+			to_set = None
+			if request.FILES:
+				upload_files = request.FILES.getlist('upload')
 
-					# Get selected set
-					if to_set_pk:
-						to_set = ArtifactSet.objects.get(pk=int(to_set_pk))
-					elif new_set_name != '':
-						try:
-							to_set = ArtifactSet.objects.create(course=course, set_type=new_set_type, name=new_set_name)
-						except:
-							error = True
-							error_message = 'Course "' + str(course) + '" already has a set with the name "' + new_set_name + '"' 
-					else:
-						error = True
-						error_message = 'No valid target set'
-
-					for upload_file in upload_files:
-						file_name,file_ext = os.path.splitext(upload_file.name)
-						if (file_ext not in [".exe",".EXE",".bat",".BAT"]):
-							artifact = Artifact.objects.create(upload_file=upload_file, course=course, comment=comment, uploader=request.user)
+				# Get selected set
+				if to_set_pk:
+					to_set = ArtifactSet.objects.get(pk=int(to_set_pk))
+				elif new_set_name != '':
+					try:
+						to_set = ArtifactSet.objects.create(course=course, set_type=new_set_type, name=new_set_name)
+						if len(outcome_pks) > 0:
 							for outcome_pk in outcome_pks:
 								outcome = Outcome.objects.get(pk=int(outcome_pk))
-								artifact.outcome.add(outcome)
-								artifact.save()
+								to_set.outcomes.add(outcome)
+								to_set.save()
 								if SatisfiedOutcome.objects.filter(course=course, outcome=outcome, archived=False).exists():
 									satisfied_outcome = SatisfiedOutcome.objects.filter(course=course, outcome=outcome, archived=False).last()
 								else:
 									satisfied_outcome = SatisfiedOutcome.objects.create(course=course, outcome=outcome, archived=False)
-								satisfied_outcome.artifacts.add(artifact)
+								satisfied_outcome.artifact_sets.add(to_set)
 								satisfied_outcome.save()
-
-							# Add to selected set
-							if not error:
-								to_set.artifacts.add(artifact)
-
 						else:
-							if not error:
-								error_message = 'The following files were denied: ' + file_name + file_ext
-							else:
-								error_message = error_message + ", " + file_name + file_ext
 							error = True
-
-					if not error:	
-						return redirect('/success_survey/')
+							error_message = 'No outcomes applied'
+					except:
+						error = True
+						error_message = 'Course "' + str(course) + '" already has a set with the name "' + new_set_name + '"' 
 				else:
 					error = True
-					error_message = 'No file uploaded'
+					error_message = 'No valid target set'
+
+				for upload_file in upload_files:
+					file_name,file_ext = os.path.splitext(upload_file.name)
+					if (file_ext not in [".exe",".EXE",".bat",".BAT"]):
+						artifact = Artifact.objects.create(upload_file=upload_file, course=course, comment=comment, uploader=request.user)
+
+						# Add to selected set
+						if not error:
+							to_set.artifacts.add(artifact)
+
+					else:
+						if not error:
+							error_message = 'The following files were denied: ' + file_name + file_ext
+						else:
+							error_message = error_message + ", " + file_name + file_ext
+						error = True
+
+				if not error:	
+					return redirect('/success_survey/')
 			else:
 				error = True
-				error_message = 'No outcomes applied'
+				error_message = 'No file uploaded'
+
+			if error and to_set:
+				if not to_set.artifacts.exists():
+					to_set.delete()
+
+			
 		else:
 			error = True
 			error_message = 'No course selected'
@@ -254,7 +261,7 @@ def overview(request):
 	outcome_id = request.GET.get('outcome', None)
 	if outcome_id:
 		outcome_id = int(outcome_id)
-		artifact_objects = artifact_objects.filter(outcome__pk=outcome_id)
+		artifact_objects = artifact_objects.filter(artifactset__outcomes__pk=outcome_id)
 	filter_set_type = request.GET.get('set_type', None)
 	if filter_set_type:
 		artifact_objects = artifact_objects.filter(artifactset__set_type=filter_set_type)
@@ -263,7 +270,6 @@ def overview(request):
 		artifact_info = {}
 		artifact_info["id"] = artifact.pk
 		artifact_info["upload_file"] = artifact.upload_file
-		artifact_info["outcome"] = artifact.outcome
 		artifact_info["course"] = artifact.course
 		artifact_info["uploader"] = artifact.uploader.get_full_name()
 		if artifact_info["uploader"] == " ":
@@ -384,13 +390,14 @@ def reviewer_dashboard(request):
 	# | | | Set ..
 	# | | | | Artifact ..
 	for outcome in outcomes:
+		outcome_total_sets = 0
 		course_folders = []
 		courses = Course.objects.filter(outcomes__pk=outcome.pk)
 		for course in courses:
 			outer_folder = {}
-			assignment_sets = ArtifactSet.objects.filter(outcome=outcome, course=course, set_type="AS")
-			exam_sets = ArtifactSet.objects.filter(outcome=outcome, course=course, set_type="EX")
-			other_sets = ArtifactSet.objects.filter(outcome=outcome, course=course, set_type="OT")
+			assignment_sets = ArtifactSet.objects.filter(outcomes=outcome, course=course, set_type="AS")
+			exam_sets = ArtifactSet.objects.filter(outcomes=outcome, course=course, set_type="EX")
+			other_sets = ArtifactSet.objects.filter(outcomes=outcome, course=course, set_type="OT")
 			outer_folder['course'] = str(course)
 			outer_folder['course_id'] = course.pk
 			assignment_list = []
@@ -411,6 +418,8 @@ def reviewer_dashboard(request):
 				for artifact in artifact_set.artifacts.all():
 					artifacts.append({'comment': artifact.comment, 'name': str(artifact), 'id': artifact.pk})
 				other_list.append({'name': artifact_set.name, 'id': artifact_set.pk, 'artifacts': artifacts})
+			outer_folder['total_sets'] = len(assignment_list) + len(exam_list) + len(other_list)
+			outcome_total_sets += outer_folder['total_sets']
 			outer_folder['assignments'] = assignment_list
 			outer_folder['exams'] = exam_list
 			outer_folder['other'] = other_list
@@ -421,6 +430,7 @@ def reviewer_dashboard(request):
 		outcomeinfo["name"] = str(outcome)
 		outcomeinfo["description"] = outcome.description
 		outcomeinfo["pk"] = outcome.pk
+		outcomeinfo["total_sets"] = outcome_total_sets
 
 		satisfied_outcomes = SatisfiedOutcome.objects.filter(archived=False,outcome=outcome)
 		courses = Course.objects.filter(outcomes__pk=outcome.pk)
