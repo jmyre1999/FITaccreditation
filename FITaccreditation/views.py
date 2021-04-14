@@ -392,24 +392,28 @@ def reviewer_dashboard(request):
 			exam_sets = ArtifactSet.objects.filter(outcome=outcome, course=course, set_type="EX")
 			other_sets = ArtifactSet.objects.filter(outcome=outcome, course=course, set_type="OT")
 			outer_folder['course'] = str(course)
-			assignments_list = []
+			outer_folder['course_id'] = course.pk
+			assignment_list = []
 			for artifact_set in assignment_sets:
 				artifacts = []
 				for artifact in artifact_set.artifacts.all():
 					artifacts.append({'comment': artifact.comment, 'name': str(artifact), 'id': artifact.pk})
-				assignments_list.append({'name': artifact_set.name, 'artifacts': artifacts})
+				assignment_list.append({'name': artifact_set.name, 'id': artifact_set.pk, 'artifacts': artifacts})
 			exam_list = []
 			for artifact_set in exam_sets:
 				artifacts = []
 				for artifact in artifact_set.artifacts.all():
 					artifacts.append({'comment': artifact.comment, 'name': str(artifact), 'id': artifact.pk})
-				exam_list.append({'name': artifact_set.name, 'artifacts': artifacts})
-				exam_list = []
+				exam_list.append({'name': artifact_set.name, 'id': artifact_set.pk, 'artifacts': artifacts})
+			other_list = []
 			for artifact_set in other_sets:
 				artifacts = []
 				for artifact in artifact_set.artifacts.all():
 					artifacts.append({'comment': artifact.comment, 'name': str(artifact), 'id': artifact.pk})
-				exam_list.append({'name': artifact_set.name, 'artifacts': artifacts})
+				other_list.append({'name': artifact_set.name, 'id': artifact_set.pk, 'artifacts': artifacts})
+			outer_folder['assignments'] = assignment_list
+			outer_folder['exams'] = exam_list
+			outer_folder['other'] = other_list
 			course_folders.append(outer_folder)
 
 		outcomeinfo = {}

@@ -1,0 +1,85 @@
+<div class="course_accordion" id="set_{{ set.id }}_accordion">
+    <!-- Set type. -->
+    <div class="card">
+        <div class="card-header" id="set_{{ set.id }}">
+            <h3>
+                {{ set.name }}
+                <button class="btn btn-link" id="collapse_btn_set_{{ set.id }}" type="button" data-toggle="collapse" 
+                data-target="#collapse_set_{{ set.id }}" aria-expanded="false" aria-controls="collapse_set_{{ set.id }}">
+                    <i class="fas fa-angle-right"></i>
+                </button>
+            </h3>
+        </div>
+        <div id="collapse_set_{{ set.id }}" class="collapse" aria-labelledby="set_{{ set.id }}" data-parent="#set_{{ set.id }}_accordion">
+            <div class="card-body" id="set_{{ set.id }}_artifacts">
+                <div class="align-items-center">
+                    test
+                    <h4>Artifacts</h4>
+                    {% if set.artifacts %}
+                        <div class="row justify-content-center">
+                            <div class="col-auto">
+                                <table class="table table-responsive">
+                                    <thead class="text-black fs--1">
+                                        <tr>
+                                            <th>Comment</th>
+                                            <th>Upload File</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for artifact in set.artifacts %}
+                                            <tr>
+                                                <td>
+                                                    {% if artifact.comment != "" %}
+                                                        {{ artifact.comment }}
+                                                    {% else %}
+                                                        No comment
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    {{ artifact.name }}
+                                                    <span class="goto">
+                                                        <!-- download artifact -->
+                                                        <a href="/download_artifact/{{artifact.id}}/" target="_blank">
+                                                            <i class="fas fa-download" style="color:#880000;"></i>
+                                                        </a>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <p>No artifacts uploaded</p>
+                            </div>
+                        </div>
+                    {% endif %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

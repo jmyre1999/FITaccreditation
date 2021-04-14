@@ -78,6 +78,10 @@
                             </button>
                         </h3>
                     </div>
+
+
+
+
                     <div id="collapse{{ outcome.pk }}" class="collapse{% if forloop.counter == 1 %} show{% endif %}" aria-labelledby="outcome_{{ outcome.pk }}" data-parent="#outcomes">
                         <div class="card-body" id="outcome_progress">
                             <div class="align-items-center">
@@ -94,57 +98,31 @@
                                         {{ outcome.percent_complete }}%
                                     </div>
                                 </div>
-                                <h4>Artifacts</h4>
-                                {% if outcome.artifacts %}
-                                    <div class="row justify-content-center">
-                                        <div class="col-auto">
-                                            <table class="table table-responsive">
-                                                <thead class="text-black fs--1">
-                                                    <tr>
-                                                        <th>Set Name</th>
-                                                        <th>Set Type</th>
-                                                        <th>Comment</th>
-                                                        <th>Upload File</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {% for artifact in outcome.artifacts %}
-                                                        <tr>
-                                                            <td>
-                                                                {{ artifact.set_name }}
-                                                            </td>
-                                                            <td>
-                                                                {{ artifact.set_type }}
-                                                            </td>
-                                                            <td>
-                                                                {% if artifact.comment != "" %}
-                                                                    {{ artifact.comment }}
-                                                                {% else %}
-                                                                    No comment
-                                                                {% endif %}
-                                                            </td>
-                                                            <td>
-                                                                {{ artifact.name }}
-                                                                <span class="goto">
-                                                                    <!-- download artifact -->
-                                                                    <a href="/download_artifact/{{artifact.id}}/" target="_blank">
-                                                                        <i class="fas fa-download" style="color:#880000;"></i>
-                                                                    </a>
-                                                                </span>
-                                                            </td>
-                                                        </tr>
-                                                    {% endfor %}
-                                                </tbody>
-                                            </table>
+                                <div class="course_accordion" id="courses_{{ outcome.pk }}">
+                                    <!-- Course. -->
+                                    {% for folder in outcome.course_folders %}
+                                    <div class="card">
+                                        <div class="card-header" id="course_{{ folder.course_id }}_{{ outcome.pk }}">
+                                            <h3>
+                                                {{ folder.course }}
+                                                <button class="btn btn-link" id="collapse_btn_{{ folder.course_id }}_{{ outcome.pk }}" type="button" data-toggle="collapse" 
+                                                data-target="#collapse{{ folder.course_id }}_{{ outcome.pk }}" aria-expanded="false" aria-controls="collapse{{ folder.course_id }}_{{ outcome.pk }}">
+                                                    <i class="fas fa-angle-{% if forloop.counter == 1 %}down{% else %}right{% endif %}"></i>
+                                                </button>
+                                            </h3>
+                                        </div>
+                                        <div id="collapse{{ folder.course_id }}_{{ outcome.pk }}" class="collapse{% if forloop.counter == 1 %} show{% endif %}" aria-labelledby="course_{{ folder.course_id }}_{{ outcome.pk }}" data-parent="#courses_{{ outcome.pk }}">
+                                            <div class="card-body" id="course_folders">
+                                                <div class="align-items-center">
+                                                    {% include 'set_folders.html' with sets=folder.assignments label='Assignments' %}
+                                                    {% include 'set_folders.html' with sets=folder.exams label='Exams' %}
+                                                    {% include 'set_folders.html' with sets=folder.other label='Other' %}
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                {% else %}
-                                    <div class="row">
-                                        <div class="col-12 text-center">
-                                            <p>No artifacts uploaded</p>
-                                        </div>
-                                    </div>
-                                {% endif %}
+                                    {% endfor %}
+                                </div>
                             </div>
                         </div>
                     </div>

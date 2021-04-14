@@ -55,3 +55,10 @@ class ArtifactAdmin(ForeignKeyAutocompleteAdmin):
 
 	actions = [delete_selected,]
 admin.site.register(Artifact, ArtifactAdmin)
+
+class ArtifactSetAdmin(ForeignKeyAutocompleteAdmin):
+	list_display = ('name', 'set_type', 'course')
+
+	search_fields = ('name',)
+
+admin.site.register(ArtifactSet, ArtifactSetAdmin)
