@@ -1,8 +1,8 @@
 <div class="course_accordion" id="set_{{ set.id }}_accordion">
     <!-- Set type. -->
     <div class="card">
-        <div class="card-header" id="set_{{ set.id }}">
-            <h3>
+        <div class="card-header-secondary" id="set_{{ set.id }}" style="background-color: #dfdfdf;">
+            <h3 style="font-size: 150%;">
                 {{ set.name }}
                 <button class="btn btn-link" id="collapse_btn_set_{{ set.id }}" type="button" data-toggle="collapse" 
                 data-target="#collapse_set_{{ set.id }}" aria-expanded="false" aria-controls="collapse_set_{{ set.id }}">
@@ -11,7 +11,7 @@
             </h3>
         </div>
         <div id="collapse_set_{{ set.id }}" class="collapse" aria-labelledby="set_{{ set.id }}" data-parent="#set_{{ set.id }}_accordion">
-            <div class="card-body" id="set_{{ set.id }}_artifacts">
+            <div class="card-body" id="set_{{ set.id }}_artifacts" style="background-color: #f5f5f5;">
                 <div class="align-items-center">
                     <h4>Artifacts</h4>
                     {% if set.artifacts %}

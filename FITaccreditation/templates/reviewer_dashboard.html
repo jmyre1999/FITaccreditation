@@ -98,11 +98,12 @@
                                         {{ outcome.percent_complete }}%
                                     </div>
                                 </div>
+                                <br>
                                 <div class="course_accordion" id="courses_{{ outcome.pk }}">
                                     <!-- Course. -->
                                     {% for folder in outcome.course_folders %}
                                     <div class="card">
-                                        <div class="card-header" id="course_{{ folder.course_id }}_{{ outcome.pk }}">
+                                        <div class="card-header" id="course_{{ folder.course_id }}_{{ outcome.pk }}" style="background-color: #dfdfdf;">
                                             <h3>
                                                 {{ folder.course }} ({{ folder.total_sets }})
                                                 <button class="btn btn-link" id="collapse_btn_{{ folder.course_id }}_{{ outcome.pk }}" type="button" data-toggle="collapse" 
@@ -112,7 +113,7 @@
                                             </h3>
                                         </div>
                                         <div id="collapse{{ folder.course_id }}_{{ outcome.pk }}" class="collapse" aria-labelledby="course_{{ folder.course_id }}_{{ outcome.pk }}" data-parent="#courses_{{ outcome.pk }}">
-                                            <div class="card-body" id="course_folders">
+                                            <div class="card-body" id="course_folders" style="background-color: #f5f5f5;">
                                                 <div class="align-items-center">
                                                     {% include 'set_folders.html' with sets=folder.assignments label='Assignments' %}
                                                     {% include 'set_folders.html' with sets=folder.exams label='Exams' %}
@@ -124,6 +125,7 @@
                                     {% endfor %}
                                 </div>
                             </div>
+                            <br>
                         </div>
                     </div>
                 </div>

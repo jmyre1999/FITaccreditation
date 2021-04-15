@@ -1,8 +1,8 @@
 <div class="course_accordion" id="course_{{ folder.course_id }}_{{ outcome.pk }}_{{ label }}">
     <!-- Set type. -->
     <div class="card">
-        <div class="card-header" id="set_{{ folder.course_id }}_{{ outcome.pk }}_{{ label }}">
-            <h3>
+        <div class="card-header-secondary" id="set_{{ folder.course_id }}_{{ outcome.pk }}_{{ label }}" style="background-color: #f8f8f8;">
+            <h3 style="font-size: 150%;">
                 {{ label }} ({{ sets|length }})
                 <button class="btn btn-link" id="collapse_btn_{{ folder.course_id }}_{{ outcome.pk }}_{{ label }}" type="button" data-toggle="collapse" 
                 data-target="#collapse{{ folder.course_id }}_{{ outcome.pk }}_{{ label }}" aria-expanded="false" aria-controls="collapse{{ folder.course_id }}_{{ outcome.pk }}_{{ label }}">
@@ -10,6 +10,7 @@
                 </button>
             </h3>
         </div>
+        <br>
         <div id="collapse{{ folder.course_id }}_{{ outcome.pk }}_{{ label }}" class="collapse" aria-labelledby="set_{{ folder.course_id }}_{{ outcome.pk }}_{{ label }}" data-parent="#course_{{ folder.course_id }}_{{ outcome.pk }}_{{ label }}">
             <div class="card-body" id="course_folders">
                 <div class="align-items-center">
@@ -24,4 +25,5 @@
             </div>
         </div>
     </div>
+    <br>
 </div>
